@@ -1,0 +1,47 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/cadana-embedded-consumer-wallets-openapi.yaml, openapi/cadana-embedded-payments-openapi.yaml,
+  openapi/cadana-global-tax-openapi.yaml, openapi/cadana-statutory-compliance-openapi.yaml,
+  openapi/cadana-workforce-management-openapi.yaml
+docs: https://docs.cadanapay.com/authentication
+summary:
+  types:
+  - http
+  scheme: bearer
+  header: 'Authorization: Bearer <API_KEY>'
+  verify_operation: getMe
+  verify_endpoint: GET /v1/me
+token_types:
+- name: Org Token
+  scope: single organization
+  expiration: none
+  use: backend integrations
+- name: Platform Token
+  scope: multiple businesses (multi-tenant)
+  expiration: none
+  use: multi-tenant platforms
+  extra_header: 'X-MultiTenantKey: <tenantKey>'
+  notes: Tenant key is returned when you create a business; omitting it defaults to
+    the primary platform business.
+- name: User Token
+  scope: single user
+  expiration: 1 hour
+  use: frontend / mobile apps
+schemes:
+- name: Authorization
+  type: http
+  scheme: bearer
+  bearerFormat: API_SECRET_KEY
+  sources:
+  - openapi/cadana-embedded-consumer-wallets-openapi.yaml
+  - openapi/cadana-embedded-payments-openapi.yaml
+  - openapi/cadana-global-tax-openapi.yaml
+  - openapi/cadana-statutory-compliance-openapi.yaml
+  - openapi/cadana-workforce-management-openapi.yaml
+errors:
+  '401': missing or invalid token
+  '403': insufficient permissions or incorrect tenant key (Platform tokens)
+custom_auth:
+  jwt_exchange_operation: exchangeJwtToken
+  jwt_exchange_endpoint: POST /v1/auth/login/jwt
+  docs: https://docs.cadanapay.com/white-label/custom-authentication
