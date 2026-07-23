@@ -1,0 +1,222 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Requirements API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Requirements
+  description: Prerequisites that must be satisfied before filing
+paths:
+  /v1/statutory/requirements:
+    get:
+      operationId: listRequirements
+      summary: List outstanding requirements
+      description: 'Returns requirements — data inputs, documents, or registrations needed
+
+        before filings can proceed.
+
+
+        Filter by `businessId` for a business-wide view (all categories), or
+
+        by `personId` to see what a specific worker is missing. At least one
+
+        of `businessId` or `personId` must be provided, and `countryCode` is
+
+        required whenever `personId` is used.
+
+
+        Requirements are generated automatically based on the business''s
+
+        jurisdictions and workforce composition. They update dynamically as
+
+        workers are added or laws change.
+
+        '
+      tags:
+      - Requirements
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: businessId
+        in: query
+        description: Filter by business. Required unless `personId` is provided.
+        schema:
+          type: string
+      - name: personId
+        in: query
+        description: 'Filter by person. Returns only `worker_data` requirements where
+
+          this person appears in `affected_persons`. Useful for building
+
+          per-worker onboarding or compliance views. `countryCode` must be
+
+          provided alongside this parameter.
+
+          '
+        schema:
+          type: string
+      - name: countryCode
+        in: query
+        schema:
+          type: string
+        description: Filter by jurisdiction (ISO 3166-1 alpha-2). Required when `personId` is provided; the request fails with `400` if omitted.
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - outstanding
+          - satisfied
+          - waived
+      - name: category
+        in: query
+        schema:
+          type: string
+          enum:
+          - business_registration
+          - business_document
+          - business_tax_parameter
+          - worker_data
+      responses:
+        '200':
+          description: List of requirements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Requirement'
+  /v1/statutory/requirements/{requirement_id}:
+    get:
+      operationId: getRequirement
+      summary: Get a requirement
+      description: '**Not yet implemented.**
+
+        '
+      tags:
+      - Requirements
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: requirement_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Requirement details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Requirement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Requirement:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+          - business_registration
+          - business_document
+          - business_tax_parameter
+          - worker_data
+          description: "- `business_registration` — Business needs to register with an authority\n  (e.g., SAT employer RFC registration).\n  Resolve via `PUT /v1/statutory/businesses/{id}/fields/{countryCode}`.\n- `business_document` — A business-level document is needed (e.g., POA,\n  incorporation certificate). Upload via the Business document endpoints.\n- `business_tax_parameter` — A business-level tax parameter is missing\n  (e.g., employer ISR tax number for a specific state).\n  Resolve via `PUT /v1/statutory/businesses/{id}/fields/{countryCode}`.\n- `worker_data` — One or more person records are missing required fields\n  (e.g., RFC, CURP).\n  Resolve via `PUT /v1/statutory/persons/{id}/fields/{countryCode}`.\n"
+        status:
+          type: string
+          enum:
+          - outstanding
+          - satisfied
+          - waived
+        name:
+          type: string
+          example: SAT Employer RFC
+        description:
+          type: string
+          example: A valid RFC is required to file ISR returns with the Servicio de Administración Tributaria (SAT)
+        affectedField:
+          type: string
+          description: The required-field key that needs to be populated, matching a `key` from the required-fields response.
+          example: taxId
+        resourceType:
+          type: string
+          enum:
+          - business
+          - person
+          description: Whether this requirement applies to a business or person record
+          example: business
+        resourceId:
+          type: string
+          description: The ID of the business or person that needs updating
+          example: bus_abc123
+        resolutionGuide:
+          type: string
+          description: 'Human-readable instructions for resolving this requirement. Points to
+
+            the correct statutory API endpoint.
+
+            '
+          example: Submit via PUT /v1/statutory/businesses/{id}/fields/{countryCode}
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

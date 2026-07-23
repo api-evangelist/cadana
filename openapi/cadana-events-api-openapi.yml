@@ -1,0 +1,191 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Events API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Events
+  description: Immutable audit trail
+paths:
+  /v1/statutory/events:
+    get:
+      operationId: listEvents
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: List audit events
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Returns the immutable audit log. Every state change on every resource
+
+        (filing, remittance, requirement) is recorded as an event with the
+
+        actor, timestamp, and before/after state.
+
+        '
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: businessId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: resource_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - filing
+          - remittance
+          - requirement
+      - name: resource_id
+        in: query
+        schema:
+          type: string
+        description: Filter events for a specific resource
+      - name: event_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - filing.upcoming
+          - filing.created
+          - filing.blocked
+          - filing.pending
+          - filing.in_review
+          - filing.approved
+          - filing.submitted
+          - filing.accepted
+          - filing.rejected
+          - filing.overdue
+          - filing.amended
+          - filing.cancelled
+          - remittance.created
+          - remittance.processing
+          - remittance.completed
+          - remittance.failed
+          - requirement.created
+          - requirement.satisfied
+          - requirement.waived
+      - name: since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        description: Return events after this timestamp
+      - $ref: '#/components/parameters/PageCursor'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+components:
+  parameters:
+    PageSize:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+      description: Number of items per page
+    PageCursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Pagination cursor from previous response
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+          description: Pass as `cursor` parameter to get the next page
+        hasMore:
+          type: boolean
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          example: evt_01HQ3K4N7XYZABC
+        type:
+          type: string
+          example: filing.submitted
+        resourceType:
+          type: string
+          enum:
+          - filing
+          - remittance
+          - requirement
+        resourceId:
+          type: string
+        businessId:
+          type: string
+        actor:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - system
+              - authority
+            id:
+              type: string
+              nullable: true
+        data:
+          type: object
+          description: Event-specific payload with before/after state
+          additionalProperties: true
+        occurredAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

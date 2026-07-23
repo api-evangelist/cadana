@@ -1,0 +1,371 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Statutory Fields API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Statutory Fields
+  description: Submit and read entity-level statutory filing data
+paths:
+  /v1/statutory/persons/{person_id}/fields/{country_code}:
+    put:
+      operationId: putPersonFields
+      summary: Submit person filing fields
+      description: 'Submit statutory filing fields for a person in a jurisdiction. Use this
+
+        endpoint for fields returned by the required-fields endpoint with
+
+        `entity: "person"` and `scope` containing `"filing"`.
+
+
+        Fields are validated against the jurisdiction''s field definitions.
+
+        Unknown keys are rejected.
+
+
+        For `document`-typed fields (e.g. `aadhaarCardFront`), upload the file
+
+        first: `POST /v1/files/upload-url` (Workforce Management API) with
+
+        `{"purpose": "statutory-document", "contentType": "image/png"}`
+
+        returns a `fileId` and a presigned `putUrl`; HTTP PUT the file bytes
+
+        to the `putUrl`, then submit the `fileId` as the field value here.
+
+        The GET endpoint returns document fields as an object with a presigned
+
+        download `url`.
+
+        '
+      tags:
+      - Statutory Fields
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/PersonId'
+      - $ref: '#/components/parameters/CountryCode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutStatutoryFieldsRequest'
+            example:
+              fields:
+                steuerID: '97148835200'
+                personengruppenschluessel: '101'
+      responses:
+        '204':
+          description: Fields saved successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      operationId: getPersonFields
+      summary: Get person filing data
+      description: 'Returns statutory filing data for a person in a jurisdiction. The response
+
+        is a merged view: fields explicitly submitted via PUT are combined with
+
+        defaults read from the person service (e.g., firstName, lastName).
+
+        '
+      tags:
+      - Statutory Fields
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/PersonId'
+      - $ref: '#/components/parameters/CountryCode'
+      responses:
+        '200':
+          description: Person filing data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatutoryFieldsResponse'
+              example:
+                entityType: person
+                entityId: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+                countryCode: DE
+                fields:
+                  steuerID: '97148835200'
+                  sozialversicherungsnummer: 54211075L005
+                  firstName: Max
+                  lastName: Mustermann
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/statutory/businesses/{business_id}/fields/{country_code}:
+    put:
+      operationId: putBusinessFields
+      summary: Submit business filing fields
+      description: 'Submit statutory filing fields for a business in a jurisdiction. Use this
+
+        endpoint for fields returned by the required-fields endpoint with
+
+        `entity: "business"` and `scope` containing `"filing"`.
+
+
+        Fields are validated against the jurisdiction''s field definitions.
+
+        Unknown keys are rejected.
+
+        '
+      tags:
+      - Statutory Fields
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/BusinessIdPath'
+      - $ref: '#/components/parameters/CountryCode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutStatutoryFieldsRequest'
+            example:
+              fields:
+                betriebsnummer: '12345678'
+                finanzamtNummer: '2722'
+      responses:
+        '204':
+          description: Fields saved successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      operationId: getBusinessFields
+      summary: Get business filing data
+      description: 'Returns statutory filing data for a business in a jurisdiction. The response
+
+        is a merged view: fields explicitly submitted via PUT are combined with
+
+        defaults read from the business service.
+
+        '
+      tags:
+      - Statutory Fields
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/BusinessIdPath'
+      - $ref: '#/components/parameters/CountryCode'
+      responses:
+        '200':
+          description: Business filing data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatutoryFieldsResponse'
+              example:
+                entityType: business
+                entityId: 4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8
+                countryCode: DE
+                fields:
+                  betriebsnummer: '12345678'
+                  finanzamtNummer: '2722'
+                  steuernummer: 21/815/08150
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    BusinessIdPath:
+      name: business_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Business identifier
+      example: 4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8
+    PersonId:
+      name: person_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Person identifier
+      example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+    CountryCode:
+      name: country_code
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^[A-Z]{2}$
+      description: ISO 3166-1 alpha-2 country code
+      example: MX
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  schemas:
+    StatutoryFieldsResponse:
+      type: object
+      description: 'Merged view of statutory filing data for an entity. Combines fields
+
+        explicitly submitted via PUT with defaults read from the upstream
+
+        service (person service or business service).
+
+        '
+      properties:
+        entityType:
+          type: string
+          enum:
+          - person
+          - business
+          description: Type of entity this data belongs to
+          example: person
+        entityId:
+          type: string
+          description: ID of the person or business
+          example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+        countryCode:
+          type: string
+          example: DE
+        fields:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - $ref: '#/components/schemas/DocumentFieldValue'
+          description: 'Merged field data. `document`-typed fields are returned as an
+
+            object with a short-lived download link (see `DocumentFieldValue`).
+
+            '
+          example:
+            steuerID: '97148835200'
+            sozialversicherungsnummer: 54211075L005
+            firstName: Max
+            lastName: Mustermann
+            idCard:
+              fileId: f1e2d3c4-b5a6-4789-9abc-def012345678
+              url: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
+              fileUploaded: true
+    PutStatutoryFieldsRequest:
+      type: object
+      required:
+      - fields
+      description: Request body for submitting statutory filing fields.
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - type: object
+              properties:
+                fileId:
+                  type: string
+                  format: uuid
+              required:
+              - fileId
+          description: 'Key-value pairs of field data. Keys must match the `key` values
+
+            from the jurisdiction''s required-fields response.
+
+
+            For `document`-typed fields, the value is the `fileId` returned by
+
+            `POST /v1/files/upload-url` (purpose `statutory-document`) after the
+
+            file has been uploaded — either as a bare string or as an object
+
+            `{"fileId": "..."}`. The request is rejected with `400` if the
+
+            fileId is unknown, the file has not been uploaded yet, or it was
+
+            uploaded with a different purpose.
+
+            '
+          example:
+            steuerID: '97148835200'
+            personengruppenschluessel: '101'
+            idCard: f1e2d3c4-b5a6-4789-9abc-def012345678
+    DocumentFieldValue:
+      type: object
+      description: 'Value of a `document`-typed statutory field in GET responses.
+
+        The download URL is presigned and expires after ~15 minutes — fetch a
+
+        fresh one when needed rather than storing it.
+
+        '
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          description: The file ID submitted for this field
+          example: f1e2d3c4-b5a6-4789-9abc-def012345678
+        url:
+          type: string
+          description: Short-lived presigned download URL for the document
+          example: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
+        fileUploaded:
+          type: boolean
+          description: Whether the file content exists in storage
+          example: true
+      required:
+      - fileId
+      - url
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

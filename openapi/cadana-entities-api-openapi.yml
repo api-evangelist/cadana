@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Entities API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Entities
+  description: APIs for managing legal sub-entities (subsidiaries, branches) under a parent business
+paths:
+  /v1/entities:
+    post:
+      summary: Create
+      description: Create a new legal entity under the current business
+      operationId: createEntity
+      tags:
+      - Entities
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEntityRequest'
+      responses:
+        '200':
+          description: Entity created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEntityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    get:
+      summary: List
+      description: List all legal entities for the current tenant
+      operationId: listEntities
+      tags:
+      - Entities
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: List of entities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetEntitiesResponse'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/entities/{entityId}:
+    get:
+      summary: Get
+      description: Fetch a single legal entity by ID
+      operationId: getEntity
+      tags:
+      - Entities
+      parameters:
+      - $ref: '#/components/parameters/entityId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: Entity details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEntityResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    patch:
+      summary: Update
+      description: Update an existing legal entity
+      operationId: updateEntity
+      tags:
+      - Entities
+      parameters:
+      - $ref: '#/components/parameters/entityId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  schemas:
+    GetEntityResponse:
+      description: Full entity details
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+        tenantKey:
+          type: string
+          example: cad617152
+        legalName:
+          type: string
+          example: Acme Corp Ghana
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: GH
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: GHS
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        registrationNumber:
+          type: string
+          example: BN-123456
+        taxId:
+          type: string
+          example: TIN-789012
+        incorporationDate:
+          type: string
+          example: '2020-01-15'
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          example: corporation
+        status:
+          type: string
+          example: ACTIVE
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was created
+          example: 1609459200
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was last updated
+          example: 1609459200
+    UpdateEntityRequest:
+      description: Update entity request payload (partial update)
+      type: object
+      properties:
+        legalName:
+          type: string
+          description: Legal name of the entity
+          example: Acme Corp Ghana Updated
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          description: Legal structure type
+          example: limited liability company
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        registrationNumber:
+          type: string
+          description: Business registration number
+          example: BN-654321
+        taxId:
+          type: string
+          description: Tax identification number
+          example: TIN-210987
+        incorporationDate:
+          type: string
+          description: Date of incorporation (YYYY-MM-DD)
+          example: '2019-06-01'
+    GetEntitiesResponse:
+      description: Entity summary for list responses
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+        legalName:
+          type: string
+          example: Acme Corp Ghana
+        country:
+          type: string
+          example: GH
+        currency:
+          type: string
+          example: GHS
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          example: corporation
+        status:
+          type: string
+          example: ACTIVE
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was created
+          example: 1609459200
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was last updated
+          example: 1609459200
+    CreateEntityResponse:
+      description: Create entity response
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the created entity
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    CreateEntityRequest:
+      description: Create entity request payload
+      type: object
+      required:
+      - legalName
+      - country
+      - currency
+      properties:
+        legalName:
+          type: string
+          description: Legal name of the entity
+          example: Acme Corp Ghana
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: GH
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: GHS
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          description: Legal structure type
+          example: corporation
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        registrationNumber:
+          type: string
+          description: Business registration number
+          example: BN-123456
+        taxId:
+          type: string
+          description: Tax identification number
+          example: TIN-789012
+        incorporationDate:
+          type: string
+          description: Date of incorporation (YYYY-MM-DD)
+          example: '2020-01-15'
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+  parameters:
+    entityId:
+      name: entityId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique identifier of the entity
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

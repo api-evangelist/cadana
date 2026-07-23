@@ -1,0 +1,781 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Transactions API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Transactions
+  description: APIs for managing user transactions
+paths:
+  /v1/users/{userId}/transactions:
+    post:
+      summary: Create transaction
+      description: Create a new transaction for a user
+      tags:
+      - Transactions
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+            examples:
+              payoutWithDestinationAmount:
+                summary: Payout with destination amount - send exactly 500 PHP to the beneficiary
+                value:
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  amount:
+                    value: '500.00'
+                    currency: PHP
+                  sourceCurrency: USD
+                  reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+              payoutWithSourceAmount:
+                summary: Payout with source amount - send 10 USD worth to the beneficiary
+                value:
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  sourceAmount:
+                    value: '10.00'
+                    currency: USD
+                  reference: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateTransactionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List transactions
+      description: Retrieve transactions for a user
+      tags:
+      - Transactions
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - name: reference
+        in: query
+        required: false
+        description: Client reference to filter transactions
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        description: Transaction type to filter by
+        schema:
+          type: string
+          enum:
+          - payout
+          - savings_funding
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTransactionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/transactions/{transactionId}:
+    get:
+      summary: Get transaction
+      description: Get an existing transaction for a user
+      tags:
+      - Transactions
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/transactionId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: document
+        in: query
+        required: false
+        description: Include a presigned download URL for a transaction document, e.g. `firc` for the FIRC (Foreign Inward Remittance Certificate) on Indian payouts
+        schema:
+          type: string
+          enum:
+          - firc
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTransactionResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/fees:
+    get:
+      summary: Get user fees
+      description: 'Retrieve the payout catalog for a user — fees, delivery timelines, and transfer limits per corridor.
+
+
+        `data.payouts` is the full, unfiltered catalog (the user''s rate card) and is always returned.
+
+
+        Supply `paymentMethod` together with `destinationCurrency` to also receive `data.estimate` — a per-transaction fee, delivery timeline, and transfer limits for the specified corridor. Add `destinationCountry` when several countries share a currency (e.g. USD sent to Ecuador vs. USD sent to El Salvador) so the estimate resolves to the right country. Add `sourceAmount` to resolve percentage-based fees into a concrete amount.
+
+        '
+      operationId: getUserFees
+      tags:
+      - Transactions
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - name: sourceCurrency
+        in: query
+        required: false
+        description: ISO 4217 currency in which all fees are quoted. Defaults to `USD`.
+        schema:
+          type: string
+          example: USD
+      - name: paymentMethod
+        in: query
+        required: false
+        description: Payment method to produce an estimate for. Presence of this field triggers the `estimate` block in the response and requires `destinationCurrency`.
+        schema:
+          type: string
+          enum:
+          - bank
+          - momo
+          - swift
+          - ach
+          - wire
+          - crypto
+          - card
+          - wallet
+          example: bank
+      - name: destinationCurrency
+        in: query
+        required: false
+        description: ISO 4217 payout currency — keys the specific corridor for the `estimate`. Required whenever `paymentMethod`, `destinationCountry`, or `sourceAmount` is supplied.
+        schema:
+          type: string
+          example: AUD
+      - name: destinationCountry
+        in: query
+        required: false
+        description: ISO 3166-1 alpha-2 destination country code. Use this when several countries share a currency (e.g. USD sent to Ecuador vs. USD sent to El Salvador) so the estimate resolves to the right country. Only meaningful when `destinationCurrency` is also supplied.
+        schema:
+          type: string
+          example: AU
+      - name: sourceAmount
+        in: query
+        required: false
+        description: Decimal payout amount used to resolve percentage-based fees into a concrete `estimate.fee.value`. Ignored for fixed-fee corridors. Requires `destinationCurrency`.
+        schema:
+          type: string
+          example: '100'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFeesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+components:
+  responses:
+    GetFeesResponse:
+      description: Payout catalog and (optional) corridor estimate
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                - sourceCurrency
+                - payouts
+                properties:
+                  sourceCurrency:
+                    type: string
+                    description: ISO 4217 currency in which payout fees are quoted
+                    example: USD
+                  payouts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FeeTableEntry'
+                  estimate:
+                    $ref: '#/components/schemas/FeeEstimate'
+          examples:
+            catalogOnly:
+              summary: Catalog only — `paymentMethod` not supplied
+              value:
+                data:
+                  sourceCurrency: USD
+                  payouts:
+                  - paymentMethod: bank
+                    destinationCurrency: AUD
+                    destinationCountry: AU
+                    fee:
+                      type: fixed
+                      value: 1
+                      min: 0
+                      max: 0
+                    feeCurrency: USD
+                    timeline:
+                      minDays: 1
+                      maxDays: 2
+                      businessDaysOnly: true
+                  - paymentMethod: bank
+                    destinationCurrency: USD
+                    destinationCountry: EC
+                    fee:
+                      type: fixed
+                      value: 6.5
+                      min: 0
+                      max: 0
+                    feeCurrency: USD
+                    timeline:
+                      minDays: 0
+                      maxDays: 1
+                      businessDaysOnly: true
+            catalogWithEstimate:
+              summary: Catalog + corridor estimate — `paymentMethod` and `destinationCurrency` supplied
+              value:
+                data:
+                  sourceCurrency: USD
+                  payouts:
+                  - paymentMethod: bank
+                    destinationCurrency: AUD
+                    destinationCountry: AU
+                    fee:
+                      type: fixed
+                      value: 1
+                      min: 0
+                      max: 0
+                    feeCurrency: USD
+                    timeline:
+                      minDays: 1
+                      maxDays: 2
+                      businessDaysOnly: true
+                  estimate:
+                    paymentMethod: bank
+                    destinationCurrency: AUD
+                    destinationCountry: AU
+                    fee:
+                      value: '1.00'
+                      currency: USD
+                    timeline:
+                      minDays: 1
+                      maxDays: 2
+                      businessDaysOnly: true
+                      estimatedArrival: Apr 24, 2026 (excluding holidays)
+                    limits:
+                      min: '2'
+                      max: '20000'
+                      currency: AUD
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    CreateTransactionResponse:
+      description: Transaction created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+          examples:
+            transaction:
+              summary: Example transaction creation response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+    GetTransactionResponse:
+      description: Get transaction response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transaction'
+          examples:
+            transaction:
+              summary: Example transaction response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                type: payout
+                beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                amount:
+                  value: '500.00'
+                  currency: PHP
+                sourceAmount:
+                  value: '9.00'
+                  currency: USD
+                feeAmount:
+                  value: '0.10'
+                  currency: USD
+                fxRate: '56.1234'
+                reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                status: success
+                createdTimestamp: 1748478276
+                lastUpdatedTimestamp: 1748478276
+    GetTransactionsResponse:
+      description: List of transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            transactions:
+              summary: List of transactions
+              value:
+                data:
+                - id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  amount:
+                    value: '500.00'
+                    currency: PHP
+                  sourceAmount:
+                    value: '9.00'
+                    currency: USD
+                  feeAmount:
+                    value: '0.10'
+                    currency: USD
+                  fxRate: '56.1234'
+                  reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                  status: success
+                  createdTimestamp: 1748478276
+                  lastUpdatedTimestamp: 1748478276
+                node:
+                  previous: null
+                  next: null
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    transactionId:
+      name: transactionId
+      in: path
+      description: The unique identifier for the transaction
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  schemas:
+    FeeTableEntry:
+      type: object
+      description: A single corridor entry in the payout catalog
+      required:
+      - paymentMethod
+      - destinationCurrency
+      - fee
+      - feeCurrency
+      - timeline
+      properties:
+        paymentMethod:
+          type: string
+          enum:
+          - bank
+          - momo
+          - swift
+          - ach
+          - wire
+          - crypto
+          - card
+          - wallet
+          example: bank
+        destinationCurrency:
+          type: string
+          description: ISO 4217 payout currency
+          example: AUD
+        destinationCountry:
+          type: string
+          description: ISO 3166-1 alpha-2 country code. Only present when several countries share a currency and the country is needed to identify the corridor (e.g. USD sent to Ecuador).
+          example: AU
+        fee:
+          type: object
+          required:
+          - type
+          - value
+          properties:
+            type:
+              type: string
+              enum:
+              - fixed
+              - percentage
+              description: Fee model. `fixed` values are denominated in `feeCurrency`; `percentage` values are rates (e.g. `1.5` means 1.5%).
+              example: fixed
+            value:
+              type: number
+              description: Fee amount (for `fixed`) or percentage rate (for `percentage`).
+              example: 1
+            min:
+              type: number
+              description: Minimum applicable fee in `feeCurrency`. `0` indicates no minimum.
+              example: 0
+            max:
+              type: number
+              description: Maximum applicable fee in `feeCurrency`. `0` indicates no maximum.
+              example: 0
+        feeCurrency:
+          type: string
+          description: ISO 4217 currency in which the fee is denominated. Matches the request's `sourceCurrency` (or `USD` if not supplied).
+          example: USD
+        timeline:
+          type: object
+          required:
+          - minDays
+          - maxDays
+          - businessDaysOnly
+          properties:
+            minDays:
+              type: integer
+              description: Minimum delivery time in days
+              example: 1
+            maxDays:
+              type: integer
+              description: Maximum delivery time in days
+              example: 2
+            businessDaysOnly:
+              type: boolean
+              description: When `true`, weekends are excluded from `minDays` and `maxDays`.
+              example: true
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    CreateTransactionRequest:
+      type: object
+      required:
+      - type
+      - beneficiaryId
+      - quoteId
+      - reference
+      properties:
+        type:
+          type: string
+          enum:
+          - payout
+          - savings_funding
+          description: The type of transaction
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          description: The unique identifier for the fx quote
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: The destination amount (required if sourceAmount is not provided). When using this field, sourceCurrency is also required.
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+          description: The source amount (required if amount is not provided). The currency in this amount object represents the source currency.
+        sourceCurrency:
+          type: string
+          description: The source currency code. Required when using the amount field (destination amount).
+          example: USD
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+      oneOf:
+      - required:
+        - amount
+        - sourceCurrency
+      - required:
+        - sourceAmount
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    Transaction:
+      type: object
+      required:
+      - id
+      - type
+      - amount
+      - sourceAmount
+      - fxRate
+      - status
+      - reference
+      - createdTimestamp
+      - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+        type:
+          type: string
+          description: The transaction type, e.g. payout, payroll, deposit, transfer
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+        amount:
+          $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+        feeAmount:
+          $ref: '#/components/schemas/Amount'
+        fxRate:
+          type: string
+          example: '56.1234'
+        status:
+          type: string
+          enum:
+          - initiated
+          - success
+          - processing
+          - failed
+          example: success
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was created
+          example: 1748478276
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was last updated
+          example: 1748478276
+        document:
+          type: object
+          description: Present only when a document is requested via the `document` query parameter
+          properties:
+            type:
+              type: string
+              description: The document type
+              example: FIRC
+            presignedURL:
+              type: string
+              description: Presigned URL to download the document; valid until expiresAt
+              example: https://bucket.s3.amazonaws.com/firc/d0137ede-7df1-4a54-8206-b3ab7b03876f.pdf
+            expiresAt:
+              type: integer
+              description: Unix timestamp when the presigned URL expires
+              example: 1748481876
+    FeeEstimate:
+      type: object
+      description: Per-transaction quote for a specific corridor + payment method. Only returned when `paymentMethod` and `destinationCurrency` are supplied.
+      required:
+      - paymentMethod
+      - destinationCurrency
+      - fee
+      - timeline
+      - limits
+      properties:
+        paymentMethod:
+          type: string
+          enum:
+          - bank
+          - momo
+          - swift
+          - ach
+          - wire
+          - crypto
+          - card
+          - wallet
+          example: bank
+        destinationCurrency:
+          type: string
+          example: AUD
+        destinationCountry:
+          type: string
+          description: Only present when several countries share a currency and the country is needed to identify the corridor
+          example: AU
+        fee:
+          type: object
+          required:
+          - value
+          - currency
+          properties:
+            value:
+              type: string
+              description: Concrete per-transaction fee. For `percentage` corridors, resolved using the request's `sourceAmount`.
+              example: '1.00'
+            currency:
+              type: string
+              description: ISO 4217 currency code — matches the request's `sourceCurrency` (or `USD` if not supplied).
+              example: USD
+        timeline:
+          type: object
+          required:
+          - businessDaysOnly
+          properties:
+            minDays:
+              type: integer
+              example: 1
+            maxDays:
+              type: integer
+              example: 2
+            businessDaysOnly:
+              type: boolean
+              description: When `true`, weekends are excluded from `minDays` and `maxDays`.
+              example: true
+            estimatedArrival:
+              type: string
+              description: Human-readable delivery estimate, accounting for weekends and holidays.
+              example: Apr 24, 2026 (excluding holidays)
+            message:
+              type: string
+              description: Replaces `minDays`/`maxDays` for special corridors (e.g. `"Instant"`).
+              example: Instant
+        limits:
+          type: object
+          required:
+          - min
+          - max
+          - currency
+          properties:
+            min:
+              type: string
+              description: Minimum transfer amount
+              example: '2'
+            max:
+              type: string
+              description: Maximum transfer amount
+              example: '20000'
+            currency:
+              type: string
+              description: Currency the limits are denominated in — matches `destinationCurrency`.
+              example: AUD
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

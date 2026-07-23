@@ -1,0 +1,482 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Businesses API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Businesses
+  description: APIs for interacting with Business
+paths:
+  /v1/businesses/{businessId}:
+    get:
+      summary: Get Business
+      description: Get a business
+      operationId: getBusiness
+      tags:
+      - Businesses
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBusinessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/me:
+    get:
+      summary: Get Current Identity
+      description: Retrieve the calling API key's access level and the business the request resolved to, including its `businessId` and tenant key. With a Platform API token, pass `X-MultiTenantKey` to confirm which sub-business your requests operate on.
+      operationId: getMe
+      tags:
+      - Businesses
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMeResponse'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/departments:
+    post:
+      summary: Create Department
+      description: Create a department
+      operationId: createDepartment
+      tags:
+      - Businesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDepartmentsRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateDepartmentsResponse'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/departments/{departmentId}:
+    put:
+      summary: Update Department
+      description: Update a department
+      operationId: updateDepartment
+      tags:
+      - Businesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDepartmentRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/departmentId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/customFields:
+    post:
+      summary: Create Custom Field
+      description: Create a custom field
+      operationId: createCustomField
+      tags:
+      - Businesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCustomFieldsRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateCustomFieldsResponse'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/customFields/{customFieldId}:
+    put:
+      summary: Update Custom Field
+      description: Update a custom field
+      operationId: updateCustomField
+      tags:
+      - Businesses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomFieldRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/customFieldId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    CreateCustomFieldsResponse:
+      description: create custom fields response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/customField'
+    CreateDepartmentsResponse:
+      description: create departments response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/department'
+    GetMeResponse:
+      description: get current identity response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              apiKey:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: Identifier of the API key making the request
+                  accessLevel:
+                    type: string
+                    description: 'Level of access of the key: READ, FULL, or PLATFORM'
+                  status:
+                    type: string
+                  description:
+                    type: string
+                  tenantPrefix:
+                    type: string
+                    description: Present only on Platform API keys
+              business:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The businessId of the business this request resolved to
+                  tenantKey:
+                    type: string
+                  name:
+                    type: string
+                  country:
+                    type: string
+          example:
+            apiKey:
+              id: ba51f42c-0adc-4a77-8dd1-a03dd4fb955f
+              accessLevel: FULL
+              status: active
+              description: Production key
+            business:
+              id: 1f7b33d4-45c6-4a66-b58f-2f6b3d3e5a10
+              tenantKey: acme-us
+              name: Acme Inc.
+              country: US
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetBusinessResponse:
+      description: get business response
+      content:
+        application/json:
+          schema:
+            description: Get business response
+            allOf:
+            - $ref: '#/components/schemas/business'
+  parameters:
+    customFieldId:
+      name: customFieldId
+      in: path
+      description: The unique identifier for the custom field
+      required: true
+      schema:
+        type: string
+    departmentId:
+      name: departmentId
+      in: path
+      description: The unique identifier for the department
+      required: true
+      schema:
+        type: string
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+  schemas:
+    instantPaySettings:
+      type: object
+      properties:
+        accessPercentage:
+          type: integer
+          example: 30
+        numDaysBeforePayroll:
+          type: integer
+          example: 4
+        requiresApproval:
+          type: boolean
+          example: false
+        contractorAccess:
+          type: boolean
+          example: true
+    department:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Engineering
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    UpdateDepartmentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Legal
+    business:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        country:
+          type: string
+          example: US
+        tenantKey:
+          type: string
+          example: cad123
+        currency:
+          type: string
+          example: USD
+        name:
+          type: string
+          example: ACME LLC
+        shortName:
+          type: string
+          example: ACME
+        status:
+          type: string
+          example: active
+        address:
+          $ref: '#/components/schemas/address'
+        instantPaySettings:
+          $ref: '#/components/schemas/instantPaySettings'
+        payrollSettings:
+          $ref: '#/components/schemas/payrollSettings'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/department'
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/customField'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    AddDepartmentsRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          example:
+          - Engineering
+          - Sales
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    payrollSettings:
+      type: object
+      properties:
+        payrollDay:
+          type: integer
+          example: 28
+        numApproversNeeded:
+          type: integer
+          example: 1
+    UpdateCustomFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Employee ID
+    AddCustomFieldsRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          example:
+          - T-shirt Size
+          - Desk Number
+    customField:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Tshirt Size
+        value:
+          type: string
+          example: M
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

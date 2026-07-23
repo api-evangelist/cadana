@@ -1,0 +1,704 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Invoices API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Invoices
+  description: APIs for interacting with invoices
+paths:
+  /v1/invoices:
+    get:
+      summary: List Invoices
+      description: List invoices for your business. Optionally filter by person, user, source, status, type, or invoice date range. Filters can be combined; all are optional.
+      operationId: listInvoices
+      tags:
+      - Invoices
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: personId
+        in: query
+        required: false
+        description: Only include invoices for this person (e.g. the contractor the invoice pays). Matches the `personId` field on the invoice.
+        schema:
+          type: string
+          format: uuid
+      - name: userId
+        in: query
+        required: false
+        description: Only include invoices belonging to this user
+        schema:
+          type: string
+          format: uuid
+      - name: source
+        in: query
+        required: false
+        description: Filter by invoice origin, e.g. only contractor-submitted invoices (CONTRACTOR_SUBMITTED) or invoices auto-created from payroll (PAYROLL)
+        schema:
+          type: string
+          enum:
+          - SYSTEM
+          - USER
+          - REIMBURSEMENT
+          - PAYROLL
+          - CONTRACTOR_SUBMITTED
+      - name: status
+        in: query
+        required: false
+        description: Filter by invoice status (case-insensitive), e.g. Pending, Processing, Paid, Partially Paid, Overdue, Cancelled
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        description: Filter by invoice type
+        schema:
+          type: string
+          enum:
+          - MANUAL
+          - PAYROLL
+          - CONTRACTOR
+      - name: startDate
+        in: query
+        required: false
+        description: Only include invoices with an invoice date on or after this date
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: false
+        description: Only include invoices with an invoice date on or before this date
+        schema:
+          type: string
+          format: date
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of invoices to return per page (default 20)
+        schema:
+          type: integer
+          default: 20
+      - name: cursor
+        in: query
+        required: false
+        description: Opaque pagination cursor from the previous page's `node.next`. Omit to start from the first page.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        status:
+                          type: string
+                          description: Invoice status
+                        source:
+                          type: string
+                          enum:
+                          - SYSTEM
+                          - USER
+                          - REIMBURSEMENT
+                          - PAYROLL
+                          - CONTRACTOR_SUBMITTED
+                          description: Origin of the invoice
+                        type:
+                          type: string
+                          enum:
+                          - MANUAL
+                          - PAYROLL
+                          - CONTRACTOR
+                          description: Invoice type
+                        invoiceNumber:
+                          type: string
+                          description: Human-readable invoice number
+                        from:
+                          type: string
+                          description: Name of the invoice issuer
+                        billTo:
+                          type: string
+                          description: Name of the billed party
+                        personId:
+                          type: string
+                          format: uuid
+                          description: The person the invoice is for (e.g. the contractor being paid), when applicable
+                        userId:
+                          type: string
+                          format: uuid
+                          description: The user the invoice belongs to, when applicable
+                        date:
+                          type: string
+                          format: date
+                          description: Invoice date
+                        datePayable:
+                          type: string
+                          format: date
+                          description: Date the invoice is payable
+                        subtotalAmount:
+                          type: array
+                          description: Subtotal per currency
+                          items:
+                            type: object
+                            properties:
+                              value:
+                                type: string
+                                description: Decimal amount as a string
+                              currency:
+                                type: string
+                        totalAmount:
+                          type: array
+                          description: Total per currency
+                          items:
+                            type: object
+                            properties:
+                              value:
+                                type: string
+                                description: Decimal amount as a string
+                              currency:
+                                type: string
+                  node:
+                    type: object
+                    description: Pagination cursors
+                    properties:
+                      previous:
+                        type: string
+                        nullable: true
+                        description: Cursor this page started from; null on the first page
+                      next:
+                        type: string
+                        nullable: true
+                        description: Cursor for the next page; null when there are no more results
+              example:
+                data:
+                - id: 0f6c2f8a-3d9b-4c57-9a41-8f2f6f7f1c33
+                  status: Pending
+                  source: PAYROLL
+                  type: CONTRACTOR
+                  invoiceNumber: '1764332528'
+                  from: Ada Lovelace
+                  billTo: Globex LLC
+                  personId: 9d2f7a44-1be3-4e28-8d40-63f19a7d5b8e
+                  userId: b58725e6-fabc-4a1a-9e5f-31efdbdbc45f
+                  date: '2025-11-28'
+                  datePayable: '2025-12-28'
+                  subtotalAmount:
+                  - value: '800.00'
+                    currency: USD
+                  totalAmount:
+                  - value: '800.00'
+                    currency: USD
+                - id: ca51f42c-0adc-4a77-8dd1-a03dd4fb955f
+                  status: Paid
+                  source: SYSTEM
+                  type: MANUAL
+                  invoiceNumber: '1764332529'
+                  from: Acme Inc
+                  billTo: Globex LLC
+                  date: '2025-11-28'
+                  datePayable: '2025-12-28'
+                  subtotalAmount:
+                  - value: '800.00'
+                    currency: USD
+                  totalAmount:
+                  - value: '880.00'
+                    currency: USD
+                node:
+                  next: eyJ0ZW5hbnRLZXkiOnsiUyI6InRibDI4MTUzMjA4In0sInNvcnRLZXkiOnsiUyI6ImNhNTFmNDJjIn19
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/invoices/{invoiceId}:
+    get:
+      summary: Get Invoice
+      description: Get invoice details
+      operationId: getInvoice
+      tags:
+      - Invoices
+      parameters:
+      - $ref: '#/components/parameters/invoiceId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetInvoiceResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/invoices/{invoiceId}/url:
+    get:
+      summary: Get Invoice URL
+      description: Get a short-lived URL for the invoice PDF
+      operationId: getInvoiceUrl
+      tags:
+      - Invoices
+      parameters:
+      - $ref: '#/components/parameters/invoiceId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetInvoiceUrlResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/invoices/{invoiceId}/review:
+    post:
+      summary: Review Invoice
+      description: Approve or reject a contractor self-submitted invoice. Only invoices with a `source` of `CONTRACTOR_SUBMITTED` in `pending` status can be reviewed; any other invoice returns 400.
+      operationId: reviewInvoice
+      tags:
+      - Invoices
+      parameters:
+      - $ref: '#/components/parameters/invoiceId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - approve
+                  - reject
+                  description: Whether to approve or reject the invoice
+                reason:
+                  type: string
+                  description: Reason for the decision. Required when action is reject.
+      responses:
+        '204':
+          description: Invoice reviewed
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/invoices/{invoiceId}/cancel:
+    post:
+      summary: Cancel Invoice
+      description: Cancel an invoice. The invoice is voided and can no longer be paid or reviewed.
+      operationId: cancelInvoice
+      tags:
+      - Invoices
+      parameters:
+      - $ref: '#/components/parameters/invoiceId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Invoice cancelled
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetInvoiceUrlResponse:
+      description: get invoice url response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fileUrl:
+                type: string
+                format: uri
+                description: Short-lived URL for the invoice PDF
+                example: https://cadana.com/file/124
+              expiresAt:
+                type: integer
+                format: int64
+                description: Unix timestamp when the URL expires
+                example: 1710590400
+          examples:
+            invoiceUrlResponse:
+              $ref: '#/components/examples/invoiceUrlResponse'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetInvoiceResponse:
+      description: get invoice response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/invoice'
+          examples:
+            invoiceResponse:
+              $ref: '#/components/examples/invoiceResponse'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  schemas:
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    invoiceParty:
+      type: object
+      description: Details of a party on an invoice (issuer or recipient)
+      properties:
+        name:
+          type: string
+          example: Example Company LLC
+        address:
+          type: string
+          example: 123 Main Street, Suite 100, New York City, NY 10001
+        email:
+          type: string
+          format: email
+          example: billing@example.com
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+    invoiceLineItem:
+      type: object
+      description: A line item on an invoice
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+          description: Person ID (for payroll items)
+        description:
+          type: string
+          example: John Doe
+        category:
+          type: string
+          description: Line-item category. Direct-employment payrolls produce `NET_PAYROLL` plus fee items; EOR payrolls produce `GROSS_PAYROLL` and `EMPLOYER_CONTRIBUTION`.
+          enum:
+          - NET_PAYROLL
+          - GROSS_PAYROLL
+          - EMPLOYER_CONTRIBUTION
+          - PAYMENT_PROCESSING_FEE
+          - CONTRACTOR_FEE
+          - EMPLOYEE_FEE
+          example: NET_PAYROLL
+        amount:
+          $ref: '#/components/schemas/amount'
+          description: Unit amount in base currency
+        originalAmount:
+          $ref: '#/components/schemas/amount'
+          description: Amount in original currency (if different from base)
+        fxRate:
+          type: number
+          format: float
+          description: Exchange rate applied (if currency conversion occurred)
+          example: 58.21
+        quantity:
+          type: integer
+          example: 1
+        total:
+          $ref: '#/components/schemas/amount'
+          description: Total amount in base currency
+    invoice:
+      type: object
+      description: An invoice document
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        status:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+          - partially paid
+          - paid
+          - overdue
+          - cancelled
+          example: paid
+        source:
+          type: string
+          enum:
+          - SYSTEM
+          - USER
+          - REIMBURSEMENT
+          - PAYROLL
+          - CONTRACTOR_SUBMITTED
+          description: Origin of the invoice. Only invoices with source CONTRACTOR_SUBMITTED are reviewable via the review endpoint.
+          example: CONTRACTOR_SUBMITTED
+        invoiceNumber:
+          type: string
+          example: '1764332528'
+          description: Human-readable invoice number
+        date:
+          type: string
+          format: date
+          example: '2025-11-28'
+          description: Invoice date
+        dueDate:
+          type: string
+          format: date
+          example: '2025-11-26'
+          description: Payment due date
+        from:
+          $ref: '#/components/schemas/invoiceParty'
+          description: Invoice issuer
+        billTo:
+          $ref: '#/components/schemas/invoiceParty'
+          description: Invoice recipient
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/invoiceLineItem'
+        subtotal:
+          $ref: '#/components/schemas/amount'
+          description: Subtotal before any adjustments
+        total:
+          $ref: '#/components/schemas/amount'
+          description: Total amount due
+        baseCurrency:
+          type: string
+          example: USD
+          description: Base currency for the invoice
+        fxRates:
+          type: object
+          description: Exchange rates used in this invoice
+          additionalProperties:
+            type: number
+            format: float
+          example:
+            USD-EUR: 0.863673
+            USD-PHP: 58.208258
+        purpose:
+          type: string
+          example: Payment Processing Fee
+          description: Purpose of the invoice
+        notes:
+          type: string
+          example: Payment for services rendered
+          description: Additional notes
+        createdTimestamp:
+          type: integer
+          format: int64
+          example: 1764332530
+          description: Unix timestamp when invoice was created
+        lastUpdatedTimestamp:
+          type: integer
+          format: int64
+          example: 1764339673
+          description: Unix timestamp when invoice was last updated
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  examples:
+    invoiceUrlResponse:
+      summary: Invoice URL Response Example
+      value:
+        fileUrl: https://cadana.com/file/124
+        expiresAt: 1710590400
+    invoiceResponse:
+      summary: Invoice Response Example
+      value:
+        id: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        status: paid
+        invoiceNumber: INV-2024-001
+        date: '2024-03-15'
+        dueDate: '2024-03-30'
+        from:
+          name: Acme Corp
+          address: 123 Business St, Suite 100, San Francisco, CA 94105
+          email: billing@example.com
+          phoneNumber:
+            countryCode: '1'
+            number: '4155551234'
+        billTo:
+          name: Example Corp
+          address: 456 Innovation Ave, Austin, TX 78701
+          email: accounts@example.com
+          phoneNumber:
+            countryCode: '1'
+            number: '5125555678'
+        items:
+        - personId: 7c9e6679-7425-40de-944b-e07fc1f90ae7
+          description: John Doe - Consulting Services
+          category: NET_PAYROLL
+          amount:
+            amount: 350000
+            currency: USD
+          quantity: 1
+          total:
+            amount: 350000
+            currency: USD
+        - personId: 8d7f5678-8536-41ef-a55c-f18ad2c01bf8
+          description: Jane Smith - Development Work
+          category: NET_PAYROLL
+          originalAmount:
+            amount: 150000
+            currency: EUR
+          amount:
+            amount: 162500
+            currency: USD
+          fxRate: 1.0833
+          quantity: 1
+          total:
+            amount: 162500
+            currency: USD
+        - description: International Transfer Fees
+          category: PAYMENT_PROCESSING_FEE
+          amount:
+            amount: 2500
+            currency: USD
+          quantity: 1
+          total:
+            amount: 2500
+            currency: USD
+        - description: Service Fee
+          category: CONTRACTOR_FEE
+          amount:
+            amount: 5000
+            currency: USD
+          quantity: 2
+          total:
+            amount: 10000
+            currency: USD
+        subtotal:
+          amount: 525000
+          currency: USD
+        total:
+          amount: 525000
+          currency: USD
+        baseCurrency: USD
+        fxRates:
+          USD-EUR: 0.92
+          EUR-USD: 1.0833
+        purpose: Professional Services
+        notes: Payment for services rendered in March 2024
+        createdTimestamp: 1710504000
+        lastUpdatedTimestamp: 1710590400
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    invoiceId:
+      name: invoiceId
+      in: path
+      description: The unique identifier for the invoice
+      required: true
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

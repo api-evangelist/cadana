@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Payouts API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Payouts
+  description: APIs for managing payouts
+paths:
+  /v1/payouts:
+    post:
+      summary: Create
+      description: Create a new payout
+      tags:
+      - Payouts
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePayoutRequest'
+            examples:
+              payoutRequest:
+                summary: Example payout request
+                value:
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  amount:
+                    amount: 500000
+                    currency: PHP
+                  reference: payout-123
+      responses:
+        '200':
+          $ref: '#/components/responses/CreatePayoutRespone'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List
+      description: Retrieve payouts
+      tags:
+      - Payouts
+      parameters:
+      - name: reference
+        in: query
+        required: false
+        description: Client reference to filter payouts
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        description: Filter by payout status
+        schema:
+          type: string
+          enum:
+          - initiated
+          - processing
+          - succeeded
+          - failed
+      - name: startDate
+        in: query
+        required: false
+        description: Filter payouts created on or after this date (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: false
+        description: Filter payouts created on or before this date (ISO 8601)
+        schema:
+          type: string
+          format: date
+      - name: order
+        in: query
+        required: false
+        description: Sort order by creation date
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+      - name: cursor
+        in: query
+        required: false
+        description: Pagination cursor returned from a previous request
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of results to return
+        schema:
+          type: integer
+          default: 20
+      - name: format
+        in: query
+        required: false
+        description: Response format. When set to `csv`, returns all matching payouts as a CSV file download. Requires `startDate` and `endDate`.
+        schema:
+          type: string
+          enum:
+          - csv
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPayoutsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/payouts/{payoutId}:
+    get:
+      summary: Get
+      description: Get an existing payout
+      parameters:
+      - $ref: '#/components/parameters/payoutId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      tags:
+      - Payouts
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPayoutResponse'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: Value in lowest denomination of the currency (e.g., cents)
+          example: 100000
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: COP
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    CreatePayoutRequest:
+      type: object
+      required:
+      - beneficiaryId
+      - quoteId
+      - amount
+      - currency
+      properties:
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          description: The unique identifier for the fx quote
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        amount:
+          $ref: '#/components/schemas/Amount'
+        reference:
+          type: string
+          description: The client reference for the payout
+          example: '1234567890'
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    Payout:
+      type: object
+      required:
+      - id
+      - beneficiaryId
+      - quoteId
+      - amount
+      - sourceAmount
+      - feeAmount
+      - fxRate
+      - status
+      - reference
+      - createdTimestamp
+      - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        reference:
+          type: string
+          description: The client reference for the payout
+          example: payout-123
+        amount:
+          $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+        feeAmount:
+          $ref: '#/components/schemas/Amount'
+        fxRate:
+          type: string
+          example: '4059.318355'
+        status:
+          type: string
+          enum:
+          - initiated
+          - succeeded
+          - processing
+          - failed
+          example: succeeded
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the payout was created
+          example: 1748478276
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the payout was last updated
+          example: 1748478276
+  responses:
+    CreatePayoutRespone:
+      description: Payout Created Response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+          examples:
+            payout:
+              summary: Example payout creation response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetPayoutResponse:
+      description: Get payout response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Payout'
+          examples:
+            payout:
+              summary: Example payout response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                amount:
+                  amount: 500000
+                  currency: PHP
+                sourceAmount:
+                  amount: 900
+                  currency: USD
+                feeAmount:
+                  amount: 10
+                  currency: USD
+                fxRate: '56.1234'
+                reference: payout-123
+                status: succeeded
+                createdTimestamp: 1748478276
+                lastUpdatedTimestamp: 1748478276
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetPayoutsResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payout'
+              node:
+                $ref: '#/components/schemas/node'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    payoutId:
+      name: payoutId
+      in: path
+      description: The unique identifier for the payout
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

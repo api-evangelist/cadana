@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Custom Auth API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Custom Auth
+  description: APIs for interacting with Custom Authentication
+paths:
+  /v1/auth/login/jwt:
+    post:
+      summary: JWT
+      description: Exchange your internal JWT to a cadana redirect token
+      operationId: exchangeJwtToken
+      tags:
+      - Custom Auth
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeJWTRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/ExchangeJWTResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ExchangeJWTResponse:
+      description: exchange JWT response
+      content:
+        application/json:
+          schema:
+            type: object
+            description: exchange JWT response
+            properties:
+              redirectToken:
+                type: string
+                example: eybzym7hwk...
+  schemas:
+    ExchangeJWTRequest:
+      description: Exchange an external JWT to a Cadana redirect token
+      required:
+      - jwt
+      type: object
+      properties:
+        jwt:
+          type: string
+          description: Your internal token to be exchanged
+          default: xxx.yyy.zzz
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

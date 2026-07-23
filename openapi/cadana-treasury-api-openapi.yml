@@ -1,0 +1,1200 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Treasury API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Treasury
+  description: APIs for business balances, funding, and withdrawals
+paths:
+  /v1/businesses/{businessId}/balances:
+    get:
+      summary: Get Balances
+      description: Get a business's account balances
+      operationId: getBusinessBalances
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - name: include
+        in: query
+        description: Comma-separated list of additional fields to include (e.g. reserves)
+        required: false
+        schema:
+          type: string
+          example: reserves
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBalancesResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/transactions:
+    get:
+      summary: Get Balance Ledger
+      description: 'Retrieve a business''s balance ledger — every credit and debit on the business''s balance, including funding deposits and outgoing payments, with the direction and balance effect of each entry. Use this endpoint to reconcile balance movements against your own books.
+
+
+        For full disbursement records of each movement — payment method, FX rate, and fee breakdown — use [Platform Disbursements](/api-reference/workforce/platform/list-disbursements) filtered by `businessId` instead.
+
+        '
+      operationId: getBusinessTransactions
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - name: currency
+        in: query
+        description: Currency code for transactions (required)
+        required: true
+        schema:
+          type: string
+          example: USD
+      - name: startDate
+        in: query
+        description: Start date for transactions filter (required)
+        required: true
+        schema:
+          type: string
+          format: date
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBusinessTransactionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/statement:
+    get:
+      summary: Get Statement
+      description: Download a business's account statement for a date range. Returns JSON by default; set `format` to `csv` or `bai2` to download a file instead.
+      operationId: getBusinessStatement
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - name: currency
+        in: query
+        description: Currency code for the statement (required)
+        required: true
+        schema:
+          type: string
+          example: USD
+      - name: periodStart
+        in: query
+        description: Start of the statement period (ISO 8601 date, required)
+        required: true
+        schema:
+          type: string
+          format: date
+          example: '2024-01-01'
+      - name: periodEnd
+        in: query
+        description: End of the statement period (ISO 8601 date, required)
+        required: true
+        schema:
+          type: string
+          format: date
+          example: '2024-01-31'
+      - name: format
+        in: query
+        description: Response format. Omit for JSON; `csv` or `bai2` return a downloadable file.
+        required: false
+        schema:
+          type: string
+          enum:
+          - csv
+          - bai2
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: The business account statement (JSON, or a CSV/BAI2 file download when `format` is set).
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/funding-details:
+    get:
+      summary: Get Funding Details
+      description: Returns the business's funding details.
+      operationId: getFundingDetails
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - in: query
+        name: currency
+        required: false
+        schema:
+          type: string
+        description: Filter funding details by currency (ISO 4217 code, e.g. USD or EUR)
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFundingDetailsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/deposits:
+    post:
+      summary: Create Deposit
+      description: Create a deposit to add funds to a business account
+      operationId: createBusinessDeposit
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBusinessDepositRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBusinessDepositResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/crypto-deposit-addresses:
+    post:
+      summary: Create Crypto Deposit Address
+      description: Creates a crypto deposit address for the business on the given chain. Fails if an address already exists for that currency and chain.
+      operationId: createCryptoDepositAddress
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - currency
+              - chain
+              properties:
+                currency:
+                  type: string
+                  enum:
+                  - USDC
+                  - USDT
+                  description: Stablecoin to receive
+                  example: USDC
+                chain:
+                  type: string
+                  description: 'Blockchain network. USDC: ethereum, solana, arbitrum, base, polygon. USDT: ethereum, solana, tron.'
+                  example: ethereum
+      responses:
+        '200':
+          description: Crypto deposit address created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  currency:
+                    type: string
+                    example: USDC
+                  chain:
+                    type: string
+                    example: ethereum
+                  address:
+                    type: string
+                    example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        '400':
+          description: Bad request — an unsupported currency/chain, or a deposit address already exists for that currency and chain.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+              example:
+                code: invalid_request_body
+                message: One or more input values are invalid. Please re-enter valid values
+                params:
+                  chain: currency and chain combination already exists
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/reserves:
+    post:
+      summary: Create Reserve
+      description: Lock or release business reserves (e.g. security deposits)
+      operationId: createReserve
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReserveRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/ReserveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/withdrawal/link:
+    post:
+      summary: Generate Withdrawal Link
+      description: 'Generate a short-lived JWT-signed URL that lets a business
+
+        owner withdraw funds from their wallet to an external bank beneficiary
+
+        without signing into the dashboard.
+
+        '
+      operationId: generateWithdrawalLink
+      tags:
+      - Treasury
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HostedLinkRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/HostedLinkResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/external-accounts:
+    get:
+      summary: Get External Accounts
+      description: Get external accounts linked to a business
+      operationId: getExternalAccounts
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetExternalAccountsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/external-accounts/link:
+    post:
+      summary: Generate External Account Link
+      description: Generate External Account Link
+      operationId: generateLinkForExternalAccount
+      tags:
+      - Treasury
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateExternalAccountLinkRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GenerateLinkForExternalAccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/external-accounts/{externalAccountId}:
+    delete:
+      summary: Delete External Account
+      description: Delete an external account linked to a business
+      operationId: deleteExternalAccount
+      tags:
+      - Treasury
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/externalAccountId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: External account successfully deleted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  schemas:
+    GenerateExternalAccountLinkRequest:
+      allOf:
+      - $ref: '#/components/schemas/HostedLinkRequest'
+      - type: object
+        properties:
+          mode:
+            type: string
+            enum:
+            - standard
+            - setup
+            default: standard
+            description: Controls the account linking behavior. "standard" shows the entry page with "Add payment method" button. "setup" skips the entry page and goes directly to bank selection flow.
+    FundingDetails:
+      type: object
+      required:
+      - type
+      - currency
+      properties:
+        type:
+          type: string
+          enum:
+          - ach
+          - wire
+          - iban
+          - bank
+          - swift
+          - crypto
+          description: The type of funding method
+          example: ach
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: USD
+        accountName:
+          type: string
+          description: Name on the account
+          example: Acme Corp
+        accountNumber:
+          type: string
+          description: Account number (for ACH, bank, wire) or IBAN (for iban type)
+          example: '123456789'
+        routingNumber:
+          type: string
+          description: Routing number (for ACH, bank, wire)
+          example: '000000000'
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Example Bank
+        accountType:
+          type: string
+          enum:
+          - Checking
+          - Savings
+          description: Type of account (for ACH, bank)
+          example: Checking
+        swiftCode:
+          type: string
+          description: SWIFT/BIC code (for iban, swift types)
+          example: EXMPGB2L
+        country:
+          type: string
+          description: Country code (for iban type)
+          example: GB
+        address:
+          type: string
+          description: Crypto wallet address (for crypto type)
+          example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        chain:
+          type: string
+          description: Blockchain chain (for crypto type)
+          example: ETH
+        cryptoType:
+          type: string
+          description: Type of cryptocurrency (for crypto type)
+          example: USDC
+        memo:
+          type: string
+          description: Memo or reference (for crypto type)
+          example: '123456'
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    CreateBusinessDepositRequest:
+      description: Create a deposit to add funds to a business account
+      type: object
+      required:
+      - externalAccountId
+      - idempotencyKey
+      - amount
+      - suppressNotification
+      - paymentMethod
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        idempotencyKey:
+          type: string
+          description: Unique string to prevent dedupe
+          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
+        externalAccountId:
+          type: string
+          description: unique identifier of the external account to pull funds from, required for an ach direct-debit
+          example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+        paymentMethod:
+          type: string
+          enum:
+          - ach
+          description: Payment method for the deposit
+          example: ach
+        description:
+          type: string
+          description: Optional free-text label attached to the deposit. Surfaced on the resulting ledger entry and any notification emails.
+          example: April payroll funding
+        suppressNotification:
+          type: boolean
+          description: Whether to suppress email notifications (optional, defaults to false)
+          default: false
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
+    BusinessTransaction:
+      type: object
+      description: A business ledger transaction
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the transaction
+        status:
+          type: string
+          description: Status of the transaction
+          example: Completed
+        vendorId:
+          type: string
+          description: ID of the vendor/recipient
+        vendorName:
+          type: string
+          description: Name of the vendor/recipient
+        reference:
+          type: string
+          description: Transaction reference
+        direction:
+          type: string
+          enum:
+          - DEBIT
+          - CREDIT
+          description: Direction of the transaction
+        balanceEffect:
+          type: string
+          enum:
+          - increase
+          - decrease
+          description: Effect on balance
+        paymentDetails:
+          $ref: '#/components/schemas/businessTransactionPaymentDetails'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        transactionFee:
+          $ref: '#/components/schemas/Amount'
+        totalAmount:
+          $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+        fxRate:
+          type: number
+          nullable: true
+          description: FX rate if currency conversion was involved
+        reason:
+          type: string
+          description: Reason for the transaction
+        bulkPaymentReference:
+          type: string
+          description: Reference for bulk payments
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was created
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was last updated
+        date:
+          type: string
+          format: date
+          description: Date of the transaction
+    Amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    ExternalAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the external account
+          example: d43eaff3-bc75-44f6-ac37-3a305192ead6
+        last4:
+          type: string
+          description: Last 4 digits of the account number
+          example: '0000'
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Example Bank
+        status:
+          type: string
+          description: Status of the external account
+          example: ACTIVE
+        hostedVerificationUrl:
+          type: string
+          description: URL for hosted verification if required
+        provider:
+          type: string
+          description: Provider of the external account link
+          example: PLAID
+    wireDetails:
+      type: object
+      description: Wire transfer payment details
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The routing number
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The account number
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/address'
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+        next:
+          type: string
+          nullable: true
+    ReserveRequest:
+      type: object
+      required:
+      - action
+      - type
+      - personId
+      - amount
+      - idempotencyKey
+      - description
+      properties:
+        action:
+          type: string
+          enum:
+          - LOCK
+          - RELEASE
+          description: The reserve action to perform
+          example: LOCK
+        type:
+          type: string
+          enum:
+          - SECURITY_DEPOSIT
+          - SEVERANCE
+          - NOTICE_PERIOD
+          description: The type of reserve
+          example: SECURITY_DEPOSIT
+        personId:
+          type: string
+          format: uuid
+          description: The person this reserve is for
+          example: 550e8400-e29b-41d4-a716-446655440000
+        amount:
+          $ref: '#/components/schemas/Amount'
+        idempotencyKey:
+          type: string
+          format: uuid
+          description: Idempotency key for the request
+          example: 550e8400-e29b-41d4-a716-446655440002
+        description:
+          type: string
+          description: Description of the reserve action
+          example: Security deposit for new employee
+    businessTransactionPaymentDetails:
+      type: object
+      description: 'Payment details for a business ledger transaction. Unlike a beneficiary''s payment method, the `preferredMethod` here is a hybrid descriptor: it is either the underlying payment rail used, or a transaction-category label derived from the ledger entry type (for fees, payroll, statutory deposits, interest, etc.).'
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - bank
+          - momo
+          - swift
+          - ach
+          - wire
+          - crypto
+          - card
+          - proxy
+          - Transfer
+          - Payment Fee
+          - Payroll
+          - Payroll Reversal
+          - Subscription Fees
+          - Statutory Deposit
+          - Payroll Fees
+          - Interest
+          description: 'The payment rail or transaction category for this transaction. Wallet-to-wallet movements (including deposits and internal transfers) are always reported as `Transfer` rather than `wallet`. Ledger entries without an underlying payment rail use a category label: `Payment Fee`, `Payroll`, `Payroll Reversal`, `Subscription Fees`, `Statutory Deposit`, `Payroll Fees`, or `Interest`.'
+          example: Payroll
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        wire:
+          $ref: '#/components/schemas/wireDetails'
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (e.g., Checking, Savings)
+          example: Checking
+        ownerType:
+          type: string
+          description: The type of account owner
+          enum:
+          - Individual
+          - Business
+          example: Individual
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: EXMPJPJT
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Gotham City Bank
+        branchName:
+          type: string
+          description: The name of the bank branch
+          example: Downtown Branch
+        sortCode:
+          type: string
+          description: The bank sort code (UK); carries the IFSC for India
+          example: '401234'
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: USD
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+    userBalance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
+          example: 703448
+        available:
+          type: integer
+          description: Available balance as an integer scaled by 100
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance as an integer scaled by 100
+          example: 0
+        reserves:
+          type: integer
+          nullable: true
+          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
+          example: 0
+    achDetails:
+      type: object
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The ACH routing number of the bank
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (Checking or Savings)
+          example: Checking
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        address:
+          $ref: '#/components/schemas/address'
+    HostedLinkRequest:
+      type: object
+      description: Common request body for endpoints that generate hosted (link-out) URLs.
+      properties:
+        refreshURL:
+          type: string
+          description: The URL the user will be redirected to if the link is expired
+        returnURL:
+          type: string
+          description: The URL that the user will be redirected to upon leaving or completing the linked flow.
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetExternalAccountsResponse:
+      description: List of external accounts linked to a business
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExternalAccount'
+          example:
+          - id: d43eaff3-bc75-44f6-ac37-3a305192ead6
+            last4: '0000'
+            bankName: Example Bank
+            status: ACTIVE
+            provider: PLAID
+    HostedLinkResponse:
+      description: Common response body for endpoints that return a hosted (link-out) URL.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Fully-qualified hosted URL valid until the embedded token expires.
+    ReserveResponse:
+      description: reserve action response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              disbursementId:
+                type: string
+                format: uuid
+                description: The ID of the created disbursement
+                example: 550e8400-e29b-41d4-a716-446655440001
+    GetBusinessTransactionsResponse:
+      description: List of business transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BusinessTransaction'
+              node:
+                $ref: '#/components/schemas/node'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    CreateBusinessDepositResponse:
+      description: create business deposit response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    GenerateLinkForExternalAccountResponse:
+      $ref: '#/components/responses/HostedLinkResponse'
+    GetBalancesResponse:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userBalance'
+    GetFundingDetailsResponse:
+      description: Funding details for the account
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FundingDetails'
+          examples:
+            multiple_funding_accounts:
+              summary: Multiple funding accounts in different currencies
+              value:
+                data:
+                - type: ach
+                  currency: USD
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+                - type: iban
+                  currency: EUR
+                  accountName: Acme Corp
+                  accountNumber: DE00000000000000000000
+                  swiftCode: EXMPDEFF
+                  bankName: Example Bank
+                  country: DE
+            single_funding_account:
+              summary: Single funding account
+              value:
+                data:
+                - type: ach
+                  currency: USD
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+    externalAccountId:
+      name: externalAccountId
+      in: path
+      description: The unique identifier for the external account
+      required: true
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

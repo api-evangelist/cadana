@@ -1,0 +1,246 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Instant Pay API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Instant Pay
+  description: APIs for interacting with Instant Pay functionality
+paths:
+  /v1/persons/{personId}/ipSetting:
+    put:
+      summary: Update instant pay setting
+      description: Update a person's instant pay setting
+      operationId: updatePersonIPSetting
+      tags:
+      - Instant Pay
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonIPSettingRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    get:
+      summary: Get instant pay setting
+      description: Fetch a person's instant pay setting
+      operationId: getPersonIPSetting
+      tags:
+      - Instant Pay
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPersonIPSettingResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/instantPays:
+    get:
+      summary: Get instant pay transactions
+      description: Fetch a person's instant pay transactions
+      operationId: getPersonIPTransactions
+      tags:
+      - Instant Pay
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - in: query
+        name: isUnpaid
+        schema:
+          type: boolean
+        description: Only return transactions that have not been paid back
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPersonInstantPaysResponse'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  schemas:
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    UpdatePersonIPSettingRequest:
+      description: Update person instant pay settings payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/instantPaySetting'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    instantPaySetting:
+      type: object
+      description: Person's instant pay setting
+      properties:
+        accessPercentage:
+          type: number
+          example: 50
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    instantPay:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        amount:
+          $ref: '#/components/schemas/amount'
+        status:
+          type: string
+          description: instant pay status
+          example: completed
+          enum:
+          - completed
+          - processing
+          - failed
+        createdTimestamp:
+          type: integer
+          format: int64
+          example: 1693782273
+          description: The Unix timestamp indicating when the transaction was initiated
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetPersonInstantPaysResponse:
+      description: get person instant pay transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/instantPay'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetPersonIPSettingResponse:
+      description: get person instant pay setting response
+      content:
+        application/json:
+          schema:
+            description: Get person instant pay setting
+            allOf:
+            - $ref: '#/components/schemas/instantPaySetting'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  parameters:
+    personId:
+      name: personId
+      in: path
+      description: The unique identifier for the person
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

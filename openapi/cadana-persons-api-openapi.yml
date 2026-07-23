@@ -1,0 +1,1300 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Persons API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Persons
+  description: APIs for interacting with the HR module
+paths:
+  /v1/persons/{personId}:
+    get:
+      summary: Get
+      description: Fetch a person's details
+      operationId: getPerson
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPersonResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons:
+    get:
+      summary: List
+      description: Get all persons
+      operationId: getPersons
+      tags:
+      - Persons
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+        description: Page number to retrieve
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+        description: Maximum number of items to return per page
+      - in: query
+        name: email
+        schema:
+          type: string
+        description: Filter by email
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPersonsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    post:
+      summary: Create
+      description: Create a new employee/contractor
+      operationId: createPerson
+      tags:
+      - Persons
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePersonRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreatePersonResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+  /v1/persons/{personId}/basicInfo:
+    put:
+      summary: Update basic information
+      description: Update a person's basic information
+      operationId: updatePersonBasicInfo
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonBasicInfoRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/personalInfo:
+    put:
+      summary: Update personal information
+      description: Update a person's personal information including identity documents, date of birth, gender, nationality, and address
+      operationId: updatePersonPersonalInfo
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonPersonalInfoRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/taxProfile:
+    get:
+      summary: Get tax profile
+      description: Retrieve a person's tax profile. Returns the shape accepted by PUT /v1/persons/{personId}/taxProfile plus a server-derived `countryCode` field — remove `countryCode` before resubmitting via PUT.
+      operationId: getPersonTaxProfile
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPersonTaxProfileResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    put:
+      summary: Update tax profile
+      description: Update a person's tax profile with country-specific tax fields such as marital status and number of dependents
+      operationId: updatePersonTaxProfile
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonTaxProfileRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/jobInfo:
+    put:
+      summary: Update job information
+      description: Update a person's job information
+      operationId: updatePersonJobInfo
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonJobInfoRequest'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/paymentInfo:
+    get:
+      summary: Get payment information
+      description: Fetch a person's payment information
+      operationId: getPersonPaymentInfo
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetPersonPaymentInfoResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    put:
+      summary: Update payment information
+      description: Update a person's payment information. Required fields vary by payout corridor — use [GET /v1/payment-requirements](/api-reference/payments/resources/payment-corridor-requirements) as the authoritative list of fields for each currency and method.
+      operationId: updatePersonPaymentInfo
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonPaymentInfoRequest'
+            examples:
+              achPayment:
+                $ref: '#/components/examples/achPaymentMethod'
+              swiftPayment:
+                $ref: '#/components/examples/swiftPaymentMethod'
+              philippinesBankPayment:
+                $ref: '#/components/examples/philippinesBankPaymentMethod'
+              indiaBankPayment:
+                $ref: '#/components/examples/indiaBankPaymentMethod'
+              mexicoBankPayment:
+                $ref: '#/components/examples/mexicoBankPaymentMethod'
+              colombiaBankPayment:
+                $ref: '#/components/examples/colombiaBankPaymentMethod'
+              elSalvadorBankPayment:
+                $ref: '#/components/examples/elSalvadorBankPaymentMethod'
+              walletRequest:
+                $ref: '#/components/examples/walletPaymentMethod'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/offboard:
+    post:
+      summary: Schedule offboarding
+      description: Schedule a person for offboarding on a given exit date
+      operationId: scheduleOffboarding
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleOffboardingRequest'
+      responses:
+        '204':
+          description: Offboarding scheduled successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/cancelOffboarding:
+    post:
+      summary: Cancel offboarding
+      description: Cancel a pending offboarding and return the person to active status
+      operationId: cancelOffboarding
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Offboarding cancelled successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/reinstate:
+    post:
+      summary: Reinstate
+      description: Reinstate a former person back to active status
+      operationId: reinstatePerson
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Person reinstated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/type:
+    put:
+      summary: Update person type
+      description: Switch a person's employment type between employee and contractor. The person must be in Active status. Optionally provide new compensation info. If omitted, incompatible compensation is auto-converted (salaried becomes net, fixed becomes net).
+      operationId: updatePersonType
+      tags:
+      - Persons
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonTypeRequest'
+      responses:
+        '204':
+          description: Person type updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  examples:
+    colombiaBankPaymentMethod:
+      summary: Colombia Bank Payment Method
+      value:
+        preferredMethod: bank
+        bank:
+          accountName: John Doe
+          accountNumber: '123456789'
+          bankName: Colombia Bank
+          accountType: Checking
+          bankCode: '001'
+          address:
+            line1: Avenida Caracas
+            line2: Oficina 202
+            city: Bogota
+            postalCode: '11001'
+            countryCode: CO
+          beneficiaryId:
+            type: NIT
+            value: '123456789'
+    walletPaymentMethod:
+      summary: Wallet Payment Method
+      value:
+        preferredMethod: wallet
+        wallet:
+          currency: USD
+    philippinesBankPaymentMethod:
+      summary: Philippines Bank Payment Method
+      value:
+        preferredMethod: bank
+        bank:
+          accountName: John Doe
+          accountNumber: '123456789'
+          bankName: Philippines National Bank
+          bankCode: '001'
+          address:
+            line1: Mabini St
+            line2: Bldg 5
+            city: Manila
+            postalCode: '1000'
+            countryCode: PH
+    swiftPaymentMethod:
+      summary: Swift Payment Method
+      value:
+        preferredMethod: swift
+        swift:
+          accountName: Jane Smith
+          accountNumber: '987654321'
+          bankName: London Bank
+          swiftCode: EXMPGB2L
+          currency: USD
+          address:
+            line1: Queen's Way
+            line2: Suite 100
+            city: London
+            postalCode: WC2N 5DU
+            state: London
+            countryCode: GB
+    indiaBankPaymentMethod:
+      summary: India Bank Payment Method
+      value:
+        preferredMethod: bank
+        bank:
+          accountName: Vraj Shah
+          ownerType: Individual
+          accountNumber: '12345678901234'
+          bankCode: HDFC
+          bankName: HDFC Bank
+          sortCode: HDFC0000123
+          address:
+            line1: 12 Alkapuri Main Road
+            city: Vadodara
+            postalCode: '390007'
+            state: GJ
+            countryCode: IN
+          email: worker@example.com
+          phoneNumber:
+            countryCode: '91'
+            number: '9876543210'
+    elSalvadorBankPaymentMethod:
+      summary: El Salvador Bank Payment Method
+      value:
+        preferredMethod: bank
+        bank:
+          accountName: John Doe
+          accountNumber: '123456789'
+          bankName: El Salvador Bank
+          bankCode: '001'
+          address:
+            line1: Calle Real
+            line2: Casa 5
+            city: San Salvador
+            postalCode: '1200'
+            countryCode: SV
+          email: john.doe@example.com
+          phoneNumber:
+            countryCode: '503'
+            number: '70000000'
+    mexicoBankPaymentMethod:
+      summary: Mexico Bank Payment Method
+      value:
+        preferredMethod: bank
+        bank:
+          accountName: John Doe
+          accountNumber: '123456789012345678'
+          bankName: Mexico City Bank
+          bankCode: '001'
+          address:
+            line1: Avenida de la Reforma
+            line2: Oficina 10
+            city: Mexico City
+            postalCode: '06600'
+            countryCode: MX
+    achPaymentMethod:
+      summary: ACH Payment Method
+      value:
+        preferredMethod: ach
+        ach:
+          accountName: John Doe
+          accountNumber: '123456789'
+          bankName: Gotham City Bank
+          routingNumber: '000000000'
+          accountType: Checking
+          address:
+            line1: 1234 Elm St
+            line2: Apt 1A
+            city: Gotham
+            postalCode: '10001'
+            state: NY
+            countryCode: US
+  schemas:
+    UpdatePersonTaxProfileRequest:
+      description: Update a person's tax profile. The submitted object replaces the person's entire tax profile — it is not a merge, so omitted fields are cleared. Updates are applied asynchronously; a subsequent GET may briefly return the previous profile. The accepted fields vary by country — use the [required fields endpoint](/api-reference/statutory/jurisdictions/get-required-fields-for-tax-calculation-and-statutory-filing) or [tax fields endpoint](/api-reference/tax/tax-calculator/list-required-additional-tax-fields-by-country) to discover which fields are needed for a given jurisdiction.
+      type: object
+      additionalProperties: true
+      example:
+        maritalStatus: single
+        numberOfDependents: 2
+    meta:
+      type: object
+      description: Meta about the pagination
+      properties:
+        limit:
+          type: number
+          example: 1
+        currentPage:
+          type: number
+          example: 1
+        skipped:
+          type: number
+          example: 1
+        pages:
+          type: number
+          example: 1
+        itemCount:
+          type: number
+          example: 1
+    UpdatePersonPersonalInfoRequest:
+      description: Update person personal info request payload
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+          format: date
+          description: Person's date of birth
+          example: '1990-05-15'
+        nationalId:
+          $ref: '#/components/schemas/NationalID'
+        taxId:
+          $ref: '#/components/schemas/NationalID'
+        socialSecurityId:
+          $ref: '#/components/schemas/NationalID'
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - other
+          description: Person's gender
+          example: female
+        nationality:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: DE
+        address:
+          $ref: '#/components/schemas/address'
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    NationalID:
+      type: object
+      description: National identification document
+      properties:
+        fullId:
+          type: string
+          description: Full ID number
+          example: T22084535
+        suffix:
+          type: string
+          description: ID suffix
+          example: '01'
+        type:
+          type: string
+          description: Type of ID document. Required when fullId is provided.
+          example: tin
+    OffboardingDetails:
+      type: object
+      properties:
+        exitDate:
+          type: string
+          format: date
+          example: '2025-06-30'
+        reason:
+          type: string
+          example: Voluntary resignation
+        compensation:
+          $ref: '#/components/schemas/compInfo'
+        includeInRegularPayroll:
+          type: boolean
+          example: true
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    UpdatePersonTypeRequest:
+      type: object
+      required:
+      - newType
+      properties:
+        newType:
+          type: string
+          description: The new employment type for the person
+          enum:
+          - EMPLOYEE
+          - CONTRACTOR
+          example: CONTRACTOR
+        compInfo:
+          description: Optional compensation for the new type. If omitted, incompatible compensation is auto-converted (salaried becomes net, fixed becomes net).
+          allOf:
+          - $ref: '#/components/schemas/compInfo'
+    UpdatePersonBasicInfoRequest:
+      description: Update person basic info request payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/basicInfo'
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    ScheduleOffboardingRequest:
+      type: object
+      required:
+      - exitDate
+      - reason
+      properties:
+        exitDate:
+          type: string
+          format: date
+          description: The date the person will exit the organization
+          example: '2025-06-30'
+        reason:
+          type: string
+          description: The reason for offboarding
+          example: Voluntary resignation
+        compensation:
+          $ref: '#/components/schemas/compInfo'
+        includeInRegularPayroll:
+          type: boolean
+          description: Whether to include the person in the regular payroll run for their exit period
+          example: true
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    GetPersonTaxProfileResponse:
+      type: object
+      properties:
+        taxProfile:
+          type: object
+          additionalProperties: true
+          description: The person's tax profile. Empty if none set. Includes a read-only, server-derived `countryCode` field; remove it from the payload before resubmitting via PUT, which rejects unknown fields.
+          example:
+            countryCode: DE
+            maritalStatus: single
+            numberOfDependents: 2
+    CreatePersonRequest:
+      description: Create person request payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/basicInfo'
+      - $ref: '#/components/schemas/tags'
+      required:
+      - type
+      - email
+      - firstName
+      - lastName
+      - address
+      - compInfo
+      properties:
+        businessName:
+          type: string
+          description: Business name, required if contractor type is business
+          example: Wayne Enterprise
+        type:
+          type: string
+          example: CONTRACTOR
+          description: Type of the person, we allow contractors and employees
+          enum:
+          - EMPLOYEE
+          - CONTRACTOR
+        contractorType:
+          type: string
+          example: INDIVIDUAL
+          description: Type of the contractor, only required if person is a contractor type, we allow individual and business type contractors
+          enum:
+          - INDIVIDUAL
+          - BUSINESS
+        address:
+          $ref: '#/components/schemas/address'
+        compInfo:
+          $ref: '#/components/schemas/compInfo'
+        jobInfo:
+          $ref: '#/components/schemas/jobInfo'
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional metadata you can store as key-value pairs
+          example:
+            customField1: value1
+            customField2: value2
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
+    tags:
+      type: object
+      description: Any custom data you want to store
+    jobInfo:
+      type: object
+      description: Person's job information, start date, job title, and employee number
+      properties:
+        startDate:
+          type: string
+          format: date
+          example: '2023-01-01'
+        employeeNumber:
+          type: string
+          example: '1'
+        title:
+          type: string
+          example: Software Engineer
+        department:
+          type: string
+          example: Product
+        customFields:
+          type: array
+          description: A list of custom fields associated with the job information
+          items:
+            $ref: '#/components/schemas/customField'
+        entityId:
+          type: string
+          format: uuid
+          description: The legal entity this person is employed under. If omitted, the person is employed under the parent business.
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+    wireDetails:
+      type: object
+      description: Wire transfer payment details
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The routing number
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The account number
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/address'
+    paymentMethods:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          - swift
+          - ach
+          - wallet
+          - wire
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        wire:
+          $ref: '#/components/schemas/wireDetails'
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (e.g., Checking, Savings)
+          example: Checking
+        ownerType:
+          type: string
+          description: The type of account owner
+          enum:
+          - Individual
+          - Business
+          example: Individual
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: EXMPJPJT
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Gotham City Bank
+        branchName:
+          type: string
+          description: The name of the bank branch
+          example: Downtown Branch
+        sortCode:
+          type: string
+          description: The bank sort code (UK); carries the IFSC for India
+          example: '401234'
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: USD
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    compInfo:
+      type: object
+      description: Person's compensation information, how much will they get paid, currency and frequency
+      properties:
+        type:
+          type: string
+          description: Person's compensation type
+          example: net
+          enum:
+          - net
+          - salaried
+          - milestone
+        salary:
+          type: object
+          description: Person's compensation amount
+          allOf:
+          - $ref: '#/components/schemas/amount'
+        frequency:
+          type: string
+          description: Person's compensation frequency
+          example: monthly
+          enum:
+          - hourly
+          - daily
+          - monthly
+        employmentModel:
+          type: string
+          description: Specifies the employment model for the person. Set to "eor" for Employer of Record employees. When omitted, the person is treated as direct employment.
+          example: eor
+          enum:
+          - eor
+    basicInfo:
+      type: object
+      required:
+      - email
+      - firstName
+      - lastName
+      properties:
+        firstName:
+          type: string
+          description: Person's first name
+          example: John
+        lastName:
+          type: string
+          description: Person's last name
+          example: Doe
+        email:
+          type: string
+          description: Person's email
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional metadata you can store as key-value pairs
+          example:
+            customField1: value1
+            customField2: value2
+    UpdatePersonJobInfoRequest:
+      description: Update person job info request payload
+      type: object
+      properties:
+        compInfo:
+          $ref: '#/components/schemas/compInfo'
+        jobInfo:
+          $ref: '#/components/schemas/jobInfo'
+    achDetails:
+      type: object
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The ACH routing number of the bank
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (Checking or Savings)
+          example: Checking
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        address:
+          $ref: '#/components/schemas/address'
+    personEntry:
+      allOf:
+      - $ref: '#/components/schemas/CreatePersonRequest'
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+    UpdatePersonPaymentInfoRequest:
+      description: Update person payment info request payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/paymentMethods'
+    customField:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Tshirt Size
+        value:
+          type: string
+          example: M
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    personId:
+      name: personId
+      in: path
+      description: The unique identifier for the person
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    GetPersonResponse:
+      description: get person response
+      content:
+        application/json:
+          schema:
+            description: Get person response
+            allOf:
+            - $ref: '#/components/schemas/CreatePersonRequest'
+            - type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/uuid'
+                dateOfBirth:
+                  type: string
+                  format: date
+                  nullable: true
+                  description: Person's date of birth. Only present when set.
+                  example: '1990-05-15'
+                nationalId:
+                  allOf:
+                  - $ref: '#/components/schemas/NationalID'
+                  nullable: true
+                  description: National identification document. Only present when set.
+                taxId:
+                  allOf:
+                  - $ref: '#/components/schemas/NationalID'
+                  nullable: true
+                  description: Tax identification document. Only present when set.
+                socialSecurityId:
+                  allOf:
+                  - $ref: '#/components/schemas/NationalID'
+                  nullable: true
+                  description: Social security identification document. Only present when set.
+                gender:
+                  type: string
+                  enum:
+                  - male
+                  - female
+                  - other
+                  nullable: true
+                  description: Person's gender. Only present when set.
+                  example: female
+                nationality:
+                  type: string
+                  nullable: true
+                  description: ISO 3166-1 alpha-2 country code. Only present when set.
+                  example: DE
+                offboardingDetails:
+                  $ref: '#/components/schemas/OffboardingDetails'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    CreatePersonResponse:
+      description: create person response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    GetPersonsResponse:
+      description: get persons response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/personEntry'
+              meta:
+                $ref: '#/components/schemas/meta'
+    GetPersonPaymentInfoResponse:
+      description: get person payment info response
+      content:
+        application/json:
+          schema:
+            description: Get person payment info
+            allOf:
+            - $ref: '#/components/schemas/paymentMethods'
+          examples:
+            walletPaymentResponse:
+              summary: Wallet Payment Response
+              value:
+                preferredMethod: wallet
+                wallet:
+                  identifier: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+                  type: USER
+                  currency: USD
+            bankPaymentResponse:
+              summary: Bank Payment Response
+              value:
+                preferredMethod: bank
+                bank:
+                  accountName: John Doe
+                  accountNumber: '123456789'
+                  bankName: National Bank
+                  bankCode: '001'
+                  address:
+                    line1: Main Street
+                    line2: Suite 100
+                    city: New York
+                    postalCode: '10001'
+                    state: NY
+                    countryCode: US
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances FX API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: FX
+  description: APIs for managing foreign exchange rates
+paths:
+  /v1/fx-quotes:
+    post:
+      summary: Create FX Quote
+      description: Create an fx quote
+      tags:
+      - FX
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFXQuoteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateFXQuoteResponse'
+components:
+  schemas:
+    fxQuote:
+      type: object
+      required:
+      - id
+      - from
+      - to
+      - rate
+      - expirationTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 57c74c5d-38a0-41e7-a19e-161f16dc4898
+        from:
+          type: string
+          example: USD
+        to:
+          type: string
+          example: PHP
+        rate:
+          type: string
+          example: '56.1234'
+        expirationTimestamp:
+          type: string
+          format: date-time
+          example: '2025-05-29T21:42:52Z'
+    CreateFXQuoteRequest:
+      type: object
+      required:
+      - from
+      - to
+      properties:
+        from:
+          type: string
+          example: USD
+        to:
+          type: string
+          example: PHP
+  responses:
+    CreateFXQuoteResponse:
+      description: create an fx quote
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/fxQuote'
+          examples:
+            fxQuote:
+              summary: Example FX Quote
+              value:
+                id: 57c74c5d-38a0-41e7-a19e-161f16dc4898
+                from: USD
+                to: PHP
+                rate: '56.1234'
+                expirationTimestamp: '2025-05-29T21:42:52Z'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

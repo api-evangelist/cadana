@@ -1,0 +1,519 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Virtual Accounts API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Virtual Accounts
+  description: APIs for managing virtual accounts
+paths:
+  /v1/users/{userId}/virtual-accounts:
+    post:
+      summary: Create Virtual Account
+      description: Create a new virtual account for a user
+      tags:
+      - Virtual Accounts
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVirtualAccountRequest'
+            examples:
+              virtualAccountRequest:
+                summary: Example virtual account creation request. Use `99999900` as customIdentification.number for automatic account creation
+                value:
+                  currency: USD
+                  customIdentification:
+                    type: ssn
+                    number: 123-45-6789
+                  jobInformation:
+                    employerName: Acme Corp
+                    address:
+                      line1: 123 Main St
+                      city: Anytown
+                      postalCode: '12345'
+                      state: CA
+                      countryCode: US
+                    employerWebsite: ''
+                    title: Software Engineer
+                    type: full-time
+                    netPay:
+                      amount: 10000
+                      currency: USD
+                    frequency: monthly
+                    contractStartDate: '2021-01-01'
+                    contractEndDate: '2025-05-06'
+                  suppressNotification: true
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: Get Virtual Accounts
+      description: Retrieve virtual accounts for a user
+      tags:
+      - Virtual Accounts
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetVirtualAccountsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/sandbox/users/{userId}/virtual-accounts/{virtualAccountId}/deposit:
+    post:
+      summary: Simulate virtual account deposit
+      description: Simulate a virtual account deposit for an active virtual account
+      tags:
+      - Virtual Accounts
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/virtualAccountId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulateVirtualAccountDepositRequest'
+            examples:
+              simulateVirtualAccountDepositRequest:
+                summary: Example virtual account creation request
+                value:
+                  amount:
+                    amount: 10000
+                    currency: USD
+                  reference: c06f3427-3bbe-4d70-9a54-28acda267e48
+                  description: Payroll 10/10
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+components:
+  responses:
+    GetVirtualAccountsResponse:
+      description: Virtual accounts retrieved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                nullable: true
+                items:
+                  $ref: '#/components/schemas/VirtualAccount'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            requested:
+              summary: Virtual account in requested status
+              value:
+                data:
+                - id: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                  status: Requested
+                  currency: USD
+                  createdTimestamp: 1755693297
+                  lastUpdatedTimestamp: 1755693297
+                node:
+                  previous: null
+                  next: null
+            approved:
+              summary: Virtual account in approved status with account information
+              value:
+                data:
+                - id: dba72ddb-6bb5-465b-a9db-318b8f4567e6
+                  status: Approved
+                  currency: USD
+                  accountInformation:
+                    accountNumber: '000000000000'
+                    accountName: John Doe
+                    bankName: Example Bank
+                    bankCode: '000000000'
+                    countryCode: US
+                    accountType: Checking
+                    routingNumber: '000000000'
+                    bankAddress: 123 Main St, San Francisco, CA 94100
+                  createdTimestamp: 1660722175
+                  lastUpdatedTimestamp: 1751891253
+                node:
+                  previous: null
+                  next: null
+            empty:
+              summary: No virtual accounts exist
+              value:
+                data: null
+                node:
+                  previous: null
+                  next: null
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    virtualAccountId:
+      name: virtualAccountId
+      in: path
+      description: The unique identifier for the virtual account
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+  schemas:
+    JobInformation:
+      type: object
+      required:
+      - employerName
+      - address
+      - title
+      - type
+      - netPay
+      - frequency
+      - contractStartDate
+      properties:
+        employerName:
+          type: string
+          description: Name of the employer
+          example: Tesla
+        address:
+          $ref: '#/components/schemas/address'
+        employerWebsite:
+          type: string
+          description: Website of the employer (optional)
+          example: ''
+        title:
+          type: string
+          description: Job title
+          example: Software Engineer
+        type:
+          type: string
+          enum:
+          - contract
+          - full-time
+          - part-time
+          description: Type of employment
+          example: full-time
+        netPay:
+          $ref: '#/components/schemas/Amount'
+        frequency:
+          type: string
+          enum:
+          - weekly
+          - daily
+          - monthly
+          - hourly
+          description: Payment frequency
+          example: monthly
+        contractStartDate:
+          type: string
+          format: date
+          description: Start date of the contract
+          example: '2021-01-01'
+        contractEndDate:
+          type: string
+          format: date
+          description: End date of the contract (optional)
+          example: '2025-05-06'
+    VirtualAccount:
+      type: object
+      required:
+      - id
+      - status
+      - currency
+      - createdTimestamp
+      - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+        status:
+          type: string
+          enum:
+          - Requested
+          - Approved
+          - Rejected
+          - Deactivated
+          example: Requested
+        currency:
+          type: string
+          example: USD
+        accountInformation:
+          $ref: '#/components/schemas/AccountInformation'
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the virtual account was created
+          example: 1755693297
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the virtual account was last updated
+          example: 1755693297
+    SimulateVirtualAccountDepositRequest:
+      description: Simulate virtual account deposit payload
+      required:
+      - amount
+      - reference
+      - description
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        reference:
+          $ref: '#/components/schemas/uuid'
+        description:
+          type: string
+          example: Payroll 10/10
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    CustomIdentification:
+      type: object
+      required:
+      - type
+      - number
+      properties:
+        type:
+          type: string
+          enum:
+          - ssn
+          - bvn
+          description: Type of identification
+          example: ssn
+        number:
+          type: string
+          description: The identification number
+          example: 123-45-6789
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    AccountInformation:
+      type: object
+      required:
+      - accountNumber
+      - accountName
+      - bankName
+      - bankCode
+      - countryCode
+      - accountType
+      - routingNumber
+      - bankAddress
+      properties:
+        accountNumber:
+          type: string
+          description: The virtual account number
+          example: '000000000000'
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: '000000000'
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+        accountType:
+          type: string
+          enum:
+          - Checking
+          - Savings
+          description: The type of account
+          example: Checking
+        routingNumber:
+          type: string
+          description: The routing number for the account
+          example: '000000000'
+        bankAddress:
+          type: string
+          description: The address of the bank
+          example: 123 Main St, San Francisco, CA 94100
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: Value in lowest denomination of the currency (e.g., cents)
+          example: 100000
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: COP
+    CreateVirtualAccountRequest:
+      type: object
+      required:
+      - currency
+      - jobInformation
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code for the virtual account
+          example: USD
+        customIdentification:
+          $ref: '#/components/schemas/CustomIdentification'
+        jobInformation:
+          $ref: '#/components/schemas/JobInformation'
+        suppressNotification:
+          type: boolean
+          description: Whether to suppress notifications for this virtual account, defaults to false
+          example: true
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    address:
+      type: object
+      required:
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
+      properties:
+        line1:
+          type: string
+          description: Address line 1
+          example: Lane 1
+        line2:
+          type: string
+          description: Address line 2
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the address
+          example: Gotham City
+        postalCode:
+          type: string
+          description: The postal code
+          example: '10001'
+        state:
+          type: string
+          description: The state for the address
+          example: NY
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

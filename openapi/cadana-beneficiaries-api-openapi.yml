@@ -1,0 +1,1284 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Beneficiaries API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Beneficiaries
+  description: APIs for managing user beneficiaries
+paths:
+  /v1/users/{userId}/beneficiaries:
+    post:
+      summary: Create beneficiary
+      description: Create a new beneficiary for a user
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBeneficiaryRequest'
+            examples:
+              philippinesBankPaymentMethod:
+                $ref: '#/components/examples/philippinesBankPaymentMethod'
+              colombiaBankPaymentMethod:
+                $ref: '#/components/examples/colombiaBankPaymentMethod'
+              momoPaymentMethod:
+                $ref: '#/components/examples/momoPaymentMethod'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBeneficiaryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List beneficiaries
+      description: Retrieve beneficiaries for a user
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiariesResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/beneficiaries/{beneficiaryId}:
+    get:
+      summary: Get beneficiary
+      description: Get an existing beneficiary for a user
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/beneficiaryId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiaryResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: Delete beneficiary
+      description: Delete an existing beneficiary for a user
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/beneficiaryId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/beneficiaries:
+    post:
+      summary: Create
+      description: Create a new beneficiary i.e employee/contractor's payout account
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBeneficiaryRequest_2'
+            examples:
+              philippinesBankPaymentMethod:
+                $ref: '#/components/examples/philippinesBankPaymentMethod_2'
+              colombiaBankPaymentMethod:
+                $ref: '#/components/examples/colombiaBankPaymentMethod_2'
+              mexicoBankPaymentMethod:
+                $ref: '#/components/examples/mexicoBankPaymentMethod'
+              elSalvadorBankPaymentMethod:
+                $ref: '#/components/examples/elSalvadorBankPaymentMethod'
+              momoPaymentMethod:
+                $ref: '#/components/examples/momoPaymentMethod_2'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBeneficiaryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List
+      description: Retrieve beneficiaries
+      tags:
+      - Beneficiaries
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiariesResponse_2'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/beneficiaries/{beneficiaryId}:
+    get:
+      summary: Get
+      description: Get an existing beneficiary
+      tags:
+      - Beneficiaries
+      parameters:
+      - $ref: '#/components/parameters/beneficiaryId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiaryResponse_2'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: Delete
+      description: Delete an existing beneficiary
+      parameters:
+      - $ref: '#/components/parameters/beneficiaryId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      tags:
+      - Beneficiaries
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/files/upload-url:
+    post:
+      summary: Create upload URL
+      description: 'Reserve a file ID and receive a short-lived HTTPS **PUT** URL.
+
+        After the client uploads the bytes to that URL, it can reference
+
+        `fileId` in later API calls (e.g. Beneficiary creation KYC).
+
+        '
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+            examples:
+              kycFront:
+                summary: JPEG passport front
+                value:
+                  purpose: kyc-id-front
+                  contentType: image/jpeg
+      responses:
+        '200':
+          $ref: '#/components/responses/UploadUrlResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/files/{fileId}:
+    get:
+      summary: Get file details
+      description: Get details and a download URL for a file by its fileId
+      tags:
+      - Beneficiaries
+      security:
+      - Authorization: []
+      parameters:
+      - name: fileId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The unique identifier for the file
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFileDetailsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+components:
+  examples:
+    colombiaBankPaymentMethod:
+      summary: Colombia Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: CO
+        currency: COP
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Colombia Bank
+            accountType: Checking
+            bankCode: '001'
+            currency: COP
+            email: john.doe@example.com
+            address:
+              line1: Avenida Caracas
+              line2: Oficina 101
+              city: Bogota
+              postalCode: '11001'
+              state: Cundinamarca
+              countryCode: CO
+            beneficiaryId:
+              type: NIT
+              value: '123456789'
+    philippinesBankPaymentMethod_2:
+      summary: Philippines Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: PH
+        currency: PHP
+        kyc:
+          firstName: John
+          lastName: Doe
+          dateOfBirth: '1985-12-20'
+          countryCode: PH
+          idType: PASSPORT
+          idNumber: PA1234567
+          idFileFront: 517075a2-17db-469f-9481-eb8347cb920c
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Philippines Bank
+            bankCode: '001'
+            address:
+              line1: Mabini St
+              line2: Bldg 2
+              city: Manila
+              postalCode: '1000'
+              countryCode: PH
+    momoPaymentMethod_2:
+      summary: Mobile Money Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: KE
+        currency: KES
+        paymentDetails:
+          preferredMethod: momo
+          momo:
+            accountName: John Doe
+            accountNumber: '+256123456789'
+            providerCode: MPESA
+    philippinesBankPaymentMethod:
+      summary: Philippines Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: PH
+        currency: PHP
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Philippines Bank
+            bankCode: '001'
+            currency: PHP
+            address:
+              line1: Mabini St
+              line2: Bldg 2
+              city: Manila
+              postalCode: '1000'
+              state: Metro Manila
+              countryCode: PH
+    colombiaBankPaymentMethod_2:
+      summary: Colombia Bank Payment Method
+      value:
+        name: John Doe
+        countryCode: CO
+        currency: COP
+        kyc:
+          firstName: John
+          lastName: Doe
+          dateOfBirth: '1985-12-20'
+          countryCode: CO
+          idType: PASSPORT
+          idNumber: PA1234567
+          idFileFront: 517075a2-17db-469f-9481-eb8347cb920c
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Colombia Bank
+            accountType: Checking
+            bankCode: '001'
+            email: john.doe@example.com
+            address:
+              line1: Avenida Caracas
+              line2: Oficina 101
+              city: Bogota
+              postalCode: '11001'
+              countryCode: CO
+            beneficiaryId:
+              type: NIT
+              value: '123456789'
+    momoPaymentMethod:
+      summary: Mobile Money Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: KE
+        currency: KES
+        paymentDetails:
+          preferredMethod: momo
+          momo:
+            accountName: John Doe
+            phoneNumber:
+              countryCode: '254'
+              number: '700000000'
+            providerCode: MPESA
+            provider: M-Pesa
+            currency: KES
+    elSalvadorBankPaymentMethod:
+      summary: El Salvador Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: SV
+        currency: USD
+        kyc:
+          firstName: John
+          lastName: Doe
+          dateOfBirth: '1985-12-20'
+          countryCode: SV
+          idType: PASSPORT
+          idNumber: PA1234567
+          idFileFront: 517075a2-17db-469f-9481-eb8347cb920c
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: El Salvador Bank
+            bankCode: '001'
+            email: john.doe@example.com
+            address:
+              line1: Calle Real
+              line2: Casa 5
+              city: San Salvador
+              postalCode: '1200'
+              countryCode: SV
+            phoneNumber:
+              countryCode: '503'
+              number: '70000000'
+    mexicoBankPaymentMethod:
+      summary: Mexico Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: MX
+        currency: MXN
+        kyc:
+          firstName: John
+          lastName: Doe
+          dateOfBirth: '1985-12-20'
+          countryCode: MX
+          idType: PASSPORT
+          idNumber: PA1234567
+          idFileFront: 517075a2-17db-469f-9481-eb8347cb920c
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789012345678'
+            bankName: Mexico Bank
+            bankCode: '001'
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    UploadUrlResponse:
+      description: Pre-signed PUT URL and file identifier
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - fileId
+            - putUrl
+            - expiresIn
+            properties:
+              fileId:
+                type: string
+                format: uuid
+                example: 517075a2-17db-469f-9481-eb8347cb920c
+              putUrl:
+                type: string
+                format: uri
+                description: Pre-signed HTTPS URL (single-use)
+              expiresIn:
+                type: integer
+                description: Seconds until the URL expires
+                example: 900
+          examples:
+            success:
+              summary: Successful reservation
+              value:
+                fileId: 517075a2-17db-469f-9481-eb8347cb920c
+                putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
+                expiresIn: 900
+    GetBeneficiaryResponse:
+      description: Get beneficiary response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Beneficiary'
+          examples:
+            beneficiary:
+              summary: Single beneficiary
+              value:
+                id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                name: John Doe
+                email: john.doe@example.com
+                countryCode: CO
+                currency: COP
+                paymentDetails:
+                  preferredMethod: bank
+                  bank:
+                    accountName: John Doe
+                    accountNumber: '123456789'
+                    accountType: Checking
+                    bankCode: EXMPCOBB
+                    bankName: Colombia Bank
+                    currency: COP
+                createdTimestamp: 1748550207
+                lastUpdatedTimestamp: 1748550207
+    GetFileDetailsResponse:
+      description: Get file details and download URL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileDetails'
+          examples:
+            success:
+              summary: Successful file details fetch
+              value:
+                fileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                purpose: kyc-id-front
+                getUrl: https://url
+                expiresIn: 899
+                createdAt: 1748478276
+                tenantKey: abc123
+    GetBeneficiariesResponse:
+      description: List of beneficiaries
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Beneficiary'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            beneficiaries:
+              summary: List of beneficiaries
+              value:
+                data:
+                - id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                  name: John Doe
+                  countryCode: CO
+                  currency: COP
+                  email: john.doe@example.com
+                  paymentDetails:
+                    preferredMethod: bank
+                    bank:
+                      accountName: John Doe
+                      accountNumber: '123456789'
+                      accountType: Checking
+                      bankCode: EXMPCOBB
+                      bankName: Colombia Bank
+                      currency: COP
+                  createdTimestamp: 1748550207
+                  lastUpdatedTimestamp: 1748550207
+                node:
+                  previous: null
+                  next: null
+    GetBeneficiaryResponse_2:
+      description: Get beneficiary response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Beneficiary'
+          examples:
+            colombia:
+              summary: Single Colombia beneficiary
+              value:
+                id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                tenantKey: cad65668351
+                businessId: 186ea4c2-b606-4f13-a2b3-5cca8564c17e
+                name: John Doe
+                countryCode: CO
+                currency: COP
+                paymentDetails:
+                  preferredMethod: bank
+                  bank:
+                    accountName: John Doe
+                    accountNumber: '123456789'
+                    accountType: Checking
+                    bankCode: EXMPCOBB
+                    bankName: Colombia Bank
+                    branchName: ''
+                    beneficiaryId:
+                      type: NIT
+                      value: '123456789'
+                    address:
+                      line1: Avenida Caracas
+                      line2: ''
+                      city: Bogota
+                      postalCode: ''
+                      state: ''
+                      countryCode: CO
+                    email: john.doe@example.com
+                kyc:
+                  firstName: John
+                  lastName: Doe
+                  dateOfBirth: '1985-12-20'
+                  countryCode: CO
+                  idType: PASSPORT
+                  idNumber: PA1234567
+                  idFileFront: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                  idFileBack: ''
+                createdTimestamp: 1748550207
+                lastUpdatedTimestamp: 1748550207
+    GetBeneficiariesResponse_2:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Beneficiary'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            colombia:
+              summary: Single Colombia beneficiary
+              value:
+                data:
+                - id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                  tenantKey: cad65668351
+                  businessId: 186ea4c2-b606-4f13-a2b3-5cca8564c17e
+                  name: John Doe
+                  countryCode: CO
+                  currency: COP
+                  paymentDetails:
+                    preferredMethod: bank
+                    bank:
+                      accountName: John Doe
+                      accountNumber: '123456789'
+                      accountType: Checking
+                      bankCode: EXMPCOBB
+                      bankName: Colombia Bank
+                      branchName: ''
+                      beneficiaryId:
+                        type: NIT
+                        value: '123456789'
+                      address:
+                        line1: Avenida Caracas
+                        line2: ''
+                        city: Bogota
+                        postalCode: ''
+                        state: ''
+                        countryCode: CO
+                      email: john.doe@example.com
+                  kyc:
+                    firstName: John
+                    lastName: Doe
+                    dateOfBirth: '1985-12-20'
+                    countryCode: CO
+                    idType: PASSPORT
+                    idNumber: PA1234567
+                    idFileFront: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                    idFileBack: ''
+                  createdTimestamp: 1748550207
+                  lastUpdatedTimestamp: 1748550207
+                node:
+                  previous: null
+                  next: null
+    CreateBeneficiaryResponse:
+      description: Beneficiary created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: 0a8753af-7f6b-4bc0-b144-7deea6c7ff1e
+          example:
+            id: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    beneficiaryId:
+      name: beneficiaryId
+      in: path
+      description: The unique identifier for the beneficiary
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  schemas:
+    proxyDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the proxy account
+          example: John Doe
+        ownerType:
+          type: string
+          description: The type of account owner (individual, business)
+          example: individual
+        type:
+          type: string
+          description: The type of proxy payment system
+          example: pix
+        value:
+          type: string
+          description: The proxy identifier value
+          example: '+5511998765432'
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+        currency:
+          type: string
+          description: The currency of the proxy account
+          example: BRL
+    cryptoWalletDetails:
+      type: object
+      properties:
+        address:
+          type: string
+          description: The cryptocurrency wallet address
+          example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        chain:
+          type: string
+          description: The blockchain network (eth, sol etc)
+          example: ETH
+        memo:
+          type: string
+          description: The memo/tag required for certain cryptocurrencies (e.g., XLM, XRP)
+          example: '123456'
+        type:
+          type: string
+          description: The type of cryptocurrency (BTC, USDC etc)
+          example: USDC
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    CreateBeneficiaryRequest:
+      type: object
+      required:
+      - name
+      - countryCode
+      - currency
+      - paymentDetails
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        countryCode:
+          type: string
+          description: The country code of the beneficiary in ISO 3166-1 alpha-2 format
+          example: KE
+        currency:
+          type: string
+          description: The currency of the beneficiary in ISO 4217 format
+          example: KES
+        paymentDetails:
+          $ref: '#/components/schemas/paymentDetails'
+    FileDetails:
+      type: object
+      required:
+      - fileId
+      - purpose
+      - getUrl
+      - expiresIn
+      - createdAt
+      - tenantKey
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          example: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+        purpose:
+          type: string
+          description: Logical reason for the upload
+          enum:
+          - kyc-id-front
+          - kyc-id-back
+          - kyc-selfie
+          - kyc-id-selfie
+          - kyb-incorporation-document
+          - kyb-tax-certificate
+          - kyb-address-proof
+          - kyc-address-proof
+          - reimbursements-proof
+          - business-onboarding-document
+          - contract
+          example: kyc-id-front
+        getUrl:
+          type: string
+          format: uri
+          description: Pre-signed HTTPS GET URL (single-use)
+        expiresIn:
+          type: integer
+          description: Seconds until the URL expires
+          example: 899
+        createdAt:
+          type: integer
+          description: Unix timestamp when the file was created
+          example: 1748478276
+        tenantKey:
+          type: string
+          description: Tenant key associated with the file
+          example: cad65668351
+    phoneNumber:
+      type: object
+      required:
+      - countryCode
+      - number
+      properties:
+        countryCode:
+          type: string
+          description: The country code of the phone number
+          example: '1'
+        number:
+          type: string
+          example: '5551234567'
+    paymentDetails:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          - swift
+          - ach
+          - wallet
+          - crypto
+          - proxy
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        cryptoWallet:
+          $ref: '#/components/schemas/cryptoWalletDetails'
+        proxy:
+          $ref: '#/components/schemas/proxyDetails'
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
+    Beneficiary:
+      allOf:
+      - $ref: '#/components/schemas/CreateBeneficiaryRequest'
+      - type: object
+        required:
+        - id
+        - createdTimestamp
+        - lastUpdatedTimestamp
+        properties:
+          id:
+            type: string
+            format: uuid
+            example: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+          createdTimestamp:
+            type: integer
+            description: Unix timestamp when the beneficiary was created
+            example: 1748478276
+          lastUpdatedTimestamp:
+            type: integer
+            description: Unix timestamp when the beneficiary was last updated
+            example: 1748478276
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (e.g., Checking, Savings)
+          example: Checking
+        ownerType:
+          type: string
+          description: The type of account owner (e.g., individual, business)
+          example: individual
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: EXMPJPJT
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Gotham City Bank
+        branchName:
+          type: string
+          description: The name of the bank branch
+          example: Downtown Branch
+        sortCode:
+          type: string
+          description: The bank sort code (used in some countries like UK)
+          example: '401234'
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: USD
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    achDetails:
+      type: object
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The ACH routing number of the bank
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (Checking or Savings)
+          example: Checking
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        address:
+          $ref: '#/components/schemas/address'
+    CreateBeneficiaryRequest_2:
+      type: object
+      required:
+      - name
+      - countryCode
+      - currency
+      - paymentDetails
+      - kyc
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        countryCode:
+          type: string
+          description: The country code of the beneficiary in ISO 3166-1 alpha-2 format
+          example: KE
+        currency:
+          type: string
+          description: The currency of the beneficiary in ISO 4217 format
+          example: KES
+        paymentDetails:
+          $ref: '#/components/schemas/paymentDetails'
+        kyc:
+          $ref: '#/components/schemas/kycMinimal'
+    UploadUrlRequest:
+      type: object
+      required:
+      - purpose
+      - contentType
+      properties:
+        purpose:
+          type: string
+          description: Logical reason for the upload
+          enum:
+          - kyc-id-front
+          - kyc-id-back
+          - kyc-selfie
+          - kyc-id-selfie
+          - kyb-incorporation-document
+          - kyb-tax-certificate
+          - kyb-address-proof
+          - kyc-address-proof
+          - reimbursements-proof
+          - business-onboarding-document
+          - contract
+          example: kyc-id-front
+        contentType:
+          type: string
+          description: MIME type that must be used in the PUT request
+          example: image/jpeg
+    address:
+      type: object
+      required:
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
+      properties:
+        line1:
+          type: string
+          description: Address line 1
+          example: Lane 1
+        line2:
+          type: string
+          description: Address line 2
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the address
+          example: Gotham City
+        postalCode:
+          type: string
+          description: The postal code
+          example: '10001'
+        state:
+          type: string
+          description: The state for the address
+          example: NY
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+    kycMinimal:
+      description: KYC attributes for a beneficiary
+      type: object
+      required:
+      - firstName
+      - lastName
+      - dateOfBirth
+      - countryCode
+      - idType
+      - idNumber
+      - idFileFront
+      properties:
+        firstName:
+          type: string
+          maxLength: 50
+          example: Jane
+        lastName:
+          type: string
+          maxLength: 50
+          example: Roe
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1990-08-15'
+        countryCode:
+          type: string
+          description: Country issuing the ID (ISO 3166-1 alpha-2)
+          example: CO
+        idType:
+          type: string
+          enum:
+          - PASSPORT
+          - NATIONAL_ID
+          - DRIVER_LICENSE
+          - RESIDENCE_PERMIT
+          - OTHER
+          example: NATIONAL_ID
+        idNumber:
+          type: string
+          maxLength: 30
+          example: '76543210'
+        idFileFront:
+          type: string
+          format: uuid
+          description: fileId returned by **POST /v1/files/upload-url**
+          example: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+        idFileBack:
+          type: string
+          format: uuid
+          description: Optional second side of the ID
+          example: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

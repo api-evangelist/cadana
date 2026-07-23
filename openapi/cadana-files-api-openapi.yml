@@ -1,0 +1,287 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Files API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Files
+  description: APIs for interacting with file uploads
+paths:
+  /v1/files/upload-url:
+    post:
+      summary: Create upload URL
+      description: 'Reserve a file ID and receive a short-lived HTTPS **PUT** URL.
+
+        After the client uploads the bytes to that URL, it can reference
+
+        `fileId` in later API calls (e.g. Beneficiary creation KYC).
+
+        '
+      tags:
+      - Files
+      security:
+      - Authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+            examples:
+              kycFront:
+                summary: JPEG passport front
+                value:
+                  purpose: kyc-id-front
+                  contentType: image/jpeg
+      responses:
+        '200':
+          $ref: '#/components/responses/UploadUrlResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+  /v1/files/{fileId}:
+    get:
+      summary: Get file details
+      description: Get details and a download URL for a file by its fileId
+      tags:
+      - Files
+      security:
+      - Authorization: []
+      parameters:
+      - name: fileId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: The unique identifier for the file
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFileDetailsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+components:
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    UploadUrlResponse:
+      description: Pre-signed PUT URL and file identifier
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - fileId
+            - putUrl
+            - expiresIn
+            properties:
+              fileId:
+                type: string
+                format: uuid
+                example: 517075a2-17db-469f-9481-eb8347cb920c
+              putUrl:
+                type: string
+                format: uri
+                description: Pre-signed HTTPS URL (single-use)
+              expiresIn:
+                type: integer
+                description: Seconds until the URL expires
+                example: 900
+          examples:
+            success:
+              summary: Successful reservation
+              value:
+                fileId: 517075a2-17db-469f-9481-eb8347cb920c
+                putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
+                expiresIn: 900
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetFileDetailsResponse:
+      description: Get file details and download URL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileDetails'
+          examples:
+            success:
+              summary: Successful file details fetch
+              value:
+                fileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                purpose: kyc-id-front
+                getUrl: https://url
+                expiresIn: 899
+                createdAt: 1748478276
+                tenantKey: abc123
+  schemas:
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    UploadUrlRequest:
+      type: object
+      required:
+      - purpose
+      - contentType
+      properties:
+        purpose:
+          type: string
+          description: Logical reason for the upload
+          enum:
+          - kyc-id-front
+          - kyc-id-back
+          - kyc-selfie
+          - kyc-id-selfie
+          - kyb-incorporation-document
+          - kyb-tax-certificate
+          - kyb-address-proof
+          - kyc-address-proof
+          - reimbursements-proof
+          - business-onboarding-document
+          - contract
+          - milestone-document
+          - statutory-document
+          example: kyc-id-front
+        contentType:
+          type: string
+          description: MIME type that must be used in the PUT request
+          example: image/jpeg
+        fileName:
+          type: string
+          description: The original name of the file being uploaded (optional). When provided, it is saved and returned when the file is retrieved later, so it can be shown instead of a generated name.
+          example: passport-front.jpeg
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    FileDetails:
+      type: object
+      required:
+      - fileId
+      - purpose
+      - getUrl
+      - expiresIn
+      - createdAt
+      - tenantKey
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          example: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+        purpose:
+          type: string
+          description: Logical reason for the upload
+          enum:
+          - kyc-id-front
+          - kyc-id-back
+          - kyc-selfie
+          - kyc-id-selfie
+          - kyb-incorporation-document
+          - kyb-tax-certificate
+          - kyb-address-proof
+          - kyc-address-proof
+          - reimbursements-proof
+          - business-onboarding-document
+          - contract
+          - milestone-document
+          - statutory-document
+          example: kyc-id-front
+        getUrl:
+          type: string
+          format: uri
+          description: Pre-signed HTTPS GET URL (single-use)
+        expiresIn:
+          type: integer
+          description: Seconds until the URL expires
+          example: 899
+        createdAt:
+          type: integer
+          description: Unix timestamp when the file was created
+          example: 1748478276
+        tenantKey:
+          type: string
+          description: Tenant key associated with the file
+          example: cad65668351
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

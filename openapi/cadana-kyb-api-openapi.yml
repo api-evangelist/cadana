@@ -1,0 +1,956 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances KYB API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: KYB
+  description: APIs for business verification
+paths:
+  /v1/businesses/{businessId}/kyb:
+    post:
+      summary: Submit KYB
+      description: Submit Know Your Business (KYB) information for verification. Use POST to provide new information — the initial submission and any change to the set of principals; to correct information already on file, use PATCH instead.
+      operationId: submitKYB
+      tags:
+      - KYB
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KYBRequest'
+      responses:
+        '204':
+          description: KYB information submitted successfully
+        '400':
+          description: Bad input, or the KYB is not editable. Submission is only allowed while the KYB status is `initialized`, `incomplete`, `awaiting-principal-kyc`, or `needs-additional-info` — a KYB that is `pending-review`, `complete`, or `rejected` cannot be modified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    get:
+      summary: Get KYB
+      description: Returns the business's KYB details. Returns 404 if KYB has not been started for the business.
+      operationId: getKyb
+      tags:
+      - KYB
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetKYBResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    patch:
+      summary: Update KYB
+      description: Update KYB information already provided. Only the fields you include are changed; new principals cannot be added with PATCH — re-POST the full submission instead. Document arrays are appended to, not replaced.
+      operationId: updateKyb
+      tags:
+      - KYB
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/KYBRequest'
+              - type: object
+                properties:
+                  principals:
+                    type: array
+                    description: Principals to update. Each entry — including individuals nested under an entity principal's 'entity.individuals' — must include the 'id' of an existing principal (returned by GET KYB); a missing or unknown 'id' fails the request with 400. PATCH cannot add new principals — re-POST the full submission to add one.
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/PrincipalRequest'
+                      - type: object
+                        required:
+                        - id
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                            description: ID of the existing principal being updated (required at every nesting level in PATCH requests)
+                            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '204':
+          description: KYB information updated successfully
+        '400':
+          description: Bad input, an unknown principal `id` (`"principal not found"`), or the KYB is not editable. Updates are only allowed while the KYB status is `initialized`, `incomplete`, `awaiting-principal-kyc`, or `needs-additional-info` — a KYB that is `pending-review`, `complete`, or `rejected` cannot be modified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/kyb-link:
+    post:
+      summary: Generate KYB Link
+      description: Get KYB Link
+      operationId: getKybLink
+      tags:
+      - KYB
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateKybLinkRequest'
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateKybLinkResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  schemas:
+    PrincipalRequest:
+      type: object
+      description: A principal is either an individual or a business entity. For individuals, provide the personal fields (firstName, lastName, dateOfBirth, identifier, etc.). For entities, set isEntity to true and provide the entity object instead — the personal fields do not apply.
+      properties:
+        firstName:
+          type: string
+          description: First name of the principal. Individuals only.
+          example: John
+        lastName:
+          type: string
+          description: Last name of the principal. Individuals only.
+          example: Doe
+        ownershipPercentage:
+          type: number
+          format: float
+          minimum: 0.25
+          maximum: 1
+          description: Percentage of ownership held by the principal in the business
+          example: 0.5
+        email:
+          type: string
+          format: email
+          description: Email address of the principal
+          example: john.doe@example.com
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        address:
+          $ref: '#/components/schemas/address'
+        isExecutive:
+          type: boolean
+          description: Whether the principal is an executive of the company
+          example: true
+        title:
+          type: string
+          description: Job title or role of the principal
+          example: CEO
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in YYYY-MM-DD format. Individuals only.
+          example: '1990-01-15'
+        isEntity:
+          type: boolean
+          description: Set to true when this principal is a business entity rather than an individual. Entity principals must include the entity object; the personal fields (firstName, lastName, dateOfBirth, identifier) do not apply.
+          example: false
+        entity:
+          type: object
+          description: Details of the entity principal. Required when isEntity is true.
+          properties:
+            companyName:
+              type: string
+              description: Registered legal name of the entity
+              example: Acme Holdings LLC
+            entityType:
+              type: string
+              enum:
+              - corporation
+              - c-corporation
+              - s-corporation
+              - partnership
+              - sole proprietorship
+              - limited liability company
+              - non profit
+              - other
+              description: Type of entity
+              example: limited liability company
+            taxIdentificationNumber:
+              type: string
+              description: Tax identification number of the entity
+              example: 98-7654321
+            email:
+              type: string
+              format: email
+              description: Contact email address for the entity
+              example: ops@acmeholdings.com
+            websiteURL:
+              type: string
+              format: uri
+              description: Entity website URL
+              example: https://www.acmeholdings.com
+            incorporation:
+              type: object
+              description: Incorporation details of the entity
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of incorporation (YYYY-MM-DD)
+                  example: '2015-03-01'
+                address:
+                  $ref: '#/components/schemas/address'
+            address:
+              $ref: '#/components/schemas/address'
+            certificateOfIncorporationFileId:
+              type: string
+              format: uuid
+              description: Optional file ID for the entity's certificate of incorporation
+              example: file-id-201
+            proofOfAddressFileId:
+              type: string
+              format: uuid
+              description: Optional file ID for the entity's proof of address
+              example: file-id-202
+            ownershipDocumentFileId:
+              type: string
+              format: uuid
+              description: File ID for the document evidencing the entity's ownership stake in the business. The only required document for an entity principal.
+              example: file-id-203
+            individuals:
+              type: array
+              description: The entity's own principals — individuals or further entities holding 25% or more of the entity, plus at least one controlling person (an executive such as the CEO, with isExecutive true and a title). If no individual holds 25% or more, the controlling person alone is sufficient. Same shape as top-level principals; nesting can continue as deep as the ownership chain requires.
+              items:
+                $ref: '#/components/schemas/EntityIndividual'
+        identifier:
+          type: object
+          description: Government-issued identification document details. Individuals only.
+          properties:
+            type:
+              enum:
+              - passport
+              - ssn
+              description: Type of identification document
+              example: passport
+            value:
+              type: string
+              description: Identification number or value
+              example: '1234567890'
+            identityFileId:
+              type: string
+              format: uuid
+              description: File ID for the identity document (front page)
+              example: file-id-123
+            identityBackPageFileId:
+              type: string
+              format: uuid
+              description: File ID for the identity document (back page)
+              example: file-id-124
+            addressFileId:
+              type: string
+              format: uuid
+              description: File ID for address proof document
+              example: file-id-125
+    GenerateKybLinkRequest:
+      allOf:
+      - $ref: '#/components/schemas/HostedLinkRequest'
+      - type: object
+        required:
+        - refreshURL
+        - returnURL
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    GetKYB:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: KYB record ID
+          example: d4475c70-d759-495e-a052-3e3a1cba1857
+        tenantKey:
+          type: string
+          description: Tenant key
+          example: cad62002887
+        entityName:
+          type: string
+          description: Business name
+          example: Airtel
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          description: Type of entity
+          example: corporation
+        taxIdentificationNumber:
+          type: string
+          description: Tax identification number
+          example: NN-528343998
+        incorporation:
+          type: object
+          description: Incorporation details
+          properties:
+            date:
+              type: string
+              format: date-time
+              description: Date of incorporation
+              example: '2025-01-01T00:00:00.000Z'
+            address:
+              $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: Business email address
+        websiteURL:
+          type: string
+          format: uri
+          description: Business website URL
+          example: ''
+        natureOfBusiness:
+          type: string
+          description: Description of the primary business activities and industry
+          example: Software Development
+        sizeOfCompany:
+          type: string
+          description: Size of the company
+          example: 300-400
+        sourceOfFunds:
+          type: string
+          description: Source of funds
+          example: Personal Savings
+        status:
+          type: string
+          enum:
+          - initialized
+          - needs-additional-info
+          - pending-review
+          - awaiting-principal-kyc
+          - incomplete
+          - complete
+          - rejected
+          description: KYB status
+          example: pending-review
+        annualRevenue:
+          type: object
+          description: Annual revenue range
+          properties:
+            currency:
+              type: string
+              description: Currency code (ISO 4217)
+              example: USD
+            min:
+              type: number
+              description: Minimum annual revenue
+              example: 100000
+            max:
+              type: number
+              description: Maximum annual revenue
+              example: 1000000
+        expectedMonthlyTransactionVolume:
+          type: object
+          description: Expected monthly transaction volume range
+          properties:
+            currency:
+              type: string
+              description: Currency code (ISO 4217)
+              example: USD
+            min:
+              type: number
+              description: Minimum expected monthly transaction volume
+              example: 50000
+            max:
+              type: number
+              description: Maximum expected monthly transaction volume
+              example: 80000
+        address:
+          $ref: '#/components/schemas/address'
+        documents:
+          type: object
+          description: Document file URLs
+          properties:
+            articlesOfIncorporation:
+              type: array
+              nullable: true
+              description: Presigned URLs for articles of incorporation documents
+              items:
+                type: string
+            bankStatements:
+              type: array
+              nullable: true
+              description: Presigned URLs for bank statements
+              items:
+                type: string
+            proofOfAddress:
+              type: array
+              nullable: true
+              description: Presigned URLs for proof of address documents
+              items:
+                type: string
+            taxDocuments:
+              type: array
+              nullable: true
+              description: Presigned URLs for tax documents
+              items:
+                type: string
+        principals:
+          type: array
+          description: Principals associated with the business
+          items:
+            $ref: '#/components/schemas/KYBPrincipal'
+        requirements:
+          type: object
+          description: KYB requirements and validation status
+          properties:
+            currentlyDue:
+              type: array
+              description: List of field paths that are currently required
+              items:
+                type: string
+                description: Field path that is required
+              example:
+              - principals.0.phoneNumber.countryCode
+              - phoneNumber.countryCode
+              - principals.0.address.state
+              - email
+              - entityName
+            errors:
+              type: array
+              description: List of validation errors
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    description: Field path with the error
+                    example: entityName
+                  reason:
+                    type: string
+                    description: Reason for the error
+                    example: Only english letters are allowed
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    KYBPrincipal:
+      type: object
+      description: A principal on the KYB record — either an individual or, when isEntity is true, a business entity with its own owners nested under entity.individuals.
+      properties:
+        firstName:
+          type: string
+          description: First name of the principal. Individuals only.
+          example: John
+        lastName:
+          type: string
+          description: Last name of the principal. Individuals only.
+          example: Doe
+        ownershipPercentage:
+          type: number
+          format: float
+          description: Percentage of ownership held by the principal
+          example: 0.5
+        email:
+          type: string
+          format: email
+          description: Email address of the principal
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        address:
+          $ref: '#/components/schemas/address'
+        isExecutive:
+          type: boolean
+          description: Whether the principal is an executive
+          example: false
+        title:
+          type: string
+          description: Job title or role of the principal
+          example: ''
+        id:
+          type: string
+          format: uuid
+          description: Principal ID — include this when re-POSTing or PATCHing the principal
+          example: f116c829-3c93-4d24-880d-3a00faf784a2
+        identifier:
+          type: object
+          description: Government-issued identification document details. Individuals only.
+          properties:
+            type:
+              enum:
+              - passport
+              - ssn
+              description: Type of identification document
+              example: passport
+            value:
+              type: string
+              description: Identification number or value
+              example: '1234567890'
+        isEntity:
+          type: boolean
+          description: Whether this principal is a business entity rather than an individual
+          example: false
+        entity:
+          type: object
+          description: Entity details. Only present when isEntity is true.
+          properties:
+            companyName:
+              type: string
+              description: Registered legal name of the entity
+              example: Acme Holdings LLC
+            entityType:
+              type: string
+              description: Type of entity
+              example: limited liability company
+            taxIdentificationNumber:
+              type: string
+              description: Tax identification number of the entity
+              example: 98-7654321
+            email:
+              type: string
+              format: email
+              description: Contact email address for the entity
+            websiteURL:
+              type: string
+              format: uri
+              description: Entity website URL
+            incorporation:
+              type: object
+              description: Incorporation details of the entity
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date of incorporation (YYYY-MM-DD)
+                address:
+                  $ref: '#/components/schemas/address'
+            address:
+              $ref: '#/components/schemas/address'
+            certificateOfIncorporationFileURLs:
+              type: array
+              nullable: true
+              description: Presigned URLs for the entity's certificate of incorporation documents
+              items:
+                type: string
+            proofOfAddressFileURLs:
+              type: array
+              nullable: true
+              description: Presigned URLs for the entity's proof of address documents
+              items:
+                type: string
+            ownershipDocumentFileURLs:
+              type: array
+              nullable: true
+              description: Presigned URLs for the entity's ownership documents
+              items:
+                type: string
+            individuals:
+              type: array
+              description: The entity's own principals — individuals or further entities holding 25% or more of the entity, plus at least one controlling person (executive). Same shape as top-level principals, nested recursively.
+              items:
+                allOf:
+                - $ref: '#/components/schemas/EntityIndividual'
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      description: Principal ID — include this when re-POSTing or PATCHing the individual
+                      example: 2a7fb1e0-9c44-4e1b-8f6d-1d2e3f4a5b6c
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    KYBRequest:
+      type: object
+      properties:
+        entityName:
+          type: string
+          description: Business name
+          example: Tesla
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          description: Type of entity
+          example: corporation
+        taxIdentificationNumber:
+          type: string
+          description: Tax identification number
+          example: NN-528343998
+        incorporation:
+          type: object
+          description: Incorporation details
+          properties:
+            date:
+              type: string
+              format: date
+              description: Date of incorporation (YYYY-MM-DD)
+              example: '2025-01-01'
+            address:
+              $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        websiteURL:
+          type: string
+          format: uri
+          description: Business website URL
+          example: https://www.tesla.com
+        natureOfBusiness:
+          type: string
+          description: Description of the primary business activities and industry
+          example: Software Development
+        sizeOfCompany:
+          type: string
+          description: Size of the company
+          example: 300-400
+        sourceOfFunds:
+          type: string
+          description: Source of funds
+          example: Personal Savings
+        annualRevenue:
+          type: object
+          description: Annual revenue range
+          properties:
+            currency:
+              type: string
+              description: Currency code (ISO 4217)
+              example: USD
+            min:
+              type: number
+              description: Minimum annual revenue
+              example: 100000
+            max:
+              type: number
+              description: Maximum annual revenue
+              example: 1000000
+        expectedMonthlyTransactionVolume:
+          type: object
+          description: Expected monthly transaction volume range
+          properties:
+            currency:
+              type: string
+              description: Currency code (ISO 4217)
+              example: USD
+            min:
+              type: number
+              description: Minimum expected monthly transaction volume
+              example: 50000
+            max:
+              type: number
+              description: Maximum expected monthly transaction volume
+              example: 80000
+        address:
+          $ref: '#/components/schemas/address'
+        principals:
+          type: array
+          description: Principals are the individuals or business entities that own 25% or more of the business, or exercise significant control over it. POST always carries the full list and replaces any previously submitted principals — to add a principal, re-POST all existing principals (including their `id` so completed identity verification is preserved) along with the new one.
+          items:
+            $ref: '#/components/schemas/PrincipalRequest'
+        articlesOfIncorporation:
+          type: array
+          description: File IDs for articles of incorporation documents
+          items:
+            type: string
+            format: uuid
+          example:
+          - file-id-001
+          - file-id-002
+        bankStatements:
+          type: array
+          description: File IDs for bank statements
+          items:
+            type: string
+            format: uuid
+          example:
+          - file-id-003
+          - file-id-004
+        proofOfAddress:
+          type: array
+          description: File IDs for proof of address documents
+          items:
+            type: string
+            format: uuid
+          example:
+          - file-id-005
+        taxDocuments:
+          type: array
+          description: File IDs for tax documents
+          items:
+            type: string
+            format: uuid
+          example:
+          - file-id-006
+          - file-id-007
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    EntityIndividual:
+      type: object
+      description: An owner or controlling person of an entity principal. Same shape as a top-level principal — when the owner is itself a company, set isEntity to true and provide the entity object; nesting continues as deep as the ownership chain requires.
+      properties:
+        firstName:
+          type: string
+          description: First name of the individual
+          example: John
+        lastName:
+          type: string
+          description: Last name of the individual
+          example: Owner
+        ownershipPercentage:
+          type: number
+          format: float
+          minimum: 0.25
+          maximum: 1
+          description: Percentage of ownership held in the entity
+          example: 1
+        email:
+          type: string
+          format: email
+          description: Email address of the individual
+          example: john@acmeholdings.com
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        address:
+          $ref: '#/components/schemas/address'
+        isExecutive:
+          type: boolean
+          description: Whether the individual is an executive of the entity. At least one controlling person with isExecutive true is required per entity.
+          example: true
+        title:
+          type: string
+          description: Job title or role of the individual
+          example: CEO
+        dateOfBirth:
+          type: string
+          format: date
+          description: Date of birth in YYYY-MM-DD format
+          example: '1970-02-20'
+        identifier:
+          type: object
+          description: Government-issued identification document details
+          properties:
+            type:
+              enum:
+              - passport
+              - ssn
+              description: Type of identification document
+              example: ssn
+            value:
+              type: string
+              description: Identification number or value
+              example: 987-65-4321
+            identityFileId:
+              type: string
+              format: uuid
+              description: File ID for the identity document (front page)
+              example: file-id-123
+            identityBackPageFileId:
+              type: string
+              format: uuid
+              description: File ID for the identity document (back page)
+              example: file-id-124
+            addressFileId:
+              type: string
+              format: uuid
+              description: File ID for address proof document
+              example: file-id-125
+        isEntity:
+          type: boolean
+          description: Set to true when this owner is itself a business entity rather than an individual
+          example: false
+        entity:
+          type: object
+          description: Details of the nested entity owner — same shape as `principals[].entity`, including its own `individuals` list. Required when isEntity is true.
+    HostedLinkRequest:
+      type: object
+      description: Common request body for endpoints that generate hosted (link-out) URLs.
+      properties:
+        refreshURL:
+          type: string
+          description: The URL the user will be redirected to if the link is expired
+        returnURL:
+          type: string
+          description: The URL that the user will be redirected to upon leaving or completing the linked flow.
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetKYBResponse:
+      description: get KYB response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetKYB'
+    CreateKybLinkResponse:
+      description: create kyb link response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+              url:
+                type: string
+              expiresAt:
+                type: number
+                description: The timestamp when the KYB link will expire
+                example: 1716796800
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

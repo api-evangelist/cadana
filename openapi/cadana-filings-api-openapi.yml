@@ -1,0 +1,1085 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Filings API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Filings
+  description: Create, submit, and track statutory returns — from upcoming obligations through acceptance
+paths:
+  /v1/statutory/filings:
+    get:
+      operationId: listFilings
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: List filings
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Returns filings across all jurisdictions for a business. Use this as
+
+        both a compliance calendar ("what''s due?") and a filing history
+
+        ("what''s done?").
+
+
+        The response includes a `summary` object with counts by status —
+
+        use this to power compliance health dashboards without additional
+
+        API calls.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: businessId
+        in: query
+        schema:
+          type: string
+        description: Filter by business
+      - name: countryCode
+        in: query
+        schema:
+          type: string
+        description: Filter by jurisdiction (ISO 3166-1 alpha-2)
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - pending
+          - blocked
+          - in_review
+          - approved
+          - submitted
+          - accepted
+          - rejected
+          - cancelled
+        description: Filter by filing status
+      responses:
+        '200':
+          description: List of filings with compliance summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FilingListItem'
+                  summary:
+                    $ref: '#/components/schemas/FilingSummary'
+    post:
+      operationId: createFiling
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Create a filing
+      description: "**Beta** — contact Cadana to enable access for your business.\n\nCreates a single statutory filing. Every filing is described by a\n`breakdown` array of contribution lines that sum to the filing total.\nThe `source` field selects who's submitting the return to the\nauthority:\n\n- **`source: cadana`** (default) — Cadana will submit the return. Each\n  breakdown line must reference a `personId`. Provide `payrollRunIds`\n  as a shortcut (Cadana populates the breakdown from the tax engine)\n  or pass the `breakdown` explicitly if you computed amounts outside\n  Cadana. The filing is created in `pending` and runs the full\n  lifecycle through `accepted`. If requirements are missing, it\n  transitions to `blocked` with actionable reasons.\n- **`source: external`** — You have already filed with the authority\n  yourself. Provide the `breakdown` plus the `filingReference` (e.g.,\n  the Línea de Captura from SAT). Breakdown lines may use `personId`,\n  `externalEmployeeId`, or neither (for business-level taxes). The\n  filing is created directly in `accepted` and skips the submission\n  lifecycle. Used by the remittance-only flow.\n"
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFilingRequest'
+      responses:
+        '201':
+          description: Filing created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /v1/statutory/filings/batch:
+    post:
+      operationId: createFilingsBatch
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Create all filings for a period
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Creates statutory filings for a business and period in a single call.
+
+        Supports two modes:
+
+
+        **Cadana payroll:** Provide `payrollRunIds` — Cadana determines which
+
+        filing types apply based on active workers and their compensation flags
+
+        (IMSS-eligible, INFONAVIT-eligible, etc.) and pulls amounts from the tax engine.
+
+
+        **External payroll:** Provide a `filings` array with explicit amounts and
+
+        person IDs per filing type. Use this when the client runs payroll outside
+
+        Cadana and just needs Cadana to file and remit.
+
+
+        For example, a Mexican business with 15 employees would get up to 4 filings:
+
+        ISR, IMSS, INFONAVIT, and ISN.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFilingsBatchRequest'
+      responses:
+        '201':
+          description: Filings created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IDResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /v1/statutory/filings/{filing_id}:
+    get:
+      operationId: getFiling
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Get a filing
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Returns full filing details including amounts, status history,
+
+        blocked reasons, and linked payroll runs.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/FilingId'
+      responses:
+        '200':
+          description: Filing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Filing'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/statutory/filings/{filing_id}/approve:
+    post:
+      operationId: approveFiling
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Approve a filing for submission
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Approves a filing, moving it from `in_review` to `approved`. Once approved,
+
+        Cadana will submit the filing to the government authority within the
+
+        jurisdiction''s processing window.
+
+
+        Requires all requirements to be satisfied and no active blocked reasons.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/FilingId'
+      responses:
+        '204':
+          description: Filing approved
+        '409':
+          description: Filing cannot be approved (requirements unsatisfied or invalid state)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/statutory/filings/{filing_id}/cancel:
+    post:
+      operationId: cancelFiling
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Cancel a filing
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Cancels a filing that has not yet been submitted. Cannot cancel filings
+
+        that are already submitted, accepted, or rejected.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/FilingId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Optional reason for cancellation
+      responses:
+        '204':
+          description: Filing cancelled
+        '409':
+          description: Filing cannot be cancelled in its current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/statutory/filings/{filing_id}/amend:
+    post:
+      operationId: amendFiling
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Amend a previously accepted filing
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Creates an amendment filing linked to the original. The original filing''s
+
+        status remains `accepted` and gains an `amended_by` reference. The new
+
+        amendment filing starts in `pending` status.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/FilingId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendFilingRequest'
+      responses:
+        '201':
+          description: Amendment filing created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDResponse'
+        '409':
+          description: Original filing is not in a state that can be amended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/statutory/filings/{filing_id}/document:
+    get:
+      operationId: getFilingDocument
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Download filing document
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Returns a signed URL to download the filing document (PDF). Only available
+
+        after the filing has been submitted.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/FilingId'
+      responses:
+        '200':
+          description: Filing document download URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Signed download URL (expires in 15 minutes)
+                  expiresAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Document not yet available
+  /v1/statutory/compliance/summary:
+    get:
+      operationId: getComplianceSummary
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Get compliance health summary
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Returns a single-call overview of the business''s entire statutory
+
+        compliance posture across all jurisdictions. Includes filing counts by
+
+        status, remittance totals, upcoming deadlines, and outstanding
+
+        requirements.
+
+
+        This is the "how are we doing?" endpoint — designed to power compliance
+
+        dashboards without needing multiple API calls.
+
+        '
+      tags:
+      - Filings
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: businessId
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: countryCode
+        in: query
+        schema:
+          type: string
+        description: Filter to a specific jurisdiction
+      responses:
+        '200':
+          description: Compliance health summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceSummary'
+components:
+  schemas:
+    IDResponse:
+      type: object
+      description: Response containing the ID of a newly created resource.
+      properties:
+        id:
+          type: string
+          example: fil_01HQ3K4N7XYZABC
+    StatusHistoryEntry:
+      type: object
+      description: Records a single status transition on a filing or remittance.
+      properties:
+        from:
+          type: string
+          description: Previous status
+          example: pending
+        to:
+          type: string
+          description: New status
+          example: in_review
+        timestamp:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp of the transition
+          example: 1709654400
+    FilingListItem:
+      type: object
+      description: 'Reduced filing entry returned in list responses. Use
+
+        `GET /v1/statutory/filings/{id}` for full details.
+
+        '
+      properties:
+        id:
+          type: string
+          example: fil_01HQ3K4N7XYZABC
+        businessId:
+          type: string
+          example: biz_01HQ3K4N7XYZABC
+        countryCode:
+          type: string
+          example: MX
+        source:
+          type: string
+          enum:
+          - cadana
+          - external
+          description: Whether Cadana prepared the filing (`cadana`) or you filed externally and provided the data (`external`).
+          example: cadana
+        filingTypeId:
+          type: string
+          example: ft_mx_isr_monthly
+        filingTypeName:
+          type: string
+          example: ISR Withholding
+        authorityName:
+          type: string
+          example: SAT
+        status:
+          type: string
+          enum:
+          - pending
+          - blocked
+          - in_review
+          - approved
+          - submitted
+          - accepted
+          - rejected
+          - cancelled
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+            label:
+              type: string
+        dueAt:
+          type: string
+          example: '2026-02-10'
+        workerCount:
+          type: integer
+          example: 15
+        createdAt:
+          type: number
+          format: epoch
+          example: 1709280000
+        updatedAt:
+          type: number
+          format: epoch
+          example: 1709280000
+    AmendFilingRequest:
+      type: object
+      required:
+      - reason
+      properties:
+        reason:
+          type: string
+          description: Reason for the amendment
+        correctedAmounts:
+          $ref: '#/components/schemas/FilingAmounts'
+    ComplianceSummary:
+      type: object
+      description: Single-call compliance health overview
+      properties:
+        businessId:
+          type: string
+        asOf:
+          type: string
+          format: date-time
+          description: Timestamp of this summary
+        filings:
+          type: object
+          properties:
+            total:
+              type: integer
+            byStatus:
+              type: object
+              properties:
+                pending:
+                  type: integer
+                blocked:
+                  type: integer
+                in_review:
+                  type: integer
+                approved:
+                  type: integer
+                submitted:
+                  type: integer
+                accepted:
+                  type: integer
+                rejected:
+                  type: integer
+        remittances:
+          type: object
+          properties:
+            pendingCount:
+              type: integer
+            pendingAmount:
+              type: number
+              format: decimal
+              description: Total amount awaiting remittance (in USD equivalent)
+            completedThisMonth:
+              type: integer
+            completedAmountThisMonth:
+              type: number
+              format: decimal
+        requirements:
+          type: object
+          properties:
+            outstanding:
+              type: integer
+            byCategory:
+              type: object
+              properties:
+                businessRegistration:
+                  type: integer
+                businessDocument:
+                  type: integer
+                businessTaxParameter:
+                  type: integer
+                workerData:
+                  type: integer
+        nextDeadlines:
+          type: array
+          description: Next 5 upcoming deadlines across all jurisdictions
+          items:
+            type: object
+            properties:
+              filingId:
+                type: string
+              filingTypeName:
+                type: string
+              countryCode:
+                type: string
+              dueAt:
+                type: string
+                format: date-time
+              status:
+                type: string
+        jurisdictions:
+          type: array
+          description: Per-country breakdown
+          items:
+            type: object
+            properties:
+              countryCode:
+                type: string
+              countryName:
+                type: string
+              workerCount:
+                type: integer
+              filingsCompleted:
+                type: integer
+              filingsTotal:
+                type: integer
+              requirementsOutstanding:
+                type: integer
+    CreateFilingRequest:
+      type: object
+      required:
+      - businessId
+      - countryCode
+      - filingTypeId
+      - periodStart
+      - periodEnd
+      - currency
+      description: "Create a filing. Every filing is described by a `breakdown` array of\ncontribution lines that sum to the filing total — the breakdown is the\ncanonical input. The `source` field selects who's filing with the\nauthority:\n\n**`source: cadana`** (default) — Cadana prepares and submits the return\nto the authority. Each `breakdown` line must reference a `personId`.\nYou can either:\n- Provide `payrollRunIds` and Cadana auto-populates the breakdown from\n  the tax engine, or\n- Provide the `breakdown` array yourself if you computed the amounts\n  outside Cadana but want Cadana to file.\n\n**`source: external`** — You have already filed the return with the\nauthority yourself; you're sending Cadana the breakdown plus the\n`filingReference` (e.g., the Línea de Captura from SAT) so a remittance\ncan be created against it. Breakdown lines may use `personId`,\n`externalEmployeeId`, or neither (for business-level taxes like\nMexico's ISN). The filing is created directly in `accepted`.\n"
+      properties:
+        businessId:
+          type: string
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+        source:
+          type: string
+          enum:
+          - cadana
+          - external
+          default: cadana
+          description: 'Who''s responsible for submitting the return to the authority.
+
+            `cadana` (default) means Cadana submits; `external` means you
+
+            already submitted it and are providing the resulting data so
+
+            Cadana can remit.
+
+            '
+          example: external
+        filingTypeId:
+          type: string
+          description: The type of filing (from jurisdiction filing types)
+          example: ft_mx_isr_monthly
+        periodStart:
+          type: string
+          format: date
+        periodEnd:
+          type: string
+          format: date
+        currency:
+          type: string
+          description: 'ISO 4217 currency code that applies to every `amount` in the
+
+            breakdown. Must match the filing-type''s jurisdiction currency.
+
+            '
+          example: MXN
+        filingReference:
+          type: string
+          description: 'Government-issued reference for this filing. **Required when
+
+            `source: external`** — this is the value the receiving bank or
+
+            authority uses to attribute your remittance payment. Country-specific
+
+            naming: Línea de Captura (MX), challan number (IN), BRN (NG).
+
+            Ignored when `source: cadana`; Cadana populates it once the
+
+            authority confirms receipt.
+
+            '
+          example: 0123456ABCD7890EF
+        breakdown:
+          type: array
+          description: 'Contribution lines that sum to the filing total. **Required**, with
+
+            one exception: omit when `source: cadana` and `payrollRunIds` is
+
+            provided — Cadana auto-populates the breakdown from the tax engine
+
+            in that case.
+
+            '
+          items:
+            $ref: '#/components/schemas/FilingBreakdownEntry'
+        payrollRunIds:
+          type: array
+          items:
+            type: string
+          description: '`source: cadana` shortcut. Link to Cadana payroll runs whose tax
+
+            calculations feed this filing — Cadana auto-populates the
+
+            `breakdown` from the tax engine results. Ignored when
+
+            `source: external`.
+
+            '
+    Filing:
+      type: object
+      description: 'Full filing detail returned by `GET /v1/statutory/filings/{id}`.
+
+        Includes amounts, status history, and linked payroll runs.
+
+        '
+      properties:
+        id:
+          type: string
+          example: fil_01HQ3K4N7XYZABC
+        businessId:
+          type: string
+          example: biz_01HQ3K4N7XYZABC
+        countryCode:
+          type: string
+          example: MX
+        source:
+          type: string
+          enum:
+          - cadana
+          - external
+          description: "How the filing data was sourced.\n\n- `cadana` — Cadana prepared and submitted the return to the authority.\n  The filing runs the full lifecycle (`pending → in_review → approved →\n  submitted → accepted`).\n- `external` — You filed the return with the authority yourself and\n  submitted the resulting totals + `filingReference` to Cadana so a\n  remittance can be created against it. External filings are created\n  directly in `accepted` and do not run the submission lifecycle.\n"
+          example: cadana
+        filingTypeId:
+          type: string
+          description: Filing type identifier (from jurisdiction filing types)
+          example: ft_mx_isr_monthly
+        filingTypeName:
+          type: string
+          description: Human-readable filing type name
+          example: ISR Withholding
+        authorityId:
+          type: string
+          description: Government authority identifier
+          example: auth_mx_sat
+        authorityName:
+          type: string
+          description: Government authority name
+          example: SAT
+        filingReference:
+          type: string
+          nullable: true
+          description: 'Government-issued reference for this filing. The exact term varies by
+
+            country: **Línea de Captura** in Mexico, **acuse de recibo** for some
+
+            SAT receipts, **challan number** in India, **BRN** in Nigeria,
+
+            **NPC** in some others.
+
+
+            For `source: external` filings this is required at creation time —
+
+            it''s what the receiving bank or authority uses to attribute the
+
+            remittance payment to the filing. For `source: cadana` filings
+
+            Cadana populates this once the authority confirms receipt.
+
+            '
+          example: 0123456ABCD7890EF
+        status:
+          type: string
+          enum:
+          - pending
+          - blocked
+          - in_review
+          - approved
+          - submitted
+          - accepted
+          - rejected
+          - cancelled
+          description: 'Filing lifecycle for `source: cadana`: pending → in_review → approved → submitted → accepted. Filings can become blocked at pending or in_review if data is missing, and return to pending once resolved. Rejected filings return to pending for correction. Any pre-submit state can be cancelled.
+
+
+            For `source: external` filings, the filing is created directly in `accepted` and stays there — there is no submission step for Cadana to run because you already filed with the authority.
+
+            '
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+              example: '2026-01-01'
+            end:
+              type: string
+              format: date
+              example: '2026-01-31'
+            label:
+              type: string
+              example: January 2026
+        dueAt:
+          type: string
+          description: Deadline for submission to the authority
+          example: '2026-02-10'
+        amounts:
+          $ref: '#/components/schemas/FilingAmounts'
+        workerCount:
+          type: integer
+          description: 'Number of distinct workers in the filing''s `breakdown` (counted via
+
+            `personId` or `externalEmployeeId`). Zero for purely business-level
+
+            filings.
+
+            '
+          example: 15
+        payrollRunIds:
+          type: array
+          items:
+            type: string
+          description: Linked Cadana payroll runs (when populated via a payroll-run shortcut)
+        breakdown:
+          type: array
+          description: 'Per-employee contribution lines that roll up into the filing total.
+
+            For `source: cadana` filings Cadana populates this from payroll;
+
+            for `source: external` you provide it at creation time.
+
+            '
+          items:
+            $ref: '#/components/schemas/FilingBreakdownEntry'
+        blockedReasons:
+          type: array
+          items:
+            type: string
+          description: 'Human-readable reasons why this filing is blocked. Present when
+
+            status is `blocked`. Reasons auto-clear when the underlying data
+
+            is submitted.
+
+            '
+          example:
+          - Missing worker RFC for per_01ABC
+          - Business IMSS registration not found
+        statusHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusHistoryEntry'
+        createdAt:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp
+          example: 1709280000
+        updatedAt:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp
+          example: 1709280000
+    FilingBreakdownEntry:
+      type: object
+      description: "One contribution line that rolls up into a filing's total. The breakdown\narray as a whole is the canonical description of the filing — its sum is\nthe filing total.\n\n**Identifying the worker:**\n- For `source: cadana` filings, each line must reference a `personId`\n  (Cadana needs the worker record to populate filing fields).\n- For `source: external` filings, lines may use `personId` (when the\n  worker is onboarded), `externalEmployeeId` (when not), or neither\n  (for business-level taxes computed on aggregate payroll, like\n  Mexico's ISN, where there's no per-worker allocation).\n"
+      required:
+      - amount
+      properties:
+        personId:
+          type: string
+          description: 'Cadana person ID. Required on `source: cadana` filings.
+
+            '
+          example: per_01HQ3K4N7XYZABC
+        externalEmployeeId:
+          type: string
+          description: 'Your own employee identifier. Use on `source: external` filings when
+
+            the worker is not onboarded into Cadana.
+
+            '
+          example: EMP-00142
+        employeeName:
+          type: string
+          description: Human-readable name for audit trail and reconciliation.
+          example: María García López
+        amount:
+          type: number
+          format: decimal
+          description: Contribution amount for this line in the filing currency.
+          example: 4250
+    FilingAmounts:
+      type: object
+      description: 'Derived totals for the filing. **Read-only on responses** — Cadana
+
+        computes these values from the `breakdown` lines. You do not pass
+
+        `amounts` when creating a filing; provide the `breakdown` array and
+
+        the total falls out automatically.
+
+        '
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code. Set on the filing at creation time.
+          example: MXN
+        total:
+          type: number
+          format: decimal
+          description: Sum of `amount` across every line in the filing's breakdown.
+          example: 82345
+    FilingSummary:
+      type: object
+      description: 'Status counts for the filtered set of filings. Use this to power
+
+        compliance health dashboards.
+
+        '
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        inReview:
+          type: integer
+        approved:
+          type: integer
+        submitted:
+          type: integer
+        accepted:
+          type: integer
+        blocked:
+          type: integer
+        cancelled:
+          type: integer
+        rejected:
+          type: integer
+    CreateFilingsBatchRequest:
+      type: object
+      required:
+      - businessId
+      - periodStart
+      - periodEnd
+      description: "Batch create filings for a business and period in one call. Pick one\ninput shape:\n\n- **`payrollRunIds`** — Cadana derives the filing types and breakdowns\n  from the linked Cadana payroll runs. Each filing is created as\n  `source: cadana` and runs the full lifecycle.\n- **`filings`** — Provide an explicit array, each entry with its own\n  `filingTypeId`, `currency`, and `breakdown`. Each entry can be\n  `source: cadana` (Cadana files for you) or `source: external` (you\n  already filed and supply a `filingReference`). Use this when amounts\n  were computed outside Cadana.\n\nExactly one of `payrollRunIds` or `filings` must be provided.\n"
+      properties:
+        businessId:
+          type: string
+        periodStart:
+          type: string
+          format: date
+          example: '2026-02-01'
+        periodEnd:
+          type: string
+          format: date
+          example: '2026-02-28'
+        payrollRunIds:
+          type: array
+          items:
+            type: string
+          description: 'Link to Cadana payroll runs. Cadana auto-determines filing types
+
+            and populates amounts from the tax engine.
+
+            Mutually exclusive with `filings`.
+
+            '
+        filings:
+          type: array
+          description: 'Explicit per-filing data. Use this when you computed the amounts
+
+            outside Cadana — works for both `source: cadana` (Cadana still
+
+            files) and `source: external` (you already filed). Mutually
+
+            exclusive with `payrollRunIds`.
+
+            '
+          items:
+            type: object
+            required:
+            - filingTypeId
+            - currency
+            - breakdown
+            properties:
+              filingTypeId:
+                type: string
+                example: ft_mx_isr_monthly
+              source:
+                type: string
+                enum:
+                - cadana
+                - external
+                default: cadana
+              currency:
+                type: string
+                description: ISO 4217 currency code applied to every breakdown line.
+                example: MXN
+              filingReference:
+                type: string
+                description: Required when this entry's `source` is `external`.
+                example: 0123456ABCD7890EF
+              breakdown:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FilingBreakdownEntry'
+        countryCode:
+          type: string
+          description: 'Limit to a specific jurisdiction. If omitted, creates filings
+
+            for all jurisdictions where the business has active workers.
+
+            '
+        filingTypeIds:
+          type: array
+          items:
+            type: string
+          description: 'Limit to specific filing types (only applies when using
+
+            `payrollRunIds` mode). If omitted, creates all applicable
+
+            filing types based on worker flags.
+
+            '
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: Request understood but cannot be processed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    FilingId:
+      name: filing_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Filing identifier
+      example: fil_01HQ3K4N7XYZABC
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

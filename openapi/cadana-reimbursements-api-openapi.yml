@@ -1,0 +1,468 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Reimbursements API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Reimbursements
+  description: APIs for interacting with reimbursements
+paths:
+  /v1/reimbursements:
+    get:
+      summary: List Reimbursements
+      description: List reimbursements for your business.
+      operationId: listReimbursements
+      tags:
+      - Reimbursements
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: A list of reimbursements
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        userId:
+                          type: string
+                          format: uuid
+                        title:
+                          type: string
+                        fullName:
+                          type: string
+                        currency:
+                          type: string
+                        destinationCurrency:
+                          type: string
+                        status:
+                          type: string
+                        totalAmount:
+                          type: object
+                          properties:
+                            currency:
+                              type: string
+                            value:
+                              type: string
+                        createdTimestamp:
+                          type: integer
+                        lastUpdatedTimestamp:
+                          type: integer
+                  node:
+                    type: object
+              example:
+                data:
+                - id: d1e2f3a4-5678-9012-cdef-345678901234
+                  userId: a3b4c5d6-e7f8-9012-abcd-ef3456789012
+                  title: Client dinner
+                  fullName: Ada Lovelace
+                  currency: USD
+                  destinationCurrency: USD
+                  status: Approved
+                  totalAmount:
+                    currency: USD
+                    value: '1000.00'
+                  createdTimestamp: 1764332528
+                  lastUpdatedTimestamp: 1764332600
+                node: {}
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    post:
+      summary: Create Reimbursement
+      description: Create a reimbursement for a worker in your business. The reimbursement is created in a pending status and must be reviewed (via [`POST /v1/reimbursements/{reimbursementId}/review`](#tag/reimbursements/post/v1/reimbursements/{reimbursementId}/review)) before it is paid out. Each entry may optionally reference one or more `fileIds` of previously uploaded files to attach proof (e.g. receipts).
+      operationId: createReimbursement
+      tags:
+      - Reimbursements
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReimbursementRequest'
+      responses:
+        '200':
+          description: The created reimbursement's id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+              example:
+                id: d1e2f3a4-5678-9012-cdef-345678901234
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/reimbursements/{reimbursementId}:
+    get:
+      summary: Get Reimbursement
+      description: Get a reimbursement's details.
+      operationId: getReimbursement
+      tags:
+      - Reimbursements
+      parameters:
+      - $ref: '#/components/parameters/reimbursementId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: potentialSourceCurrency
+        in: query
+        required: false
+        description: Return a `potentialSourceAmount` quote — the estimated amount that would be debited from a wallet of this currency to fund the reimbursement, at current FX rates. Only computed while the reimbursement is not yet approved or paid.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The reimbursement
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  userId:
+                    type: string
+                    format: uuid
+                  title:
+                    type: string
+                  fullName:
+                    type: string
+                  currency:
+                    type: string
+                  destinationCurrency:
+                    type: string
+                  status:
+                    type: string
+                  entries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        description:
+                          type: string
+                        amount:
+                          type: object
+                          properties:
+                            currency:
+                              type: string
+                            value:
+                              type: string
+                        category:
+                          type: string
+                        date:
+                          type: string
+                  sourceAmount:
+                    type: object
+                    properties:
+                      currency:
+                        type: string
+                      value:
+                        type: string
+                  destinationAmount:
+                    type: object
+                    properties:
+                      currency:
+                        type: string
+                      value:
+                        type: string
+                  potentialSourceAmount:
+                    type: object
+                    description: Estimated amount that would be debited from a `potentialSourceCurrency` wallet to fund this reimbursement, at current FX rates. Only returned when the `potentialSourceCurrency` query parameter is supplied and the reimbursement is not yet approved or paid.
+                    properties:
+                      currency:
+                        type: string
+                      value:
+                        type: string
+                  fxRate:
+                    type: object
+                    description: Conversion rates applied when the source and destination currencies differ, keyed by `FROM-TO` currency pair. Absent when no conversion was needed.
+                    additionalProperties:
+                      type: string
+                  createdTimestamp:
+                    type: integer
+                  lastUpdatedTimestamp:
+                    type: integer
+              example:
+                id: d1e2f3a4-5678-9012-cdef-345678901234
+                userId: a3b4c5d6-e7f8-9012-abcd-ef3456789012
+                title: Client dinner
+                fullName: Ada Lovelace
+                currency: USD
+                destinationCurrency: USD
+                status: Approved
+                entries:
+                - id: e1f2a3b4-5678-9012-cdef-345678901234
+                  description: Dinner with client
+                  amount:
+                    currency: USD
+                    value: '1000.00'
+                  category: Meals
+                  date: '2025-11-28'
+                sourceAmount:
+                  currency: GHS
+                  value: '15420.00'
+                destinationAmount:
+                  currency: USD
+                  value: '1000.00'
+                fxRate:
+                  USD-GHS: '15.42'
+                createdTimestamp: 1764332528
+                lastUpdatedTimestamp: 1764332600
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    delete:
+      summary: Cancel Reimbursement
+      description: Cancel a reimbursement. Only reimbursements that are not already approved or paid can be cancelled.
+      operationId: cancelReimbursement
+      tags:
+      - Reimbursements
+      parameters:
+      - $ref: '#/components/parameters/reimbursementId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Reimbursement cancelled
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/reimbursements/{reimbursementId}/review:
+    post:
+      summary: Review (Approve or Reject) Reimbursement
+      description: Approve or reject a reimbursement. **Approving pays it out** — the reimbursement amount is disbursed immediately from the `sourceCurrency` wallet (subject to a balance check), and a `reimbursement.paid` webhook follows once the disbursement settles. Rejecting requires a `reason`. Only reimbursements in a pending status can be reviewed; any other reimbursement returns 400.
+      operationId: reviewReimbursement
+      tags:
+      - Reimbursements
+      parameters:
+      - $ref: '#/components/parameters/reimbursementId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - approve
+                  - reject
+                  description: Whether to approve or reject the reimbursement
+                sourceCurrency:
+                  type: string
+                  description: The wallet currency to disburse the reimbursement from; its balance must cover the amount. Required when action is approve (approving disburses the funds).
+                reason:
+                  type: string
+                  description: Reason for the decision. Required when action is reject.
+      responses:
+        '204':
+          description: Reimbursement reviewed
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+  schemas:
+    CreateReimbursementRequest:
+      description: Create reimbursement request payload. Identify the worker with exactly one of `userId` or `personId`.
+      type: object
+      required:
+      - title
+      - currency
+      - destinationCurrency
+      - entries
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: The worker the reimbursement is for. Provide either `userId` or `personId`.
+          example: a3b4c5d6-e7f8-9012-abcd-ef3456789012
+        personId:
+          type: string
+          format: uuid
+          description: The worker the reimbursement is for, identified by their personId within the tenant. Provide either `userId` or `personId`.
+          example: c5d6e7f8-9012-3456-cdef-789012345678
+        title:
+          type: string
+          description: A short title describing the reimbursement.
+          example: Client dinner
+        currency:
+          type: string
+          description: The currency the entry amounts are denominated in.
+          example: USD
+        destinationCurrency:
+          type: string
+          description: The currency the worker is reimbursed in.
+          example: USD
+        entries:
+          type: array
+          description: The individual line items that make up the reimbursement.
+          items:
+            $ref: '#/components/schemas/ReimbursementEntryRequest'
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    ReimbursementEntryRequest:
+      description: A single reimbursement line item
+      type: object
+      required:
+      - description
+      - amount
+      properties:
+        description:
+          type: string
+          example: Dinner with client
+        amount:
+          type: object
+          properties:
+            currency:
+              type: string
+              example: USD
+            value:
+              type: string
+              example: '1000.00'
+        category:
+          type: string
+          example: Meals
+        date:
+          type: string
+          description: The date the expense was incurred (YYYY-MM-DD).
+          example: '2025-11-28'
+        fileIds:
+          type: array
+          description: IDs of previously uploaded files to attach as proof for this entry (e.g. receipts). Optional.
+          items:
+            type: string
+          example:
+          - f1e2d3c4-5678-9012-cdef-345678901234
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    reimbursementId:
+      name: reimbursementId
+      in: path
+      description: The unique identifier for the reimbursement
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

@@ -1,0 +1,436 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Balances
+  description: APIs for managing user account balances
+paths:
+  /v1/users/{userId}/wallets:
+    get:
+      summary: Get user wallets balances
+      description: Get balances for the user wallets
+      operationId: getUserWallets
+      tags:
+      - Balances
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBalancesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/businesses/{businessId}/balances:
+    get:
+      summary: Get account balances
+      description: Get a business's account balances
+      operationId: getBusinessBalances
+      tags:
+      - Balances
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBalancesResponse_2'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/funding-details:
+    get:
+      summary: Get funding details
+      description: Returns the business's funding details.
+      operationId: getFundingDetails
+      tags:
+      - Balances
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFundingDetailsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/businesses/{businessId}/crypto-deposit-addresses:
+    post:
+      summary: Create crypto deposit address
+      description: Creates a crypto deposit address for the business on the given chain. Fails if an address already exists for that currency and chain.
+      operationId: createCryptoDepositAddress
+      tags:
+      - Balances
+      parameters:
+      - $ref: '#/components/parameters/businessId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - currency
+              - chain
+              properties:
+                currency:
+                  type: string
+                  enum:
+                  - USDC
+                  - USDT
+                  description: Stablecoin to receive
+                  example: USDC
+                chain:
+                  type: string
+                  description: 'Blockchain network. USDC: ethereum, solana, arbitrum, base, polygon. USDT: ethereum, solana, tron.'
+                  example: ethereum
+      responses:
+        '200':
+          description: Crypto deposit address created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  currency:
+                    type: string
+                    example: USDC
+                  chain:
+                    type: string
+                    example: ethereum
+                  address:
+                    type: string
+                    example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        '400':
+          description: Bad request — an unsupported currency/chain, or a deposit address already exists for that currency and chain.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+              example:
+                code: invalid_request_body
+                message: One or more input values are invalid. Please re-enter valid values
+                params:
+                  chain: currency and chain combination already exists
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetBalancesResponse_2:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/balance_2'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetBalancesResponse:
+      description: Get user account balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/balance'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            balances:
+              summary: Example user balances
+              value:
+                data:
+                - id: 517075a2-17db-469f-9481-eb8347cb920c
+                  currency: USD
+                  balance: 703448
+                  available: 703448
+                  processing: 0
+                - id: 6a8f81b3-28ec-470c-a592-fc9458dc031d
+                  currency: EUR
+                  balance: 248912
+                  available: 248912
+                  processing: 0
+                node:
+                  previous: null
+                  next: null
+    GetFundingDetailsResponse:
+      description: Funding details for the account
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FundingDetails'
+          examples:
+            us_ach:
+              summary: US ACH funding details
+              value:
+                type: us_ach
+                currency: USD
+                details:
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+            iban:
+              summary: IBAN funding details
+              value:
+                type: iban
+                currency: EUR
+                details:
+                  accountName: Acme Corp
+                  iban: DE00000000000000000000
+                  swiftCode: EXMPDEFF
+                  bankName: Example Bank
+                  country: DE
+  schemas:
+    balance_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: value in lowest denomination
+          example: 703448
+        available:
+          type: integer
+          description: value in lowest denomination
+          example: 703448
+        processing:
+          type: integer
+          description: value in lowest denomination
+          example: 0
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    FundingDetails:
+      type: object
+      required:
+      - type
+      - currency
+      properties:
+        type:
+          type: string
+          enum:
+          - ach
+          - wire
+          - iban
+          - bank
+          - swift
+          - crypto
+          description: The type of funding method
+          example: ach
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: USD
+        accountName:
+          type: string
+          description: Name on the account
+          example: Acme Corp
+        accountNumber:
+          type: string
+          description: Account number (for ACH, bank, wire) or IBAN (for iban type)
+          example: '123456789'
+        routingNumber:
+          type: string
+          description: Routing number (for ACH, bank, wire)
+          example: '000000000'
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Example Bank
+        accountType:
+          type: string
+          enum:
+          - Checking
+          - Savings
+          description: Type of account (for ACH, bank)
+          example: Checking
+        swiftCode:
+          type: string
+          description: SWIFT/BIC code (for iban, swift types)
+          example: EXMPGB2L
+        country:
+          type: string
+          description: Country code (for iban type)
+          example: GB
+        address:
+          type: string
+          description: Crypto wallet address (for crypto type)
+          example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        chain:
+          type: string
+          description: Blockchain chain (for crypto type)
+          example: ETH
+        cryptoType:
+          type: string
+          description: Type of cryptocurrency (for crypto type)
+          example: USDC
+        memo:
+          type: string
+          description: Memo or reference (for crypto type)
+          example: '123456'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    balance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        balance:
+          type: integer
+          description: Total balance in the lowest denomination of the currency (e.g. `703448` represents `7034.48` USD).
+          example: 703448
+        available:
+          type: integer
+          description: Available balance in the lowest denomination of the currency.
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance in the lowest denomination of the currency.
+          example: 0
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

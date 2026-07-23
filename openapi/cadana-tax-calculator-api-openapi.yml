@@ -1,0 +1,774 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Tax Calculator API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Tax Calculator
+  description: APIs for tax calculations
+paths:
+  /v1/tax/calculate:
+    post:
+      summary: Calculate Taxes
+      description: 'Calculate taxes for an existing Cadana person. The person''s address determines the jurisdiction, and their stored compensation and tax profile provide calculation inputs (overridden by `salary` when supplied).
+
+
+        Beyond the base salary, the request accepts the same per-entry earnings as a payroll entry — `allowances`, `bonus`, `overtime`, and voluntary `deductions` — and computes them identically to a payroll run.
+
+        '
+      operationId: calculateTaxesForPerson
+      tags:
+      - Tax Calculator
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculateTaxesRequest'
+            examples:
+              existingPerson:
+                summary: Calculate for existing person
+                value:
+                  personId: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+                  salary:
+                    amount: 4000000
+                    currency: MXN
+                  additionalAttributes:
+                    ytdSalary: 4000000
+              withEarnings:
+                summary: Salary plus allowances and a bonus
+                value:
+                  personId: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+                  salary:
+                    amount: 4000000
+                    currency: MXN
+                  bonus:
+                    amount: 500000
+                    currency: MXN
+                  allowances:
+                  - name: Meal Allowance
+                    isTaxable: true
+                    amount:
+                      amount: 200000
+                      currency: MXN
+      responses:
+        '200':
+          $ref: '#/components/responses/CalculateTaxesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+  /v1/tax/fields:
+    get:
+      summary: List Required Additional Tax Fields by Country
+      description: Returns a list of tax-related additionalfields required to run calculations in the specified country
+      operationId: listCountryTaxFields
+      tags:
+      - Tax Calculator
+      security:
+      - Authorization: []
+      parameters:
+      - name: country
+        in: query
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: Required tax fields by country
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequiredTaxFieldsResponse'
+              example:
+                data:
+                - name: maritalStatus
+                  required: true
+                  type: string
+                  enum:
+                  - single
+                  - married
+                  - divorced
+                  - widowed
+                  description: Marital status for tax deduction eligibility
+                - name: numberOfDependents
+                  required: false
+                  type: number
+                  description: Number of dependents for tax relief
+                  default: 0
+                - name: isResident
+                  required: false
+                  type: boolean
+                  description: Whether the worker is a tax resident
+                  default: true
+                - name: employerIndustry
+                  required: false
+                  type: string
+                  description: Industry classification used for local tax variations
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+  /v1/tax/locations:
+    get:
+      summary: List Countries and Regions
+      description: Returns a list of supported countries and their valid states/regions
+      operationId: listSupportedLocations
+      tags:
+      - Tax Calculator
+      security:
+      - Authorization: []
+      parameters:
+      - name: country
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Optional country code to filter for a specific country and its regions
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          description: Supported countries and regions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Country'
+              example:
+                data:
+                - name: Australia
+                  code: AU
+                  regions:
+                  - name: New South Wales
+                    code: NSW
+                  - name: Victoria
+                    code: VIC
+                  - name: Queensland
+                    code: QLD
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+  /v1/tax/estimate:
+    post:
+      summary: Estimate Gross or Net Salary
+      description: Estimate gross or net salary for a given country and type
+      operationId: estimateTaxes
+      tags:
+      - Tax Calculator
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimateTaxesRequest'
+            examples:
+              grossToNet:
+                summary: Gross to Net estimation
+                value:
+                  countryCode: PH
+                  type: gross-to-net
+                  salary:
+                    amount: 5000000
+                    currency: PHP
+              netToGross:
+                summary: Net to Gross estimation
+                value:
+                  countryCode: MX
+                  type: net-to-gross
+                  net:
+                    amount: 2000000
+                    currency: MXN
+      responses:
+        '200':
+          $ref: '#/components/responses/EstimateTaxesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+components:
+  schemas:
+    State:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Dhaka
+        code:
+          type: string
+          example: DHA
+    Allowance:
+      type: object
+      required:
+      - name
+      - isTaxable
+      - amount
+      properties:
+        name:
+          type: string
+        isTaxable:
+          type: boolean
+          description: Whether the allowance is part of taxable income.
+        amount:
+          $ref: '#/components/schemas/Amount'
+    CalculationDetails:
+      type: object
+      properties:
+        description:
+          type: string
+        inputValues:
+          type: object
+          additionalProperties:
+            type: number
+        formula:
+          type: string
+        steps:
+          type: array
+          items:
+            type: string
+    EstimateTaxesResponse:
+      type: object
+      required:
+      - grossAmount
+      - netAmount
+      - deductions
+      - employerContributions
+      properties:
+        grossAmount:
+          $ref: '#/components/schemas/Amount'
+        netAmount:
+          $ref: '#/components/schemas/Amount'
+        allowances:
+          type: array
+          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
+          items:
+            $ref: '#/components/schemas/Allowance'
+        deductions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        employerContributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        outputCurrency:
+          type: string
+          description: Echo of the requested `outputCurrency`. Present only when the request specified a conversion.
+          example: USD
+        fxRate:
+          type: string
+          description: FX rate applied to convert from the input currency to `outputCurrency`. Present only when a conversion was performed.
+          example: '0.058'
+    RequiredTaxFieldsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Field key used in `additionalAttributes` on `POST /v1/tax/calculate` or in the person's `taxProfile`.
+              description:
+                type: string
+              type:
+                type: string
+                description: Data type of the field value (e.g. "string", "number", "boolean").
+              required:
+                type: boolean
+              enum:
+                type: array
+                items:
+                  type: string
+                description: Allowed values when the field accepts a fixed set of options.
+              default:
+                description: Default value applied by the engine when the field is omitted from the calculation. Present only when the field declares a default. Use it to pre-fill onboarding forms — optional fields that have a default need no user input. The type matches the field's `type` (string, number, or boolean).
+              provider:
+                type: string
+                description: Internal source that surfaces this field. May be omitted.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Deduction:
+      type: object
+      required:
+      - name
+      - isStatutory
+      - amount
+      properties:
+        name:
+          type: string
+        isStatutory:
+          type: boolean
+          description: Whether the deduction is mandated by law (statutory) versus an optional voluntary deduction.
+        amount:
+          $ref: '#/components/schemas/Amount'
+    CalculateTaxesResponse:
+      type: object
+      required:
+      - personId
+      - grossAmount
+      - netAmount
+      - deductions
+      - employerContributions
+      properties:
+        personId:
+          type: string
+          description: ID of the person taxes were calculated for
+        grossAmount:
+          $ref: '#/components/schemas/Amount'
+        netAmount:
+          $ref: '#/components/schemas/Amount'
+        allowances:
+          type: array
+          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
+          items:
+            $ref: '#/components/schemas/Allowance'
+        deductions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        employerContributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        summary:
+          $ref: '#/components/schemas/CalculateTaxesSummary'
+    CalculateTaxesRequest:
+      type: object
+      required:
+      - personId
+      properties:
+        personId:
+          type: string
+          description: ID of the Cadana person to calculate taxes for. The person's address determines the jurisdiction, and their stored compensation and tax profile provide calculation inputs.
+        salary:
+          $ref: '#/components/schemas/Amount'
+        bonus:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+          description: Bonus amount for the period, included in gross and taxable income.
+        overtime:
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+          description: Overtime amount for the period.
+        allowances:
+          type: array
+          description: Allowance line items (e.g. housing, meal stipends). Each carries a `name`, `isTaxable`, and `amount`. Pass `isTaxable` explicitly — when omitted it defaults to `false`, meaning the allowance counts toward gross pay but not taxable income.
+          items:
+            type: object
+            required:
+            - name
+            - amount
+            properties:
+              name:
+                type: string
+                example: Meal Allowance
+              isTaxable:
+                type: boolean
+                default: false
+                description: Whether this allowance is included in taxable income. Defaults to `false` when omitted.
+              amount:
+                $ref: '#/components/schemas/Amount'
+        deductions:
+          type: array
+          description: 'Voluntary (non-statutory) deduction line items to apply. Items with `isStatutory: true` are ignored — statutory items like income tax and social security are computed by the engine.'
+          items:
+            type: object
+            required:
+            - name
+            - amount
+            properties:
+              name:
+                type: string
+                example: Gym Membership
+              isStatutory:
+                type: boolean
+                default: false
+              amount:
+                $ref: '#/components/schemas/Amount'
+        additionalAttributes:
+          type: object
+          description: Country-specific calculation inputs (e.g. `ytdSalary`, `riskCategory`). Use `GET /v1/tax/fields?country={code}` to discover what each jurisdiction accepts. Numeric fields are expressed in major currency units — e.g. India's `hraReceived`, `rentPaid`, `declared80c`, and `annualBaseSalary` are whole rupees — unlike `amount` objects, which use the lowest denomination.
+    Country:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Bangladesh
+        code:
+          type: string
+          example: BD
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/State'
+    CalculateTaxesLineItem:
+      type: object
+      required:
+      - name
+      - amount
+      - calculation
+      properties:
+        name:
+          type: string
+        amount:
+          type: number
+        calculation:
+          $ref: '#/components/schemas/CalculationDetails'
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: number
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: BRL
+    EstimateTaxesRequest:
+      oneOf:
+      - required:
+        - countryCode
+        - type
+        - salary
+        type: object
+        properties:
+          countryCode:
+            type: string
+            description: Country code for tax estimation
+          regionCode:
+            type: string
+            description: Optional region/state code
+          type:
+            type: string
+            enum:
+            - gross-to-net
+            - net-to-gross
+            description: Type of estimation
+          salary:
+            $ref: '#/components/schemas/Amount'
+          outputCurrency:
+            type: string
+            description: ISO 4217 currency to convert response amounts into. When different from the salary currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
+            example: USD
+      - required:
+        - countryCode
+        - type
+        - net
+        type: object
+        properties:
+          countryCode:
+            type: string
+            description: Country code for tax estimation
+          regionCode:
+            type: string
+            description: Optional region/state code
+          type:
+            type: string
+            enum:
+            - gross-to-net
+            - net-to-gross
+            description: Type of estimation
+          net:
+            $ref: '#/components/schemas/Amount'
+          outputCurrency:
+            type: string
+            description: ISO 4217 currency to convert response amounts into. When different from the net currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
+            example: USD
+    CalculateTaxesSummary:
+      type: object
+      properties:
+        gross:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
+        deductions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
+        net:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
+        employerContributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    EstimateTaxesResponse:
+      description: Estimate taxes response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EstimateTaxesResponse'
+          examples:
+            grossToNet:
+              summary: Gross to Net estimation response (Philippines)
+              value:
+                grossAmount:
+                  amount: 5000000
+                  currency: PHP
+                netAmount:
+                  amount: 4223167
+                  currency: PHP
+                deductions:
+                - name: Social Security
+                  isStatutory: true
+                  amount:
+                    amount: 175000
+                    currency: PHP
+                - name: National Health Insurance (PhilHealth)
+                  isStatutory: true
+                  amount:
+                    amount: 125000
+                    currency: PHP
+                - name: Home Development Mutual Fund (PAG-IBIG)
+                  isStatutory: true
+                  amount:
+                    amount: 20000
+                    currency: PHP
+                - name: PAYE (Income Tax)
+                  isStatutory: true
+                  amount:
+                    amount: 456833
+                    currency: PHP
+                employerContributions:
+                - name: Social Security
+                  isStatutory: true
+                  amount:
+                    amount: 350000
+                    currency: PHP
+                - name: National Health Insurance (PhilHealth)
+                  isStatutory: true
+                  amount:
+                    amount: 125000
+                    currency: PHP
+                - name: Home Development Mutual Fund (PAG-IBIG)
+                  isStatutory: true
+                  amount:
+                    amount: 20000
+                    currency: PHP
+                - name: Employees' Compensation (EC)
+                  isStatutory: true
+                  amount:
+                    amount: 3000
+                    currency: PHP
+            netToGross:
+              summary: Net to Gross estimation response (Mexico)
+              value:
+                grossAmount:
+                  amount: 2386014
+                  currency: MXN
+                netAmount:
+                  amount: 2000000
+                  currency: MXN
+                deductions:
+                - name: Sickness and Maternity Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 21383
+                    currency: MXN
+                - name: Disability and Life Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 15647
+                    currency: MXN
+                - name: Severance at Advanced Age and Old Age
+                  isStatutory: true
+                  amount:
+                    amount: 28166
+                    currency: MXN
+                - name: Income Tax (ISR)
+                  isStatutory: true
+                  amount:
+                    amount: 320818
+                    currency: MXN
+                employerContributions:
+                - name: Work Risk Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 13609
+                    currency: MXN
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    CalculateTaxesResponse:
+      description: Calculate taxes response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CalculateTaxesResponse'
+          examples:
+            brazilianTaxCalculation:
+              $ref: '#/components/examples/TaxCalculationExample'
+  examples:
+    TaxCalculationExample:
+      summary: Example Brazilian tax calculation response
+      value:
+        personId: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+        grossAmount:
+          amount: 1000000
+          currency: BRL
+        netAmount:
+          amount: 761244
+          currency: BRL
+        deductions:
+        - name: INSS (Instituto Nacional do Seguro Social)
+          isStatutory: true
+          amount:
+            amount: 82839
+            currency: BRL
+        - name: IRRF (Imposto de Renda Retido na Fonte)
+          isStatutory: true
+          amount:
+            amount: 155917
+            currency: BRL
+        employerContributions:
+        - name: FGTS (Fundo de Garantia do Tempo de Serviço)
+          isStatutory: true
+          amount:
+            amount: 80000
+            currency: BRL
+        summary:
+          gross:
+            name: Gross Salary
+            amount: 1000000
+            calculation:
+              description: Monthly base salary calculation
+              inputValues:
+                baseSalary: 1000000
+              formula: baseSalary
+              steps:
+              - 'Base salary amount: R$10000.00'
+          deductions:
+          - name: INSS (Instituto Nacional do Seguro Social)
+            amount: 82839
+            calculation:
+              description: Brazilian Social Security contribution based on 2024 INSS tables
+              inputValues:
+                grossSalary: 10000
+                bracket1Rate: 0.075
+                bracket2Rate: 0.09
+                bracket3Rate: 0.12
+                bracket4Rate: 0.14
+                bracket1Limit: 1320
+                bracket2Limit: 2571.29
+                bracket3Limit: 3856.94
+                bracket4Limit: 7507.49
+              formula: Progressive rate calculation based on salary brackets
+              steps:
+              - 'Bracket 1: 1320.00 * 7.5% = 99.00'
+              - 'Bracket 2: (2571.29 - 1320.00) * 9% = 112.62'
+              - 'Bracket 3: (3856.94 - 2571.29) * 12% = 154.28'
+              - 'Bracket 4: (7507.49 - 3856.94) * 14% = 462.49'
+              - 'Total INSS contribution: R$828.39'
+          - name: IRRF (Imposto de Renda Retido na Fonte)
+            amount: 155917
+            calculation:
+              description: Brazilian Income Tax calculation based on 2024 rates
+              inputValues:
+                grossSalary: 10000
+                inssDeduction: 828.39
+                baseCalculation: 9171.61
+                dependentsDeduction: 0
+                irrfRate: 0.275
+                deduction: 869.36
+              formula: (baseCalculation * irrfRate) - deduction
+              steps:
+              - 'Gross salary: R$10000.00'
+              - 'INSS deduction: R$828.39'
+              - 'Base for IRRF: R$9171.61'
+              - 'Apply 27.5% rate: R$9171.61 * 0.275 = R$2522.19'
+              - 'Deduction amount: R$869.36'
+              - 'Final IRRF: R$1559.17'
+          net:
+            name: Net Salary
+            amount: 761244
+            calculation:
+              description: Final take-home pay calculation
+              inputValues:
+                grossSalary: 10000
+                inssDeduction: 828.39
+                irrfDeduction: 1559.17
+              formula: grossSalary - inssDeduction - irrfDeduction
+              steps:
+              - 'Gross salary: R$10000.00'
+              - 'INSS deduction: R$828.39'
+              - 'IRRF deduction: R$1559.17'
+              - 'Net salary: R$7612.44'
+          employerContributions:
+          - name: FGTS (Fundo de Garantia do Tempo de Serviço)
+            amount: 80000
+            calculation:
+              description: Employer's FGTS contribution calculation
+              inputValues:
+                grossSalary: 10000
+                fgtsRate: 0.08
+              formula: grossSalary * fgtsRate
+              steps:
+              - 'Calculate 8% FGTS: R$10000.00 * 8% = R$800.00'
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

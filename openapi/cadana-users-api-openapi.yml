@@ -1,0 +1,952 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Users API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Users
+  description: APIs for interacting with employee/contractor Cadana accounts
+paths:
+  /v1/users/{userId}/sub:
+    put:
+      summary: Attach a custom sub
+      description: Append your external token subject to cadana user
+      operationId: updateUserSubject
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      tags:
+      - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserSubjectRequest'
+      responses:
+        '204':
+          description: The user subject was attached, now you can log in with your external JWT
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/admins:
+    post:
+      summary: Add Admin
+      description: Add an admin to the business account
+      operationId: addAdminUser
+      tags:
+      - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddAdminUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/AddAdminUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+  /v1/users/admins/{userId}:
+    delete:
+      summary: Remove Admin
+      description: Remove an admin from the business account
+      operationId: removeAdminUser
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/invite:
+    post:
+      summary: Invite
+      description: Create a user for the associated person record
+      operationId: inviteUser
+      tags:
+      - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/InviteUserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+  /v1/users:
+    get:
+      summary: List
+      description: Get all users
+      operationId: getUsers
+      tags:
+      - Users
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+        description: Page number to retrieve
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+        description: Maximum number of items to return per page
+      - in: query
+        name: personId
+        schema:
+          type: string
+        description: Filter by person ID
+      - in: query
+        name: email
+        schema:
+          type: string
+        description: Filter by email
+      - in: query
+        name: includeStatus
+        schema:
+          type: string
+        description: Toggle including user status in the response
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUsersResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/{userId}:
+    get:
+      summary: Get
+      description: Fetch a user's details
+      operationId: getUser
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/{userId}/kyc:
+    get:
+      summary: Get KYC
+      description: Fetch a user's kyc details
+      operationId: getUserKYC
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserKYCResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    post:
+      summary: Submit KYC
+      description: Submit Know Your Customer (KYC) information for verification
+      operationId: submitUserKYC
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KYCRequest'
+            examples:
+              userKycSubmission:
+                summary: User KYC submission example
+                value:
+                  firstName: John
+                  lastName: Doe
+                  dob: '1990-01-15'
+                  nationality: US
+                  address:
+                    line1: 123 Main Street
+                    line2: Apt 101
+                    city: Anytown
+                    postalCode: '12345'
+                    state: NY
+                    countryCode: US
+                  idDetails:
+                    type: passport
+                    number: '123456789'
+                    issuedCountryCode: US
+                    issuedBy: Department of State
+                    issuedDate: '2020-01-15'
+                    expirationDate: '2030-01-15'
+                    frontFileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                    backFileId: 2e4a981d-cd02-4747-b29d-3f65dd8e7d75
+                    selfieFileId: 3f5b092e-de13-4858-a40e-4c76ee9f8e86
+                  addressProofFileId: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
+      responses:
+        '204':
+          description: KYC information submitted successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    patch:
+      summary: Resubmit KYC
+      description: Resubmit KYC identity and/or address information after rejection. Identity can only be resubmitted when status is rejected. Address can only be resubmitted when status is not started or rejected.
+      operationId: resubmitUserKYC
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchKYCRequest'
+            examples:
+              identityResubmission:
+                summary: Resubmit identity only
+                value:
+                  identity:
+                    firstName: John
+                    lastName: Doe
+                    dob: '1990-01-15'
+                    nationality: US
+                    idDetails:
+                      type: passport
+                      number: '123456789'
+                      issuedCountryCode: US
+                      issuedBy: Department of State
+                      issuedDate: '2020-01-15'
+                      expirationDate: '2030-01-15'
+                      frontFileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                      backFileId: 2e4a981d-cd02-4747-b29d-3f65dd8e7d75
+                      selfieFileId: 3f5b092e-de13-4858-a40e-4c76ee9f8e86
+              addressResubmission:
+                summary: Resubmit address only
+                value:
+                  address:
+                    address:
+                      line1: 123 Main Street
+                      line2: Apt 101
+                      city: Anytown
+                      postalCode: '12345'
+                      state: NY
+                      countryCode: US
+                    addressProofFileId: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
+      responses:
+        '204':
+          description: KYC resubmission accepted
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/{userId}/balances:
+    get:
+      summary: Get Balances
+      description: Get a user's wallet balances
+      operationId: getUserBalances
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBalancesResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/{userId}/tax-forms:
+    get:
+      summary: Tax Forms
+      description: Get a user's tax form
+      operationId: getUserTaxForms
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserTaxFormsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/users/{userId}/tax-forms/{formId}/download:
+    get:
+      summary: Tax Form Download
+      description: Get a download link to a users's tax form
+      operationId: getUserTaxFormLink
+      tags:
+      - Users
+      parameters:
+      - $ref: '#/components/parameters/userId'
+      - $ref: '#/components/parameters/formId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUserTaxFormLinkResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  schemas:
+    meta:
+      type: object
+      description: Meta about the pagination
+      properties:
+        limit:
+          type: number
+          example: 1
+        currentPage:
+          type: number
+          example: 1
+        skipped:
+          type: number
+          example: 1
+        pages:
+          type: number
+          example: 1
+        itemCount:
+          type: number
+          example: 1
+    kycStatus:
+      type: string
+      description: kyc status
+      example: approved
+      enum:
+      - not started
+      - processing
+      - approved
+      - rejected
+    userStatus:
+      type: string
+      description: kyc status
+      example: active
+      enum:
+      - invitation_sent
+      - blocked
+    AddAdminUserRequest:
+      description: Add admin user request payload
+      required:
+      - email
+      - firstName
+      - lastName
+      type: object
+      properties:
+        roleId:
+          $ref: '#/components/schemas/uuid'
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Smith
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email with the sign up link
+          default: false
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    IdentityDetails:
+      type: object
+      required:
+      - number
+      - type
+      - issuedBy
+      - issuedDate
+      - expirationDate
+      - issuedCountryCode
+      - frontFileId
+      - selfieFileId
+      properties:
+        number:
+          type: string
+          example: A12345678
+          description: Identification document number
+        type:
+          type: string
+          description: id type
+          example: passport
+          enum:
+          - passport
+          - driver_license
+          - national_id
+          - voter_id_card
+          - id_card
+          - pan_card
+        issuedBy:
+          type: string
+          example: Nigeria Immigration Service
+          description: Authority that issued the document
+        issuedDate:
+          type: string
+          format: date
+          example: '2020-01-15'
+          description: Date when the document was issued
+        expirationDate:
+          type: string
+          format: date
+          example: '2030-01-15'
+          description: Date when the document expires
+        issuedCountryCode:
+          type: string
+          example: NG
+          description: Country code of the issuing authority
+        frontFileId:
+          $ref: '#/components/schemas/uuid'
+          description: File ID of the front side of the identification document. In sandbox, can be omitted when a sentinel value is used
+        backFileId:
+          $ref: '#/components/schemas/uuid'
+          description: File ID of the back side of the identification document
+        selfieFileId:
+          $ref: '#/components/schemas/uuid'
+          description: File ID of the selfie with the identification document. In sandbox, can be omitted when a sentinel value is used
+    PatchKYCRequest:
+      type: object
+      description: Request to resubmit KYC identity and/or address. At least one of identity or address must be provided.
+      properties:
+        identity:
+          type: object
+          description: Identity resubmission details. All fields required when provided.
+          required:
+          - firstName
+          - lastName
+          - dob
+          - nationality
+          - idDetails
+          properties:
+            firstName:
+              type: string
+              description: User's first name
+              example: John
+            lastName:
+              type: string
+              description: User's last name
+              example: Doe
+            dob:
+              type: string
+              format: date
+              description: Date of birth in YYYY-MM-DD format
+              example: '1990-01-15'
+            nationality:
+              type: string
+              description: User's nationality (2-letter country code)
+              example: US
+            idDetails:
+              $ref: '#/components/schemas/IdentityDetails'
+        address:
+          type: object
+          description: Address resubmission details. All fields required when provided.
+          required:
+          - address
+          - addressProofFileId
+          properties:
+            address:
+              $ref: '#/components/schemas/address'
+            addressProofFileId:
+              type: string
+              format: uuid
+              description: File ID for address proof document. In sandbox, can be omitted when a sentinel value is used
+              example: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
+    InviteUserRequest:
+      description: Invite user request payload
+      required:
+      - personId
+      type: object
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email with the sign up link
+          default: false
+        returnLink:
+          type: boolean
+          description: Whether you want to get the unique sign up link in the api response
+          default: false
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    KYCRequest:
+      type: object
+      required:
+      - firstName
+      - lastName
+      - dob
+      - nationality
+      - idDetails
+      properties:
+        firstName:
+          type: string
+          description: User's first name
+          example: John
+        lastName:
+          type: string
+          description: User's last name
+          example: Doe
+        dob:
+          type: string
+          format: date
+          description: Date of birth in YYYY-MM-DD format
+          example: '1990-01-15'
+        nationality:
+          type: string
+          description: User's nationality (2-letter country code)
+          example: US
+        address:
+          $ref: '#/components/schemas/address'
+        idDetails:
+          $ref: '#/components/schemas/IdentityDetails'
+        addressProofFileId:
+          type: string
+          format: uuid
+          description: File ID for address proof document
+          example: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
+    userEntry:
+      allOf:
+      - $ref: '#/components/schemas/basicInfo'
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        personId:
+          $ref: '#/components/schemas/uuid'
+        roleId:
+          $ref: '#/components/schemas/uuid'
+        status:
+          type: string
+          example: active
+          enum:
+          - active
+          - invitation_sent
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    UpdateUserSubjectRequest:
+      description: Update user external token subject payload
+      required:
+      - tokenSub
+      type: object
+      properties:
+        tokenSub:
+          type: string
+          description: Your internal token sub to attach to cadana user
+          default: '123'
+    userKyc:
+      type: object
+      properties:
+        idDetails:
+          $ref: '#/components/schemas/idDetails'
+        identity:
+          $ref: '#/components/schemas/kycStatus'
+        address:
+          $ref: '#/components/schemas/kycStatus'
+        firstName:
+          type: string
+          description: Person's first name on ID
+          example: John
+        lastName:
+          type: string
+          description: Person's last name on ID
+          example: Doe
+        identityStatusReason:
+          type: string
+          description: Reason for rejecting an ID
+          example: ID is expired
+        addressStatusReason:
+          type: string
+          description: Reason for rejecting an address
+          example: Name on the address does not match the name on the ID
+    idDetails:
+      type: object
+      properties:
+        country:
+          type: string
+          description: id country 2 digit iso code
+          example: NG
+        type:
+          type: string
+          description: id type
+          example: Passport
+          enum:
+          - Passport
+          - Drivers license
+          - National ID Card
+          - Voter's Card
+          - other
+    userBalance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
+          example: 703448
+        available:
+          type: integer
+          description: Available balance as an integer scaled by 100
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance as an integer scaled by 100
+          example: 0
+        reserves:
+          type: integer
+          nullable: true
+          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
+          example: 0
+    basicInfo:
+      type: object
+      required:
+      - email
+      - firstName
+      - lastName
+      properties:
+        firstName:
+          type: string
+          description: Person's first name
+          example: John
+        lastName:
+          type: string
+          description: Person's last name
+          example: Doe
+        email:
+          type: string
+          description: Person's email
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional metadata you can store as key-value pairs
+          example:
+            customField1: value1
+            customField2: value2
+    taxForm:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the form
+          example: W8BEN
+        formId:
+          type: string
+          description: ID of the form
+          example: 30c6c36b5ae0985c1d715bbf25b878a1349cc99a
+        createdAt:
+          type: number
+          description: Form creation time
+          example: 1690339130
+        isComplete:
+          type: boolean
+          description: Is the form completed
+          default: true
+        isDocumentDownloadable:
+          type: boolean
+          description: Can you download the form
+          default: true
+    contractFileLink:
+      type: object
+      properties:
+        fileUrl:
+          type: string
+          description: Link to the file
+          example: https://cadana.com/file/123
+        expiresAt:
+          type: number
+          description: Link expiration time
+          example: 1690339130
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetUserKYCResponse:
+      description: get user kyc response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/userKyc'
+    GetUserResponse:
+      description: get user response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/basicInfo'
+            - type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/uuid'
+                personId:
+                  $ref: '#/components/schemas/uuid'
+                status:
+                  $ref: '#/components/schemas/userStatus'
+    InviteUserResponse:
+      description: invite user response
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Invite user response
+            properties:
+              userId:
+                $ref: '#/components/schemas/uuid'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    AddAdminUserResponse:
+      description: add admin user response
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Add admin user response
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    GetUserTaxFormLinkResponse:
+      description: get user tax form file link response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/contractFileLink'
+    GetUserTaxFormsResponse:
+      description: get user tax forms response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/taxForm'
+    GetUsersResponse:
+      description: get users response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userEntry'
+              meta:
+                $ref: '#/components/schemas/meta'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetBalancesResponse:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userBalance'
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    formId:
+      name: formId
+      in: path
+      description: The unique identifier for the form
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

@@ -1,0 +1,634 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Remittances API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Remittances
+  description: Government payments linked to filings
+paths:
+  /v1/statutory/remittances:
+    get:
+      operationId: listRemittances
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: List remittances
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Returns government payments across jurisdictions for a business. Each
+
+        remittance is linked to one or more filings and tracks the actual money
+
+        movement to the government authority.
+
+
+        The response includes a `summary` object with counts by status.
+
+        '
+      tags:
+      - Remittances
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: businessId
+        in: query
+        schema:
+          type: string
+        description: Filter by business
+      - name: countryCode
+        in: query
+        schema:
+          type: string
+        description: Filter by jurisdiction (ISO 3166-1 alpha-2)
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+        description: Filter by remittance status
+      responses:
+        '200':
+          description: List of remittances with summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RemittanceListItem'
+                  summary:
+                    $ref: '#/components/schemas/RemittanceSummary'
+    post:
+      operationId: createRemittance
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Create a remittance
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Initiates a government payment. A remittance is always tied to one or
+
+        more `accepted` filings — whether Cadana prepared them
+
+        (`source: cadana`) or you filed them externally and submitted the
+
+        totals (`source: external`). Funds are debited from your business
+
+        balance and routed to the authority through Cadana''s local rails.
+
+
+        By default Cadana uses its internal mapping for the authority''s bank
+
+        account. Provide a `paymentDetails` block — the same `paymentMethods`
+
+        object used by vendor payments and beneficiaries elsewhere in the API —
+
+        to specify the routing yourself (for example, a Mexican CLABE under
+
+        `bank.accountNumber`). Use the top-level `paymentReference` field to
+
+        set the bank attribution reference (defaults to the linked filing''s
+
+        `filingReference`).
+
+        '
+      tags:
+      - Remittances
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRemittanceRequest'
+      responses:
+        '201':
+          description: Remittance created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IDResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /v1/statutory/remittances/{remittance_id}:
+    get:
+      operationId: getRemittance
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Get a remittance
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        Returns full remittance details including payment status, FX conversion
+
+        information, and proof of payment (when available).
+
+        '
+      tags:
+      - Remittances
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/RemittanceId'
+      responses:
+        '200':
+          description: Remittance details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Remittance'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/statutory/remittances/{remittance_id}/receipt:
+    get:
+      operationId: getRemittanceReceipt
+      x-mint:
+        metadata:
+          tag: Beta
+      summary: Download remittance receipt
+      description: '**Beta** — contact Cadana to enable access for your business.
+
+
+        **Not yet implemented.**
+
+
+        Returns a signed URL to download proof of government payment.
+
+        Available after the remittance reaches `completed` status.
+
+        '
+      tags:
+      - Remittances
+      parameters:
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - $ref: '#/components/parameters/RemittanceId'
+      responses:
+        '200':
+          description: Receipt download URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  expiresAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Receipt not yet available
+components:
+  schemas:
+    phoneNumber:
+      type: object
+      required:
+      - countryCode
+      - number
+      properties:
+        countryCode:
+          type: string
+          example: '52'
+        number:
+          type: string
+          example: '5512345678'
+    IDResponse:
+      type: object
+      description: Response containing the ID of a newly created resource.
+      properties:
+        id:
+          type: string
+          example: fil_01HQ3K4N7XYZABC
+    paymentMethods:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+    StatusHistoryEntry:
+      type: object
+      description: Records a single status transition on a filing or remittance.
+      properties:
+        from:
+          type: string
+          description: Previous status
+          example: pending
+        to:
+          type: string
+          description: New status
+          example: in_review
+        timestamp:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp of the transition
+          example: 1709654400
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          example: SAT — ISR Federal Treasury
+        accountNumber:
+          type: string
+          description: 'Bank account number. For Mexico this is the 18-digit CLABE.
+
+            For other countries, the local account number.
+
+            '
+          example: 012345678901234567
+        accountType:
+          type: string
+          description: e.g., Checking, Savings
+          example: Checking
+        ownerType:
+          type: string
+          description: e.g., individual, business
+          example: business
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: '012'
+        bankName:
+          type: string
+          example: BBVA México
+        branchName:
+          type: string
+          example: Sucursal Reforma
+        sortCode:
+          type: string
+          description: Bank sort code (used in some countries like UK)
+          example: '401234'
+        iban:
+          type: string
+          description: International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          example: wise
+        currency:
+          type: string
+          example: MXN
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          example: John Doe
+        provider:
+          type: string
+          example: MTN
+        providerCode:
+          type: string
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          example: GHS
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          example: NIT
+        value:
+          type: string
+          example: '123456789'
+    Remittance:
+      type: object
+      description: 'Full remittance detail returned by `GET /v1/statutory/remittances/{id}`.
+
+        Includes FX conversion details, payment tracking, and status history.
+
+        '
+      properties:
+        id:
+          type: string
+          example: rem_01HQ3K4N7XYZABC
+        businessId:
+          type: string
+        filingIds:
+          type: array
+          items:
+            type: string
+          description: Filings this remittance covers
+        countryCode:
+          type: string
+          example: MX
+        authorityId:
+          type: string
+          description: Government authority identifier
+          example: auth_mx_sat
+        authorityName:
+          type: string
+          description: Government authority name
+          example: SAT
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          description: "```\npending ──→ processing ──→ completed\n                │\n                ▼\n              failed\n```\n"
+        amount:
+          type: number
+          format: decimal
+          description: Amount in local currency to be paid to the authority
+          example: 45000
+        fxRate:
+          type: number
+          format: decimal
+          description: FX rate applied (if funded in a different currency)
+          example: 18.001
+        fundedCurrency:
+          type: string
+          description: Currency the business funded from
+          example: USD
+        fundedAmount:
+          type: number
+          format: decimal
+          description: Amount debited from the business balance
+          example: 2571.43
+        paymentMethod:
+          type: string
+          description: How payment was made to the authority
+          example: local_rails
+        paymentDetails:
+          allOf:
+          - $ref: '#/components/schemas/paymentMethods'
+          description: 'The routing Cadana used to deliver the payment. Echoes back the
+
+            `paymentDetails` from the create request, or — when omitted — the
+
+            internal default routing Cadana used for the authority.
+
+            '
+        paymentReference:
+          type: string
+          nullable: true
+          description: Government-issued payment reference number
+          example: SAT-2026-01-RFC-XAXX010101000-ISR
+        receiptUrl:
+          type: string
+          nullable: true
+          description: Proof of payment document URL
+        statusHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusHistoryEntry'
+        createdAt:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp
+          example: 1709280000
+        updatedAt:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp
+          example: 1709280000
+    CreateRemittanceRequest:
+      type: object
+      required:
+      - businessId
+      - countryCode
+      - filingIds
+      - fundFromCurrency
+      properties:
+        businessId:
+          type: string
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+        filingIds:
+          type: array
+          items:
+            type: string
+          description: 'Filings to remit for. Multiple filings to the same authority
+
+            can be batched into a single remittance.
+
+            '
+        fundFromCurrency:
+          type: string
+          description: Currency to debit from the business balance (auto-converted if needed)
+          example: USD
+        paymentDetails:
+          allOf:
+          - $ref: '#/components/schemas/paymentMethods'
+          description: 'Where Cadana sends the payment. **Optional.** Omit to use Cadana''s
+
+            internal default routing for the authority (recommended when you
+
+            trust Cadana to know the right government account). Provide to
+
+            specify the routing yourself — for example, a Mexican CLABE under
+
+            `bank.accountNumber`. This is the same `paymentMethods` object
+
+            used elsewhere in the API for beneficiaries and vendor payments.
+
+            '
+        paymentReference:
+          type: string
+          description: 'Reference the receiving bank or authority uses to attribute the
+
+            payment to your filing. If omitted, Cadana uses the linked filing''s
+
+            `filingReference` (e.g., the Línea de Captura in Mexico). Provide
+
+            explicitly when the bank reference differs from the filing
+
+            reference.
+
+            '
+          example: 0123456ABCD7890EF
+    RemittanceSummary:
+      type: object
+      description: Status counts for the filtered set of remittances.
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        processing:
+          type: integer
+        completed:
+          type: integer
+        failed:
+          type: integer
+    RemittanceListItem:
+      type: object
+      description: 'Reduced remittance entry returned in list responses. Use
+
+        `GET /v1/statutory/remittances/{id}` for full details.
+
+        '
+      properties:
+        id:
+          type: string
+          example: rem_01HQ3K4N7XYZABC
+        businessId:
+          type: string
+        countryCode:
+          type: string
+          example: MX
+        authorityName:
+          type: string
+          example: SAT
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+        amount:
+          type: number
+          format: decimal
+          example: 45000
+        createdAt:
+          type: number
+          format: epoch
+          example: 1709280000
+        updatedAt:
+          type: number
+          format: epoch
+          example: 1709280000
+    address:
+      type: object
+      required:
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Av. Paseo de la Reforma 10
+        line2:
+          type: string
+          example: Piso 30
+        city:
+          type: string
+          example: Ciudad de México
+        postalCode:
+          type: string
+          example: '06600'
+        state:
+          type: string
+          example: CDMX
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type: array
+              nullable: true
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    RemittanceId:
+      name: remittance_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Remittance identifier
+      example: rem_01HQ3K4N7XYZABC
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

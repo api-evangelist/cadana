@@ -1,0 +1,372 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets Balances Milestones API
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://api.cadanapay.com
+  description: Prod Server
+- url: https://dev-api.cadanapay.com
+  description: Dev Server
+security:
+- Authorization: []
+tags:
+- name: Milestones
+  description: APIs for milestone-based contractor pay
+paths:
+  /v1/persons/{personId}/milestones:
+    get:
+      summary: List milestones
+      description: List a milestone-type contractor's milestones. Set `includeDocuments=true` to receive presigned document download URLs.
+      operationId: getPersonMilestones
+      tags:
+      - Milestones
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      - name: includeDocuments
+        in: query
+        required: false
+        description: When true, each milestone's documents are returned as presigned download URLs
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMilestonesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    post:
+      summary: Add milestone
+      description: Add a milestone (deliverable) to a milestone-type contractor. `documentIds` are file ids from the upload-url flow (POST /v1/files/upload-url with purpose `milestone-document`).
+      operationId: addPersonMilestone
+      tags:
+      - Milestones
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddMilestoneRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateMilestoneResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/milestones/{milestoneId}:
+    put:
+      summary: Update milestone
+      description: Update a planned milestone. `documentIds` are file ids from the upload-url flow and replace the milestone's documents.
+      operationId: updatePersonMilestone
+      tags:
+      - Milestones
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/milestoneId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMilestoneRequest'
+      responses:
+        '204':
+          description: Milestone updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+    delete:
+      summary: Delete milestone
+      description: Delete a planned milestone.
+      operationId: deletePersonMilestone
+      tags:
+      - Milestones
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/milestoneId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Milestone deleted successfully
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+  /v1/persons/{personId}/milestones/{milestoneId}/complete:
+    post:
+      summary: Complete milestone
+      description: Mark a planned or rejected milestone complete. Generates a contractor invoice and returns its `invoiceId`, and moves the milestone to `Submitted`. As that invoice is approved, rejected, or paid, the milestone status updates to match.
+      operationId: completePersonMilestone
+      tags:
+      - Milestones
+      parameters:
+      - $ref: '#/components/parameters/personId'
+      - $ref: '#/components/parameters/milestoneId'
+      - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateMilestoneResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+      security:
+      - Authorization: []
+components:
+  schemas:
+    Milestone:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        title:
+          type: string
+        description:
+          type: string
+        amount:
+          $ref: '#/components/schemas/amount'
+        dueDate:
+          type: string
+        documents:
+          type: array
+          description: Attached documents (presigned download URL + original file name); present only when includeDocuments=true
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                description: Presigned download URL (~60-minute TTL)
+              fileName:
+                type: string
+                description: Original upload name, or a generated fallback (e.g. document-1a2b3c4d.pdf) when none was supplied
+        status:
+          type: string
+          enum:
+          - Planned
+          - Submitted
+          - Approved
+          - Rejected
+          - Paid
+        rejectionReason:
+          type: string
+          description: Why the milestone's invoice was rejected; present only when status is Rejected
+        invoiceId:
+          $ref: '#/components/schemas/uuid'
+        addedBy:
+          type: string
+          enum:
+          - ADMIN
+          - CONTRACTOR
+        createdTimestamp:
+          type: integer
+          format: int64
+        updatedTimestamp:
+          type: integer
+          format: int64
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    AddMilestoneRequest:
+      type: object
+      required:
+      - title
+      - amount
+      properties:
+        title:
+          type: string
+          description: Milestone title; also used as the invoice line-item description on completion
+          example: Design phase
+        description:
+          type: string
+          description: Optional milestone description; used as the invoice note on completion
+        amount:
+          $ref: '#/components/schemas/amount'
+        dueDate:
+          type: string
+          description: Optional due date (YYYY-MM-DD)
+          example: '2026-09-30'
+        documentIds:
+          type: array
+          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); resolved to stored documents
+          items:
+            $ref: '#/components/schemas/uuid'
+    UpdateMilestoneRequest:
+      type: object
+      required:
+      - title
+      - amount
+      properties:
+        title:
+          type: string
+          example: Design phase
+        description:
+          type: string
+        amount:
+          $ref: '#/components/schemas/amount'
+        dueDate:
+          type: string
+          example: '2026-09-30'
+        documentIds:
+          type: array
+          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); replace the milestone's documents
+          items:
+            $ref: '#/components/schemas/uuid'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+  parameters:
+    personId:
+      name: personId
+      in: path
+      description: The unique identifier for the person
+      required: true
+      schema:
+        type: string
+        format: uuid
+    milestoneId:
+      name: milestoneId
+      in: path
+      description: The unique identifier for the milestone
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    CreateMilestoneResponse:
+      description: milestone created (or completed) response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetMilestonesResponse:
+      description: list of a contractor's milestones
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Milestone'
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
