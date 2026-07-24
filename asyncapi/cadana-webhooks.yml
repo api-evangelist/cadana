@@ -1,0 +1,97 @@
+generated: '2026-07-18'
+method: searched
+type: Webhooks
+source: https://docs.cadanapay.com/reference/events
+docs:
+  events: https://docs.cadanapay.com/reference/events
+  webhooks: https://docs.cadanapay.com/reference/webhooks
+spec_type: none
+spec_note: Cadana documents a webhook event surface but does not publish an AsyncAPI
+  document. This catalog captures the documented events; no AsyncAPI is fabricated.
+delivery:
+  provider: Svix
+  registration: Dashboard > Settings > Developers > Webhooks (Add Webhook)
+  signing:
+    algorithm: HMAC-SHA256
+    headers: [svix-id, svix-timestamp, svix-signature]
+    secret_location: Dashboard > Settings > Developers > Webhooks
+    verification_libraries: [node, python, go]
+  retry:
+    strategy: exponential backoff over ~3 days
+    schedule: ['5s', '5m-30m', '2h-24h across 4th-7th retries']
+  guidance: Respond 200 OK immediately, process asynchronously, deduplicate on the
+    envelope `id`.
+envelope:
+  fields: [id, eventType, version, timestamp, data]
+  example:
+    eventType: transaction.succeeded
+    id: e13b9e14-c062-42ea-8563-8fc9223b29b5
+    version: '1.0'
+    timestamp: 1681006175
+    data: {}
+events:
+  persons:
+  - person.created
+  - person.updated
+  - person.offboarding.scheduled
+  - person.offboarding.cancelled
+  - person.offboarding.completed
+  - person.reinstated
+  users:
+  - user.created
+  - user.updated
+  - user.profile.updated
+  - user.kyc.updated
+  - user.kyc.expiry
+  payroll:
+  - payroll.created
+  - payroll.status.updated
+  transactions:
+  - transaction.initiated
+  - transaction.succeeded
+  - transaction.failed
+  instant_pay:
+  - instant-pay.succeeded
+  contracts:
+  - contract.created
+  - contract.signed
+  - contract.status.updated
+  invoices:
+  - invoice.contractor.submitted
+  - invoice.contractor.approved
+  - invoice.contractor.rejected
+  - invoice.contractor.paid
+  reimbursements:
+  - reimbursement.submitted
+  - reimbursement.approved
+  - reimbursement.rejected
+  - reimbursement.paid
+  virtual_accounts:
+  - virtual-account.requested
+  - virtual-account.submitted
+  - virtual-account.created
+  business:
+  - business.kyb.reviewed
+  - business.kyb.rejected
+  - business.kyb.completed
+  - business.basicinfo.updated
+  external_accounts:
+  - external-account.added
+  - external-account.removed
+  compliance:
+  - filing.created
+  - filing.blocked
+  - filing.pending
+  - filing.in_review
+  - filing.approved
+  - filing.submitted
+  - filing.accepted
+  - filing.rejected
+  - filing.overdue
+  - remittance.created
+  - remittance.processing
+  - remittance.completed
+  - remittance.failed
+  - requirement.created
+  - requirement.satisfied
+event_count: 47

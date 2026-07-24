@@ -1,0 +1,68 @@
+arazzo: 1.0.1
+info:
+  title: Cadana — pay a contractor end-to-end
+  version: 1.0.0
+  summary: Onboard a contractor, create a contract, run payroll, and retrieve payslips.
+sourceDescriptions:
+- name: workforce
+  url: ../openapi/cadana-workforce-management-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: payContractorEndToEnd
+  summary: Create a contractor person, put a contract in place, run and approve payroll, then fetch payslips.
+  inputs:
+    type: object
+    properties:
+      person: {type: object}
+      contract: {type: object}
+      payroll: {type: object}
+  steps:
+  - stepId: createContractor
+    operationId: createPerson
+    requestBody:
+      payload: $inputs.person
+    outputs:
+      personId: $response.body#/id
+  - stepId: createContract
+    operationId: createContracts
+    requestBody:
+      payload: $inputs.contract
+    outputs:
+      contractId: $response.body#/id
+  - stepId: getSigningUrl
+    operationId: getContractSigningUrl
+    parameters:
+    - name: contractId
+      in: path
+      value: $steps.createContract.outputs.contractId
+    outputs:
+      signingUrl: $response.body#/url
+  - stepId: createPayroll
+    operationId: createPayroll
+    requestBody:
+      payload: $inputs.payroll
+    outputs:
+      payrollId: $response.body#/id
+  - stepId: savePayroll
+    operationId: savePayroll
+    parameters:
+    - name: payrollId
+      in: path
+      value: $steps.createPayroll.outputs.payrollId
+  - stepId: approvePayroll
+    operationId: approvePayroll
+    parameters:
+    - name: payrollId
+      in: path
+      value: $steps.createPayroll.outputs.payrollId
+  - stepId: getPayslips
+    operationId: getPayrollPayslipLinks
+    parameters:
+    - name: payrollId
+      in: path
+      value: $steps.createPayroll.outputs.payrollId
+    outputs:
+      payslipLinks: $response.body
+  outputs:
+    payrollId: $steps.createPayroll.outputs.payrollId
+    payslipLinks: $steps.getPayslips.outputs.payslipLinks

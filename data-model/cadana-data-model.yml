@@ -1,0 +1,100 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/*.yaml (path structure + id-reference params)
+note: Entity graph derived from resource paths and id parameters across the five
+  Cadana specs. Relationships reflect URL nesting (belongs_to) and id references.
+entities:
+- name: Business
+  id_param: businessId
+  domain: workforce / payments
+  description: A payroll/payments business account (tenant). Root of most resources.
+- name: Person
+  id_param: personId
+  domain: workforce
+  description: An employee or contractor record under a business.
+- name: User
+  id_param: userId
+  domain: workforce / wallets
+  description: An end-user account (worker login + wallet holder), often linked to a Person.
+- name: Payroll
+  id_param: payrollId
+  domain: workforce
+- name: Contract
+  id_param: contractId
+  domain: workforce
+- name: Invoice
+  id_param: invoiceId
+  domain: workforce
+- name: Reimbursement
+  id_param: reimbursementId
+  domain: workforce
+- name: Milestone
+  id_param: milestoneId
+  domain: workforce
+- name: Entity
+  id_param: entityId
+  domain: workforce
+  description: A legal sub-entity under a business.
+- name: Department
+  id_param: departmentId
+  domain: workforce
+- name: CustomField
+  id_param: customFieldId
+  domain: workforce
+- name: Beneficiary
+  id_param: beneficiaryId
+  domain: payments / wallets
+- name: Payout
+  id_param: payoutId
+  domain: payments
+- name: VirtualAccount
+  id_param: virtualAccountId
+  domain: payments
+- name: Transaction
+  id_param: transactionId
+  domain: wallets
+- name: ExternalAccount
+  id_param: externalAccountId
+  domain: treasury
+- name: Disbursement
+  id_param: disbursementId
+  domain: platform
+- name: File
+  id_param: fileId
+  domain: shared
+- name: Jurisdiction
+  id_param: country_code
+  domain: statutory / tax
+- name: Filing
+  id_param: filing_id
+  domain: statutory
+- name: Remittance
+  id_param: remittance_id
+  domain: statutory
+- name: Requirement
+  id_param: requirement_id
+  domain: statutory
+relationships:
+- {from: Person, type: belongs_to, to: Business, via: businessId}
+- {from: User, type: belongs_to, to: Business, via: businessId}
+- {from: Person, type: has_one, to: User, via: userId}
+- {from: Person, type: has_many, to: Milestone, via: personId}
+- {from: Person, type: has_one, to: taxProfile, via: personId}
+- {from: Payroll, type: belongs_to, to: Business, via: businessId}
+- {from: Payroll, type: has_many, to: Person, via: personId}
+- {from: Contract, type: belongs_to, to: Person, via: personId}
+- {from: Invoice, type: belongs_to, to: Person, via: personId}
+- {from: Reimbursement, type: belongs_to, to: Person, via: personId}
+- {from: Entity, type: belongs_to, to: Business, via: businessId}
+- {from: Department, type: belongs_to, to: Business, via: businessId}
+- {from: CustomField, type: belongs_to, to: Business, via: businessId}
+- {from: Beneficiary, type: belongs_to, to: User, via: userId}
+- {from: Payout, type: has_one, to: Beneficiary, via: beneficiaryId}
+- {from: VirtualAccount, type: belongs_to, to: User, via: userId}
+- {from: Transaction, type: belongs_to, to: User, via: userId}
+- {from: ExternalAccount, type: belongs_to, to: Business, via: businessId}
+- {from: Disbursement, type: belongs_to, to: Business, via: businessId}
+- {from: Filing, type: belongs_to, to: Jurisdiction, via: country_code}
+- {from: Filing, type: belongs_to, to: Business, via: business_id}
+- {from: Remittance, type: belongs_to, to: Jurisdiction, via: country_code}
+- {from: Requirement, type: belongs_to, to: Jurisdiction, via: country_code}

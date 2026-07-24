@@ -1,0 +1,20 @@
+generated: '2026-07-18'
+method: generated
+source: openapi/*.yaml (operationIds verified against the specs)
+skills:
+- file: cadana-pay-a-contractor.md
+  name: Pay a contractor end-to-end
+  api: openapi/cadana-workforce-management-openapi.yaml
+  operations: [createPerson, createContracts, getContractSigningUrl, createPayroll, savePayroll, approvePayroll, getPayrollPayslipLinks]
+- file: cadana-run-payroll.md
+  name: Create, approve, and reconcile a payroll
+  api: openapi/cadana-workforce-management-openapi.yaml
+  operations: [createPayroll, savePayroll, getPayroll, approvePayroll, getPayrollPayslipLinks, deletePayroll, retrievePayrolls]
+- file: cadana-calculate-tax.md
+  name: Estimate and calculate global payroll tax
+  api: openapi/cadana-global-tax-openapi.yaml
+  operations: [listSupportedLocations, listCountryTaxFields, estimateTaxes, calculateTaxesForPerson]
+- file: cadana-file-statutory-return.md
+  name: File a statutory return and remit to authorities
+  api: openapi/cadana-statutory-compliance-openapi.yaml
+  operations: [listJurisdictions, getRequiredFields, putPersonFields, putBusinessFields, createFiling, approveFiling, getFiling, createRemittance, getComplianceSummary]

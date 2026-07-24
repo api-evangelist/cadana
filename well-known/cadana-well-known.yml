@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: live probe of /.well-known/* on Cadana hosts
+hosts:
+- host: https://cadanapay.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+- host: https://api.cadanapay.com
+  documents:
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/openid-configuration, status: 403}
+  - {path: /.well-known/oauth-authorization-server, status: 403}
+  - {path: /.well-known/api-catalog, status: 403}
+  - {path: /.well-known/ai-plugin.json, status: 403}
+- host: https://docs.cadanapay.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+result: No /.well-known/ discovery documents were served (no security.txt, no OIDC
+  discovery, no API catalog, no ai-plugin). Recorded absence is valid data.

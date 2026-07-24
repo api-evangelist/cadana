@@ -1,0 +1,61 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.cadanapay.com/reference/api-overview
+docs:
+  overview: https://docs.cadanapay.com/reference/api-overview
+  authentication: https://docs.cadanapay.com/authentication
+  pagination: https://docs.cadanapay.com/reference/pagination
+  webhooks: https://docs.cadanapay.com/reference/webhooks
+  errors: https://docs.cadanapay.com/reference/api-overview
+base_urls:
+  production: https://api.cadanapay.com
+  sandbox: https://dev-api.cadanapay.com
+  path_prefix: /v1/
+content_type: application/json
+authentication:
+  style: bearer
+  header: 'Authorization: Bearer <API_KEY>'
+  see: authentication/cadana-authentication.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  see: lifecycle/cadana-lifecycle.yml
+idempotency:
+  supported: true
+  mechanism: request-body field
+  field: idempotencyKey
+  format: uuid
+  scope: per-operation (documented on create operations e.g. createReserve, createBusiness)
+  notes: A client-supplied idempotency key (UUID) prevents duplicate creation on retry;
+    it is echoed back on the created resource.
+  evidence: openapi/cadana-workforce-management-openapi.yaml
+pagination:
+  style: offset
+  params:
+    page: {type: integer, default: 1, description: 'Page number (starts at 1)'}
+    limit: {type: integer, default: 20, range: '1-100', description: Items per page}
+  response_envelope:
+    list_field: data
+    meta_field: meta
+    meta_fields: [limit, currentPage, itemCount, pages, skipped]
+  cursor_note: Some workforce list endpoints also accept a `next` cursor query param.
+money_representation:
+  minor_units: workforce / payroll operations use integer minor units (cents)
+  major_units: wallet transactions use decimal string major units (variable asset precision)
+error_envelope:
+  format: json
+  note: REST/JSON errors returned with standard HTTP status codes (400/401/403/404/409/422/500);
+    responses are not application/problem+json.
+  see: errors/cadana-problem-types.yml
+webhooks:
+  provider: Svix
+  signing: HMAC-SHA256 via svix-id / svix-timestamp / svix-signature headers
+  envelope_fields: [id, eventType, version, timestamp, data]
+  see: asyncapi/cadana-webhooks.yml
+rate_limiting:
+  documented: false
+  note: No published rate-limit policy or rate-limit response headers found in docs
+    or specs as of 2026-07-18.
+multi_tenancy:
+  header: X-MultiTenantKey
+  applies_to: Platform tokens

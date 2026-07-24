@@ -1,0 +1,24 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.cadanapay.com/reference/api-overview
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://docs.cadanapay.com/reference/api-overview
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No formal deprecation policy or RFC 8594 Sunset/Deprecation header support
+    documented as of 2026-07-18.
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+status_page_note: No public status page found (status.cadanapay.com did not resolve).
+maturity_signals:
+  beta_surfaces:
+  - Statutory Compliance filings/remittances (marked Beta — contact Cadana to enable)
+  - List audit events (Beta)
+  not_yet_implemented:
+  - getRequirement (Get a requirement — 'Not yet implemented')
+deprecated_operations: []

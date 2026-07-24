@@ -1,0 +1,225 @@
+# Cadana Developers
+
+## Docs
+
+- [Create crypto deposit address](https://docs.cadanapay.com/api-reference/payments/balances/create-crypto-deposit-address.md): Creates a crypto deposit address for the business on the given chain. Fails if an address already exists for that currency and chain.
+- [Get account balances](https://docs.cadanapay.com/api-reference/payments/balances/get-account-balances.md): Get a business's account balances
+- [Get funding details](https://docs.cadanapay.com/api-reference/payments/balances/get-funding-details.md): Returns the business's funding details.
+- [Create](https://docs.cadanapay.com/api-reference/payments/beneficiaries/create.md): Create a new beneficiary i.e employee/contractor's payout account
+- [Create upload URL](https://docs.cadanapay.com/api-reference/payments/beneficiaries/create-upload-url.md): Reserve a file ID and receive a short-lived HTTPS **PUT** URL. After the client uploads the bytes to that URL, it can reference `fileId` in later API calls (e.g. Beneficiary creation KYC).
+- [Delete](https://docs.cadanapay.com/api-reference/payments/beneficiaries/delete.md): Delete an existing beneficiary
+- [Get](https://docs.cadanapay.com/api-reference/payments/beneficiaries/get.md): Get an existing beneficiary
+- [Get file details](https://docs.cadanapay.com/api-reference/payments/beneficiaries/get-file-details.md): Get details and a download URL for a file by its fileId
+- [List](https://docs.cadanapay.com/api-reference/payments/beneficiaries/list.md): Retrieve beneficiaries
+- [Create FX Quote](https://docs.cadanapay.com/api-reference/payments/fx/create-fx-quote.md): Create an fx quote
+- [Create](https://docs.cadanapay.com/api-reference/payments/payouts/create.md): Create a new payout
+- [Get](https://docs.cadanapay.com/api-reference/payments/payouts/get.md): Get an existing payout
+- [List](https://docs.cadanapay.com/api-reference/payments/payouts/list.md): Retrieve payouts
+- [Get payment methods](https://docs.cadanapay.com/api-reference/payments/resources/get-payment-methods.md): Get a list of available payment methods for a given country code
+- [Get payout providers](https://docs.cadanapay.com/api-reference/payments/resources/get-payout-providers.md): Get a list of providers for a given country code
+- [Payment corridor requirements](https://docs.cadanapay.com/api-reference/payments/resources/payment-corridor-requirements.md): Returns a Draft-07 JSON-Schema fragment that specifies every field, enum, regex and conditional rule for the requested `countryCode` + `currency` + `paymentMethod`.
+- [Resolve bank provider](https://docs.cadanapay.com/api-reference/payments/resources/resolve-bank-provider.md): Resolves a bank code, SWIFT code, or ACH routing number to the corresponding bank name and details. The behaviour depends on the `paymentMethod` parameter: - **swift** — resolves an 8 or 11-character SWIFT/BIC code - **ach** — resolves a 9-digit US ACH routing number - **bank** — resolves against Ca…
+- [Create Virtual Account](https://docs.cadanapay.com/api-reference/payments/virtual-accounts/create-virtual-account.md): Create a new virtual account for a user
+- [Get Virtual Accounts](https://docs.cadanapay.com/api-reference/payments/virtual-accounts/get-virtual-accounts.md): Retrieve virtual accounts for a user
+- [Simulate virtual account deposit](https://docs.cadanapay.com/api-reference/payments/virtual-accounts/simulate-virtual-account-deposit.md): Simulate a virtual account deposit for an active virtual account
+- [List audit events](https://docs.cadanapay.com/api-reference/statutory/events/list-audit-events.md): **Beta** — contact Cadana to enable access for your business.
+- [Amend a previously accepted filing](https://docs.cadanapay.com/api-reference/statutory/filings/amend-a-previously-accepted-filing.md): **Beta** — contact Cadana to enable access for your business.
+- [Approve a filing for submission](https://docs.cadanapay.com/api-reference/statutory/filings/approve-a-filing-for-submission.md): **Beta** — contact Cadana to enable access for your business.
+- [Cancel a filing](https://docs.cadanapay.com/api-reference/statutory/filings/cancel-a-filing.md): **Beta** — contact Cadana to enable access for your business.
+- [Create a filing](https://docs.cadanapay.com/api-reference/statutory/filings/create-a-filing.md): **Beta** — contact Cadana to enable access for your business.
+- [Create all filings for a period](https://docs.cadanapay.com/api-reference/statutory/filings/create-all-filings-for-a-period.md): **Beta** — contact Cadana to enable access for your business.
+- [Download filing document](https://docs.cadanapay.com/api-reference/statutory/filings/download-filing-document.md): **Beta** — contact Cadana to enable access for your business.
+- [Get a filing](https://docs.cadanapay.com/api-reference/statutory/filings/get-a-filing.md): **Beta** — contact Cadana to enable access for your business.
+- [Get compliance health summary](https://docs.cadanapay.com/api-reference/statutory/filings/get-compliance-health-summary.md): **Beta** — contact Cadana to enable access for your business.
+- [List filings](https://docs.cadanapay.com/api-reference/statutory/filings/list-filings.md): **Beta** — contact Cadana to enable access for your business.
+- [Get jurisdiction details](https://docs.cadanapay.com/api-reference/statutory/jurisdictions/get-jurisdiction-details.md): Returns full configuration for a jurisdiction: required employee fields, filing types, statutory benefits, compliance rules, and termination rules.
+- [Get required fields for tax calculation and statutory filing](https://docs.cadanapay.com/api-reference/statutory/jurisdictions/get-required-fields-for-tax-calculation-and-statutory-filing.md): Returns all fields required for tax calculation and/or statutory filing in this jurisdiction. This is a **discovery endpoint** — it tells you what data needs to be collected for both persons (workers) and businesses (employers).
+- [List filing types for a jurisdiction](https://docs.cadanapay.com/api-reference/statutory/jurisdictions/list-filing-types-for-a-jurisdiction.md): Returns every type of statutory return that must be filed in this jurisdiction. Each filing type includes the government authority, frequency, and required data.
+- [List supported jurisdictions](https://docs.cadanapay.com/api-reference/statutory/jurisdictions/list-supported-jurisdictions.md): Returns all countries and regions where Cadana supports statutory filing. Each jurisdiction includes a summary of filing types, payroll frequency, and currency.
+- [Create a remittance](https://docs.cadanapay.com/api-reference/statutory/remittances/create-a-remittance.md): **Beta** — contact Cadana to enable access for your business.
+- [Download remittance receipt](https://docs.cadanapay.com/api-reference/statutory/remittances/download-remittance-receipt.md): **Beta** — contact Cadana to enable access for your business.
+- [Get a remittance](https://docs.cadanapay.com/api-reference/statutory/remittances/get-a-remittance.md): **Beta** — contact Cadana to enable access for your business.
+- [List remittances](https://docs.cadanapay.com/api-reference/statutory/remittances/list-remittances.md): **Beta** — contact Cadana to enable access for your business.
+- [Get a requirement](https://docs.cadanapay.com/api-reference/statutory/requirements/get-a-requirement.md): **Not yet implemented.**
+- [List outstanding requirements](https://docs.cadanapay.com/api-reference/statutory/requirements/list-outstanding-requirements.md): Returns requirements — data inputs, documents, or registrations needed before filings can proceed.
+- [Get business filing data](https://docs.cadanapay.com/api-reference/statutory/statutory-fields/get-business-filing-data.md): Returns statutory filing data for a business in a jurisdiction. The response is a merged view: fields explicitly submitted via PUT are combined with defaults read from the business service.
+- [Get person filing data](https://docs.cadanapay.com/api-reference/statutory/statutory-fields/get-person-filing-data.md): Returns statutory filing data for a person in a jurisdiction. The response is a merged view: fields explicitly submitted via PUT are combined with defaults read from the person service (e.g., firstName, lastName).
+- [Submit business filing fields](https://docs.cadanapay.com/api-reference/statutory/statutory-fields/submit-business-filing-fields.md): Submit statutory filing fields for a business in a jurisdiction. Use this endpoint for fields returned by the required-fields endpoint with `entity: "business"` and `scope` containing `"filing"`.
+- [Submit person filing fields](https://docs.cadanapay.com/api-reference/statutory/statutory-fields/submit-person-filing-fields.md): Submit statutory filing fields for a person in a jurisdiction. Use this endpoint for fields returned by the required-fields endpoint with `entity: "person"` and `scope` containing `"filing"`.
+- [Calculate Taxes](https://docs.cadanapay.com/api-reference/tax/tax-calculator/calculate-taxes.md): Calculate taxes for an existing Cadana person. The person's address determines the jurisdiction, and their stored compensation and tax profile provide calculation inputs (overridden by `salary` when supplied).
+- [Estimate Gross or Net Salary](https://docs.cadanapay.com/api-reference/tax/tax-calculator/estimate-gross-or-net-salary.md): Estimate gross or net salary for a given country and type
+- [List Countries and Regions](https://docs.cadanapay.com/api-reference/tax/tax-calculator/list-countries-and-regions.md): Returns a list of supported countries and their valid states/regions
+- [List Required Additional Tax Fields by Country](https://docs.cadanapay.com/api-reference/tax/tax-calculator/list-required-additional-tax-fields-by-country.md): Returns a list of tax-related additionalfields required to run calculations in the specified country
+- [Get user wallets balances](https://docs.cadanapay.com/api-reference/wallets/balances/get-user-wallets-balances.md): Get balances for the user wallets
+- [Create beneficiary](https://docs.cadanapay.com/api-reference/wallets/beneficiaries/create-beneficiary.md): Create a new beneficiary for a user
+- [Delete beneficiary](https://docs.cadanapay.com/api-reference/wallets/beneficiaries/delete-beneficiary.md): Delete an existing beneficiary for a user
+- [Get beneficiary](https://docs.cadanapay.com/api-reference/wallets/beneficiaries/get-beneficiary.md): Get an existing beneficiary for a user
+- [List beneficiaries](https://docs.cadanapay.com/api-reference/wallets/beneficiaries/list-beneficiaries.md): Retrieve beneficiaries for a user
+- [Create transaction](https://docs.cadanapay.com/api-reference/wallets/transactions/create-transaction.md): Create a new transaction for a user
+- [Get transaction](https://docs.cadanapay.com/api-reference/wallets/transactions/get-transaction.md): Get an existing transaction for a user
+- [Get user fees](https://docs.cadanapay.com/api-reference/wallets/transactions/get-user-fees.md): Retrieve the payout catalog for a user — fees, delivery timelines, and transfer limits per corridor.
+- [List transactions](https://docs.cadanapay.com/api-reference/wallets/transactions/list-transactions.md): Retrieve transactions for a user
+- [Create Custom Field](https://docs.cadanapay.com/api-reference/workforce/businesses/create-custom-field.md): Create a custom field
+- [Create Department](https://docs.cadanapay.com/api-reference/workforce/businesses/create-department.md): Create a department
+- [Get Business](https://docs.cadanapay.com/api-reference/workforce/businesses/get-business.md): Get a business
+- [Get Current Identity](https://docs.cadanapay.com/api-reference/workforce/businesses/get-current-identity.md): Retrieve the calling API key's access level and the business the request resolved to, including its `businessId` and tenant key. With a Platform API token, pass `X-MultiTenantKey` to confirm which sub-business your requests operate on.
+- [Update Custom Field](https://docs.cadanapay.com/api-reference/workforce/businesses/update-custom-field.md): Update a custom field
+- [Update Department](https://docs.cadanapay.com/api-reference/workforce/businesses/update-department.md): Update a department
+- [Create](https://docs.cadanapay.com/api-reference/workforce/contracts/create.md): Create a contract
+- [List](https://docs.cadanapay.com/api-reference/workforce/contracts/list.md): Fetch all contracts
+- [List Templates](https://docs.cadanapay.com/api-reference/workforce/contracts/list-templates.md): Fetch all contract tempaltes
+- [Retrieve](https://docs.cadanapay.com/api-reference/workforce/contracts/retrieve.md): Retrieve a single contract by ID
+- [Signing URL](https://docs.cadanapay.com/api-reference/workforce/contracts/signing-url.md): Get contract signing URL. The generated links last for 336 hours.
+- [Upload Contract](https://docs.cadanapay.com/api-reference/workforce/contracts/upload-contract.md): Upload a contract PDF using a fileId from the files API
+- [JWT](https://docs.cadanapay.com/api-reference/workforce/custom-auth/jwt.md): Exchange your internal JWT to a cadana redirect token
+- [Create](https://docs.cadanapay.com/api-reference/workforce/entities/create.md): Create a new legal entity under the current business
+- [Get](https://docs.cadanapay.com/api-reference/workforce/entities/get.md): Fetch a single legal entity by ID
+- [List](https://docs.cadanapay.com/api-reference/workforce/entities/list.md): List all legal entities for the current tenant
+- [Update](https://docs.cadanapay.com/api-reference/workforce/entities/update.md): Update an existing legal entity
+- [Create upload URL](https://docs.cadanapay.com/api-reference/workforce/files/create-upload-url.md): Reserve a file ID and receive a short-lived HTTPS **PUT** URL. After the client uploads the bytes to that URL, it can reference `fileId` in later API calls (e.g. Beneficiary creation KYC).
+- [Get file details](https://docs.cadanapay.com/api-reference/workforce/files/get-file-details.md): Get details and a download URL for a file by its fileId
+- [Get instant pay setting](https://docs.cadanapay.com/api-reference/workforce/instant-pay/get-instant-pay-setting.md): Fetch a person's instant pay setting
+- [Get instant pay transactions](https://docs.cadanapay.com/api-reference/workforce/instant-pay/get-instant-pay-transactions.md): Fetch a person's instant pay transactions
+- [Update instant pay setting](https://docs.cadanapay.com/api-reference/workforce/instant-pay/update-instant-pay-setting.md): Update a person's instant pay setting
+- [Cancel Invoice](https://docs.cadanapay.com/api-reference/workforce/invoices/cancel-invoice.md): Cancel an invoice. The invoice is voided and can no longer be paid or reviewed.
+- [Get Invoice](https://docs.cadanapay.com/api-reference/workforce/invoices/get-invoice.md): Get invoice details
+- [Get Invoice URL](https://docs.cadanapay.com/api-reference/workforce/invoices/get-invoice-url.md): Get a short-lived URL for the invoice PDF
+- [List Invoices](https://docs.cadanapay.com/api-reference/workforce/invoices/list-invoices.md): List invoices for your business. Optionally filter by person, user, source, status, type, or invoice date range. Filters can be combined; all are optional.
+- [Review Invoice](https://docs.cadanapay.com/api-reference/workforce/invoices/review-invoice.md): Approve or reject a contractor self-submitted invoice. Only invoices with a `source` of `CONTRACTOR_SUBMITTED` in `pending` status can be reviewed; any other invoice returns 400.
+- [Generate KYB Link](https://docs.cadanapay.com/api-reference/workforce/kyb/generate-kyb-link.md): Get KYB Link
+- [Get KYB](https://docs.cadanapay.com/api-reference/workforce/kyb/get-kyb.md): Returns the business's KYB details. Returns 404 if KYB has not been started for the business.
+- [Submit KYB](https://docs.cadanapay.com/api-reference/workforce/kyb/submit-kyb.md): Submit Know Your Business (KYB) information for verification. Use POST to provide new information — the initial submission and any change to the set of principals; to correct information already on file, use PATCH instead.
+- [Update KYB](https://docs.cadanapay.com/api-reference/workforce/kyb/update-kyb.md): Update KYB information already provided. Only the fields you include are changed; new principals cannot be added with PATCH — re-POST the full submission instead. Document arrays are appended to, not replaced.
+- [Add milestone](https://docs.cadanapay.com/api-reference/workforce/milestones/add-milestone.md): Add a milestone (deliverable) to a milestone-type contractor. `documentIds` are file ids from the upload-url flow (POST /v1/files/upload-url with purpose `milestone-document`).
+- [Complete milestone](https://docs.cadanapay.com/api-reference/workforce/milestones/complete-milestone.md): Mark a planned or rejected milestone complete. Generates a contractor invoice and returns its `invoiceId`, and moves the milestone to `Submitted`. As that invoice is approved, rejected, or paid, the milestone status updates to match.
+- [Delete milestone](https://docs.cadanapay.com/api-reference/workforce/milestones/delete-milestone.md): Delete a planned milestone.
+- [List milestones](https://docs.cadanapay.com/api-reference/workforce/milestones/list-milestones.md): List a milestone-type contractor's milestones. Set `includeDocuments=true` to receive presigned document download URLs.
+- [Update milestone](https://docs.cadanapay.com/api-reference/workforce/milestones/update-milestone.md): Update a planned milestone. `documentIds` are file ids from the upload-url flow and replace the milestone's documents.
+- [Approve](https://docs.cadanapay.com/api-reference/workforce/payrolls/approve.md): Approve a payroll
+- [Create](https://docs.cadanapay.com/api-reference/workforce/payrolls/create.md): Create a new payroll
+- [Delete](https://docs.cadanapay.com/api-reference/workforce/payrolls/delete.md): Delete a payroll. Cannot delete payrolls in Processing or Completed status.
+- [Get](https://docs.cadanapay.com/api-reference/workforce/payrolls/get.md): Fetch a payroll's details
+- [Get Payslip Links](https://docs.cadanapay.com/api-reference/workforce/payrolls/get-payslip-links.md): Retrieve presigned download links for a payroll's payslips. Payslips exist only once the payroll is `Completed`; for payrolls that have not yet processed, entries appear under `notReady` with status `not_found`. Each link expires after a short window, so fetch and use them promptly.
+- [List](https://docs.cadanapay.com/api-reference/workforce/payrolls/list.md): Fetch all payrolls
+- [Save](https://docs.cadanapay.com/api-reference/workforce/payrolls/save.md): Save a payroll
+- [Cancel offboarding](https://docs.cadanapay.com/api-reference/workforce/persons/cancel-offboarding.md): Cancel a pending offboarding and return the person to active status
+- [Create](https://docs.cadanapay.com/api-reference/workforce/persons/create.md): Create a new employee/contractor
+- [Get](https://docs.cadanapay.com/api-reference/workforce/persons/get.md): Fetch a person's details
+- [Get payment information](https://docs.cadanapay.com/api-reference/workforce/persons/get-payment-information.md): Fetch a person's payment information
+- [Get tax profile](https://docs.cadanapay.com/api-reference/workforce/persons/get-tax-profile.md): Retrieve a person's tax profile. Returns the shape accepted by PUT /v1/persons/{personId}/taxProfile plus a server-derived `countryCode` field — remove `countryCode` before resubmitting via PUT.
+- [List](https://docs.cadanapay.com/api-reference/workforce/persons/list.md): Get all persons
+- [Reinstate](https://docs.cadanapay.com/api-reference/workforce/persons/reinstate.md): Reinstate a former person back to active status
+- [Schedule offboarding](https://docs.cadanapay.com/api-reference/workforce/persons/schedule-offboarding.md): Schedule a person for offboarding on a given exit date
+- [Update basic information](https://docs.cadanapay.com/api-reference/workforce/persons/update-basic-information.md): Update a person's basic information
+- [Update job information](https://docs.cadanapay.com/api-reference/workforce/persons/update-job-information.md): Update a person's job information
+- [Update payment information](https://docs.cadanapay.com/api-reference/workforce/persons/update-payment-information.md): Update a person's payment information. Required fields vary by payout corridor — use [GET /v1/payment-requirements](/api-reference/payments/resources/payment-corridor-requirements) as the authoritative list of fields for each currency and method.
+- [Update person type](https://docs.cadanapay.com/api-reference/workforce/persons/update-person-type.md): Switch a person's employment type between employee and contractor. The person must be in Active status. Optionally provide new compensation info. If omitted, incompatible compensation is auto-converted (salaried becomes net, fixed becomes net).
+- [Update personal information](https://docs.cadanapay.com/api-reference/workforce/persons/update-personal-information.md): Update a person's personal information including identity documents, date of birth, gender, nationality, and address
+- [Update tax profile](https://docs.cadanapay.com/api-reference/workforce/persons/update-tax-profile.md): Update a person's tax profile with country-specific tax fields such as marital status and number of dependents
+- [Create](https://docs.cadanapay.com/api-reference/workforce/platform/create.md): Create a business
+- [Create Transfer](https://docs.cadanapay.com/api-reference/workforce/platform/create-transfer.md): Move money between your own business accounts — your main business and its child businesses — internally and same-currency only. Settles immediately with no fee.
+- [Custom Roles](https://docs.cadanapay.com/api-reference/workforce/platform/custom-roles.md): Get Custom Roles
+- [Get Disbursement](https://docs.cadanapay.com/api-reference/workforce/platform/get-disbursement.md): Fetch a single disbursement by ID.
+- [List](https://docs.cadanapay.com/api-reference/workforce/platform/list.md): Fetch all businesses
+- [List Disbursements](https://docs.cadanapay.com/api-reference/workforce/platform/list-disbursements.md): Retrieve all disbursements across all businesses under the platform. Use this endpoint for financial reconciliation across your sub-businesses.
+- [Cancel Reimbursement](https://docs.cadanapay.com/api-reference/workforce/reimbursements/cancel-reimbursement.md): Cancel a reimbursement. Only reimbursements that are not already approved or paid can be cancelled.
+- [Create Reimbursement](https://docs.cadanapay.com/api-reference/workforce/reimbursements/create-reimbursement.md): Create a reimbursement for a worker in your business. The reimbursement is created in a pending status and must be reviewed (via [`POST /v1/reimbursements/{reimbursementId}/review`](#tag/reimbursements/post/v1/reimbursements/{reimbursementId}/review)) before it is paid out. Each entry may optionally…
+- [Get Reimbursement](https://docs.cadanapay.com/api-reference/workforce/reimbursements/get-reimbursement.md): Get a reimbursement's details.
+- [List Reimbursements](https://docs.cadanapay.com/api-reference/workforce/reimbursements/list-reimbursements.md): List reimbursements for your business.
+- [Review (Approve or Reject) Reimbursement](https://docs.cadanapay.com/api-reference/workforce/reimbursements/review-approve-or-reject-reimbursement.md): Approve or reject a reimbursement. **Approving pays it out** — the reimbursement amount is disbursed immediately from the `sourceCurrency` wallet (subject to a balance check), and a `reimbursement.paid` webhook follows once the disbursement settles. Rejecting requires a `reason`. Only reimbursements…
+- [Delete User](https://docs.cadanapay.com/api-reference/workforce/sandbox/delete-user.md): Delete a user
+- [Deposit](https://docs.cadanapay.com/api-reference/workforce/sandbox/deposit.md): Add funds to a business for payroll
+- [Create Crypto Deposit Address](https://docs.cadanapay.com/api-reference/workforce/treasury/create-crypto-deposit-address.md): Creates a crypto deposit address for the business on the given chain. Fails if an address already exists for that currency and chain.
+- [Create Deposit](https://docs.cadanapay.com/api-reference/workforce/treasury/create-deposit.md): Create a deposit to add funds to a business account
+- [Create Reserve](https://docs.cadanapay.com/api-reference/workforce/treasury/create-reserve.md): Lock or release business reserves (e.g. security deposits)
+- [Delete External Account](https://docs.cadanapay.com/api-reference/workforce/treasury/delete-external-account.md): Delete an external account linked to a business
+- [Generate External Account Link](https://docs.cadanapay.com/api-reference/workforce/treasury/generate-external-account-link.md): Generate External Account Link
+- [Generate Withdrawal Link](https://docs.cadanapay.com/api-reference/workforce/treasury/generate-withdrawal-link.md): Generate a short-lived JWT-signed URL that lets a business owner withdraw funds from their wallet to an external bank beneficiary without signing into the dashboard.
+- [Get Balance Ledger](https://docs.cadanapay.com/api-reference/workforce/treasury/get-balance-ledger.md): Retrieve a business's balance ledger — every credit and debit on the business's balance, including funding deposits and outgoing payments, with the direction and balance effect of each entry. Use this endpoint to reconcile balance movements against your own books.
+- [Get Balances](https://docs.cadanapay.com/api-reference/workforce/treasury/get-balances.md): Get a business's account balances
+- [Get External Accounts](https://docs.cadanapay.com/api-reference/workforce/treasury/get-external-accounts.md): Get external accounts linked to a business
+- [Get Funding Details](https://docs.cadanapay.com/api-reference/workforce/treasury/get-funding-details.md): Returns the business's funding details.
+- [Get Statement](https://docs.cadanapay.com/api-reference/workforce/treasury/get-statement.md): Download a business's account statement for a date range. Returns JSON by default; set `format` to `csv` or `bai2` to download a file instead.
+- [Add Admin](https://docs.cadanapay.com/api-reference/workforce/users/add-admin.md): Add an admin to the business account
+- [Attach a custom sub](https://docs.cadanapay.com/api-reference/workforce/users/attach-a-custom-sub.md): Append your external token subject to cadana user
+- [Get](https://docs.cadanapay.com/api-reference/workforce/users/get.md): Fetch a user's details
+- [Get Balances](https://docs.cadanapay.com/api-reference/workforce/users/get-balances.md): Get a user's wallet balances
+- [Get KYC](https://docs.cadanapay.com/api-reference/workforce/users/get-kyc.md): Fetch a user's kyc details
+- [Invite](https://docs.cadanapay.com/api-reference/workforce/users/invite.md): Create a user for the associated person record
+- [List](https://docs.cadanapay.com/api-reference/workforce/users/list.md): Get all users
+- [Remove Admin](https://docs.cadanapay.com/api-reference/workforce/users/remove-admin.md): Remove an admin from the business account
+- [Resubmit KYC](https://docs.cadanapay.com/api-reference/workforce/users/resubmit-kyc.md): Resubmit KYC identity and/or address information after rejection. Identity can only be resubmitted when status is rejected. Address can only be resubmitted when status is not started or rejected.
+- [Submit KYC](https://docs.cadanapay.com/api-reference/workforce/users/submit-kyc.md): Submit Know Your Customer (KYC) information for verification
+- [Tax Form Download](https://docs.cadanapay.com/api-reference/workforce/users/tax-form-download.md): Get a download link to a users's tax form
+- [Tax Forms](https://docs.cadanapay.com/api-reference/workforce/users/tax-forms.md): Get a user's tax form
+- [Authentication](https://docs.cadanapay.com/authentication.md): API keys, token types, and how to authenticate requests
+- [Fund Your Account](https://docs.cadanapay.com/fund-your-account.md): Add funds to your business account via bank transfer, ACH direct debit, or crypto
+- [Getting Started](https://docs.cadanapay.com/getting-started.md): Get from zero to your first API call in minutes
+- [Introduction](https://docs.cadanapay.com/introduction.md)
+- [Making a Payment](https://docs.cadanapay.com/payments/making-a-payment.md): Step-by-step guide to sending a payout through the Payments API
+- [Overview](https://docs.cadanapay.com/payments/overview.md): Integrate Cadana's payment infrastructure to simplify international payroll across 100+ countries
+- [Payment Methods & Requirements](https://docs.cadanapay.com/payments/payment-requirements.md): Supported payment methods and required fields for each payment corridor
+- [RFI & Compliance](https://docs.cadanapay.com/payments/rfi-compliance.md): Understanding and responding to requests for information during payment processing
+- [Testing](https://docs.cadanapay.com/payments/testing.md): Test your payment integration in the sandbox environment
+- [KYB Requirements](https://docs.cadanapay.com/platform/kyb-requirements.md): Business verification requirements for Cadana
+- [KYC Verification](https://docs.cadanapay.com/platform/kyc-verification.md): Submit and track Know Your Customer verification for workers
+- [Multi-Tenant Setup](https://docs.cadanapay.com/platform/multi-tenant-setup.md): Set up a multi-tenant integration with Cadana's Platform API
+- [Overview](https://docs.cadanapay.com/platform/overview.md): Build multi-tenant integrations with Cadana's Platform API
+- [Transaction Reconciliation](https://docs.cadanapay.com/platform/transaction-reconciliation.md): Reconcile payroll, payouts, and wallet transactions across all businesses on your platform
+- [API Overview](https://docs.cadanapay.com/reference/api-overview.md): Cadana API reference introduction
+- [Events](https://docs.cadanapay.com/reference/events.md): All webhook event types and their payloads
+- [Pagination](https://docs.cadanapay.com/reference/pagination.md): How to paginate through list endpoints
+- [Sandbox & Testing](https://docs.cadanapay.com/reference/sandbox.md): Testing your integration in the sandbox environment
+- [Webhooks](https://docs.cadanapay.com/reference/webhooks.md): Receive real-time notifications when events occur on the Cadana platform
+- [Working with Files](https://docs.cadanapay.com/reference/working-with-files.md): Upload and download files for KYC documents, contracts, address proofs, and more
+- [Postman Collection](https://docs.cadanapay.com/resources/postman.md): Test Cadana APIs with Postman
+- [Supported Countries](https://docs.cadanapay.com/resources/supported-countries.md): Supported countries, currencies, and payment methods for funding your Cadana business account
+- [Statutory Filing](https://docs.cadanapay.com/statutory/filing.md): File statutory returns with government authorities across jurisdictions
+- [Getting Started](https://docs.cadanapay.com/statutory/getting-started.md): Discover supported jurisdictions, required fields, and outstanding compliance requirements
+- [Overview](https://docs.cadanapay.com/statutory/overview.md): Automate statutory filings and government remittances across jurisdictions
+- [Statutory Remittance](https://docs.cadanapay.com/statutory/remittance.md): Pay government authorities through local payment rails with automatic FX conversion
+- [The Full Loop](https://docs.cadanapay.com/statutory/the-full-loop.md): Walk through the complete calculate, file, remit, and prove cycle
+- [Overview](https://docs.cadanapay.com/tax/estimate.md): Instant gross-to-net and net-to-gross salary estimates across 150+ countries
+- [Integration Guide](https://docs.cadanapay.com/tax/getting-started.md): Integrate the Global Tax Engine API
+- [Overview](https://docs.cadanapay.com/tax/overview.md): Simplify global payroll tax calculations with a single API
+- [Configuration Options](https://docs.cadanapay.com/tools/calculator/configuration.md): Configuration reference for the salary calculator widget
+- [Custom Events](https://docs.cadanapay.com/tools/calculator/events.md): Listen to calculator widget events for analytics and integration
+- [Full Integration Options](https://docs.cadanapay.com/tools/calculator/full-integration.md): Advanced integration methods for the salary calculator widget
+- [Getting Started](https://docs.cadanapay.com/tools/calculator/getting-started.md): Add the gross-to-net salary calculator to your website
+- [Overview](https://docs.cadanapay.com/tools/calculator/overview.md): Gross-to-net salary calculator widget overview
+- [Theming](https://docs.cadanapay.com/tools/calculator/theming.md): Customize the salary calculator widget's appearance with CSS variables
+- [Global Wallets](https://docs.cadanapay.com/wallets/overview.md): Multi-currency wallets built for global teams
+- [Payout](https://docs.cadanapay.com/wallets/payout.md): Send funds from wallets to beneficiaries worldwide
+- [Tax Forms](https://docs.cadanapay.com/wallets/tax-forms.md): Retrieve and download tax forms for contractors
+- [Virtual Accounts](https://docs.cadanapay.com/wallets/virtual-accounts.md): Fund worker wallets via dedicated ACH accounts
+- [Set Up Worker Wallets](https://docs.cadanapay.com/wallets/worker-wallets.md): Create User accounts, complete KYC, and provision Cadana wallets for workers
+- [All Notification Kinds](https://docs.cadanapay.com/white-label/all-notification-kinds.md): Complete reference of email notifications sent by the platform
+- [Custom Authentication](https://docs.cadanapay.com/white-label/custom-authentication.md): Integrate your authentication system with Cadana for seamless Single Sign-On (SSO)
+- [Custom Domain](https://docs.cadanapay.com/white-label/custom-domain.md): Serve the white-label app from your own domain
+- [Customizing Notifications](https://docs.cadanapay.com/white-label/customizing-notifications.md): Customize email notifications for the white-label app
+- [Overview](https://docs.cadanapay.com/white-label/overview.md): Embed Cadana's pre-built payroll and wallet UI under your brand
+- [Theme](https://docs.cadanapay.com/white-label/theme.md): Customize the visual appearance of the white-label app
+- [Admin Management](https://docs.cadanapay.com/workforce/admin-management.md): Add and remove business administrators via the API
+- [Departments & Custom Fields](https://docs.cadanapay.com/workforce/departments-custom-fields.md): Organize workers by department and track custom metadata
+- [Employment Models](https://docs.cadanapay.com/workforce/employment-models.md): Direct employment vs Employer of Record, and what each model collects at payroll
+- [Entity Management](https://docs.cadanapay.com/workforce/entity-management.md): Manage legal sub-entities for global payroll across jurisdictions
+- [Instant Pay](https://docs.cadanapay.com/workforce/instant-pay.md): Give workers early access to earned wages before their next payroll date
+- [Manage Contracts](https://docs.cadanapay.com/workforce/manage-contracts.md): Create contracts from templates or upload signed PDFs, track signatures, and manage the contract lifecycle
+- [Offboard Workers](https://docs.cadanapay.com/workforce/offboarding-workers.md): Schedule offboarding, cancel pending offboarding, and reinstate former workers
+- [Onboard Workers](https://docs.cadanapay.com/workforce/onboarding-workers.md): Create employee and contractor records, configure compensation, and set up payment methods
+- [Overview](https://docs.cadanapay.com/workforce/overview.md): Manage employees, contractors, and payroll globally
+- [Pay a Contractor End-to-End](https://docs.cadanapay.com/workforce/pay-a-contractor.md): The complete journey — onboard a contractor, put an agreement in place, provision their wallet, run payroll, and cash out
+- [Pay an Employee End-to-End](https://docs.cadanapay.com/workforce/pay-an-employee.md): From checking jurisdiction support to a completed payroll with payslips — the full employee lifecycle in one walkthrough
+- [Pay Workers via Payroll](https://docs.cadanapay.com/workforce/pay-workers-via-payroll.md): Create, save, and approve payrolls to pay workers through Cadana
+- [Payroll](https://docs.cadanapay.com/workforce/payroll.md): Run payroll for employees and contractors across currencies
+- [Overview](https://docs.cadanapay.com/workforce/payroll-and-compliance.md): Calculate, pay, file, and remit — modular building blocks for global workforce operations
+- [Payroll Lifecycle](https://docs.cadanapay.com/workforce/payroll-lifecycle.md): Status transitions, webhook events, multi-currency handling, and edge cases for payrolls
+
+## OpenAPI Specs
+
+- [workforce-management](https://docs.cadanapay.com/openapi/workforce-management.yaml)
+- [statutory-compliance](https://docs.cadanapay.com/openapi/statutory-compliance.yaml)
+- [embedded-consumer-wallets](https://docs.cadanapay.com/openapi/embedded-consumer-wallets.yaml)
+- [global-tax](https://docs.cadanapay.com/openapi/global-tax.yaml)
+- [embedded-payments](https://docs.cadanapay.com/openapi/embedded-payments.yaml)
+- [openapi](https://docs.cadanapay.com/api-reference/openapi.json)

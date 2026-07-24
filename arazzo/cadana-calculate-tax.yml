@@ -1,0 +1,41 @@
+arazzo: 1.0.1
+info:
+  title: Cadana — discover and calculate payroll tax
+  version: 1.0.0
+  summary: Discover supported locations and required fields, then estimate and calculate tax.
+sourceDescriptions:
+- name: tax
+  url: ../openapi/cadana-global-tax-openapi.yaml
+  type: openapi
+workflows:
+- workflowId: estimateAndCalculateTax
+  summary: List locations, list required fields for a country, run an estimate, then a full person calculation.
+  inputs:
+    type: object
+    properties:
+      estimate: {type: object}
+      calculate: {type: object}
+  steps:
+  - stepId: listLocations
+    operationId: listSupportedLocations
+    outputs:
+      locations: $response.body
+  - stepId: listFields
+    operationId: listCountryTaxFields
+    outputs:
+      fields: $response.body
+  - stepId: estimate
+    operationId: estimateTaxes
+    requestBody:
+      payload: $inputs.estimate
+    outputs:
+      estimate: $response.body
+  - stepId: calculate
+    operationId: calculateTaxesForPerson
+    requestBody:
+      payload: $inputs.calculate
+    outputs:
+      calculation: $response.body
+  outputs:
+    estimate: $steps.estimate.outputs.estimate
+    calculation: $steps.calculate.outputs.calculation

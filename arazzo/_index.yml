@@ -1,0 +1,12 @@
+generated: '2026-07-18'
+method: derived
+source: arazzo/*.yml
+workflows:
+- file: cadana-pay-contractor.yml
+  workflowId: payContractorEndToEnd
+  title: Cadana — pay a contractor end-to-end
+  summary: Onboard a contractor, create a contract, run and approve payroll, then retrieve payslips.
+- file: cadana-calculate-tax.yml
+  workflowId: estimateAndCalculateTax
+  title: Cadana — discover and calculate payroll tax
+  summary: List locations and required fields, run a salary estimate, then a full person tax calculation.

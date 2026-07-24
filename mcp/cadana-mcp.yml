@@ -1,0 +1,391 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+source: openapi/*.yaml
+note: 'No official hosted/remote Cadana MCP server was found as of 2026-07-18. This is a CANDIDATE tool
+  list derived one-tool-per-operationId from Cadana''s published OpenAPI, for an MCP server that could
+  front the REST API (Authorization: Bearer).'
+server:
+  name: cadana
+  transport: http
+  auth: bearer
+tool_count: 126
+tools:
+- name: getUserWallets
+  description: Get user wallets balances
+  source_operation: openapi/cadana-embedded-consumer-wallets-openapi.yaml#getUserWallets
+- name: getUserFees
+  description: Get user fees
+  source_operation: openapi/cadana-embedded-consumer-wallets-openapi.yaml#getUserFees
+- name: getBusinessBalances
+  description: Get account balances
+  source_operation: openapi/cadana-embedded-payments-openapi.yaml#getBusinessBalances
+- name: getFundingDetails
+  description: Get funding details
+  source_operation: openapi/cadana-embedded-payments-openapi.yaml#getFundingDetails
+- name: createCryptoDepositAddress
+  description: Create crypto deposit address
+  source_operation: openapi/cadana-embedded-payments-openapi.yaml#createCryptoDepositAddress
+- name: getPaymentRequirements
+  description: Payment corridor requirements
+  source_operation: openapi/cadana-embedded-payments-openapi.yaml#getPaymentRequirements
+- name: getPaymentMethods
+  description: Get payment methods
+  source_operation: openapi/cadana-embedded-payments-openapi.yaml#getPaymentMethods
+- name: calculateTaxesForPerson
+  description: Calculate Taxes
+  source_operation: openapi/cadana-global-tax-openapi.yaml#calculateTaxesForPerson
+- name: listCountryTaxFields
+  description: List Required Additional Tax Fields by Country
+  source_operation: openapi/cadana-global-tax-openapi.yaml#listCountryTaxFields
+- name: listSupportedLocations
+  description: List Countries and Regions
+  source_operation: openapi/cadana-global-tax-openapi.yaml#listSupportedLocations
+- name: estimateTaxes
+  description: Estimate Gross or Net Salary
+  source_operation: openapi/cadana-global-tax-openapi.yaml#estimateTaxes
+- name: listJurisdictions
+  description: List supported jurisdictions
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listJurisdictions
+- name: getJurisdiction
+  description: Get jurisdiction details
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getJurisdiction
+- name: listFilingTypes
+  description: List filing types for a jurisdiction
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listFilingTypes
+- name: getRequiredFields
+  description: Get required fields for tax calculation and statutory filing
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getRequiredFields
+- name: listFilings
+  description: List filings
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listFilings
+- name: createFiling
+  description: Create a filing
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#createFiling
+- name: createFilingsBatch
+  description: Create all filings for a period
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#createFilingsBatch
+- name: getFiling
+  description: Get a filing
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getFiling
+- name: approveFiling
+  description: Approve a filing for submission
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#approveFiling
+- name: cancelFiling
+  description: Cancel a filing
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#cancelFiling
+- name: amendFiling
+  description: Amend a previously accepted filing
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#amendFiling
+- name: getFilingDocument
+  description: Download filing document
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getFilingDocument
+- name: getComplianceSummary
+  description: Get compliance health summary
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getComplianceSummary
+- name: listRemittances
+  description: List remittances
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listRemittances
+- name: createRemittance
+  description: Create a remittance
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#createRemittance
+- name: getRemittance
+  description: Get a remittance
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getRemittance
+- name: getRemittanceReceipt
+  description: Download remittance receipt
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getRemittanceReceipt
+- name: listRequirements
+  description: List outstanding requirements
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listRequirements
+- name: getRequirement
+  description: Get a requirement
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getRequirement
+- name: listEvents
+  description: List audit events
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#listEvents
+- name: putPersonFields
+  description: Submit person filing fields
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#putPersonFields
+- name: getPersonFields
+  description: Get person filing data
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getPersonFields
+- name: putBusinessFields
+  description: Submit business filing fields
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#putBusinessFields
+- name: getBusinessFields
+  description: Get business filing data
+  source_operation: openapi/cadana-statutory-compliance-openapi.yaml#getBusinessFields
+- name: getPerson
+  description: Get
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPerson
+- name: getPersons
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersons
+- name: createPerson
+  description: Create
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createPerson
+- name: updatePersonBasicInfo
+  description: Update basic information
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonBasicInfo
+- name: updatePersonPersonalInfo
+  description: Update personal information
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonPersonalInfo
+- name: getPersonTaxProfile
+  description: Get tax profile
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersonTaxProfile
+- name: updatePersonTaxProfile
+  description: Update tax profile
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonTaxProfile
+- name: updatePersonJobInfo
+  description: Update job information
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonJobInfo
+- name: getPersonPaymentInfo
+  description: Get payment information
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersonPaymentInfo
+- name: updatePersonPaymentInfo
+  description: Update payment information
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonPaymentInfo
+- name: updatePersonIPSetting
+  description: Update instant pay setting
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonIPSetting
+- name: getPersonIPSetting
+  description: Get instant pay setting
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersonIPSetting
+- name: getPersonIPTransactions
+  description: Get instant pay transactions
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersonIPTransactions
+- name: scheduleOffboarding
+  description: Schedule offboarding
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#scheduleOffboarding
+- name: cancelOffboarding
+  description: Cancel offboarding
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#cancelOffboarding
+- name: reinstatePerson
+  description: Reinstate
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#reinstatePerson
+- name: updatePersonType
+  description: Update person type
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonType
+- name: getPersonMilestones
+  description: List milestones
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPersonMilestones
+- name: addPersonMilestone
+  description: Add milestone
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#addPersonMilestone
+- name: updatePersonMilestone
+  description: Update milestone
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updatePersonMilestone
+- name: deletePersonMilestone
+  description: Delete milestone
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#deletePersonMilestone
+- name: completePersonMilestone
+  description: Complete milestone
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#completePersonMilestone
+- name: exchangeJwtToken
+  description: JWT
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#exchangeJwtToken
+- name: updateUserSubject
+  description: Attach a custom sub
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updateUserSubject
+- name: addAdminUser
+  description: Add Admin
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#addAdminUser
+- name: removeAdminUser
+  description: Remove Admin
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#removeAdminUser
+- name: inviteUser
+  description: Invite
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#inviteUser
+- name: getUsers
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUsers
+- name: getUser
+  description: Get
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUser
+- name: getUserKYC
+  description: Get KYC
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUserKYC
+- name: submitUserKYC
+  description: Submit KYC
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#submitUserKYC
+- name: resubmitUserKYC
+  description: Resubmit KYC
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#resubmitUserKYC
+- name: getUserBalances
+  description: Get Balances
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUserBalances
+- name: getUserTaxForms
+  description: Tax Forms
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUserTaxForms
+- name: getUserTaxFormLink
+  description: Tax Form Download
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getUserTaxFormLink
+- name: createPayroll
+  description: Create
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createPayroll
+- name: retrievePayrolls
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#retrievePayrolls
+- name: savePayroll
+  description: Save
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#savePayroll
+- name: getPayroll
+  description: Get
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPayroll
+- name: deletePayroll
+  description: Delete
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#deletePayroll
+- name: approvePayroll
+  description: Approve
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#approvePayroll
+- name: getPayrollPayslipLinks
+  description: Get Payslip Links
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPayrollPayslipLinks
+- name: createBusiness
+  description: Create
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createBusiness
+- name: retrieveBusinesses
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#retrieveBusinesses
+- name: getPlatformDisbursements
+  description: List Disbursements
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPlatformDisbursements
+- name: getPlatformDisbursement
+  description: Get Disbursement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getPlatformDisbursement
+- name: createPlatformTransfer
+  description: Create Transfer
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createPlatformTransfer
+- name: getRoles
+  description: Custom Roles
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getRoles
+- name: retrieveContractTemplates
+  description: List Templates
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#retrieveContractTemplates
+- name: retrieveContracts
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#retrieveContracts
+- name: createContracts
+  description: Create
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createContracts
+- name: retrieveContract
+  description: Retrieve
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#retrieveContract
+- name: getContractSigningUrl
+  description: Signing URL
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getContractSigningUrl
+- name: uploadContract
+  description: Upload Contract
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#uploadContract
+- name: getBusiness
+  description: Get Business
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getBusiness
+- name: getMe
+  description: Get Current Identity
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getMe
+- name: getBusinessBalances
+  description: Get Balances
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getBusinessBalances
+- name: getBusinessTransactions
+  description: Get Balance Ledger
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getBusinessTransactions
+- name: getBusinessStatement
+  description: Get Statement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getBusinessStatement
+- name: getFundingDetails
+  description: Get Funding Details
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getFundingDetails
+- name: createBusinessDeposit
+  description: Create Deposit
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createBusinessDeposit
+- name: createCryptoDepositAddress
+  description: Create Crypto Deposit Address
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createCryptoDepositAddress
+- name: createReserve
+  description: Create Reserve
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createReserve
+- name: generateWithdrawalLink
+  description: Generate Withdrawal Link
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#generateWithdrawalLink
+- name: getExternalAccounts
+  description: Get External Accounts
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getExternalAccounts
+- name: generateLinkForExternalAccount
+  description: Generate External Account Link
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#generateLinkForExternalAccount
+- name: deleteExternalAccount
+  description: Delete External Account
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#deleteExternalAccount
+- name: createDepartment
+  description: Create Department
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createDepartment
+- name: updateDepartment
+  description: Update Department
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updateDepartment
+- name: createCustomField
+  description: Create Custom Field
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createCustomField
+- name: updateCustomField
+  description: Update Custom Field
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updateCustomField
+- name: submitKYB
+  description: Submit KYB
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#submitKYB
+- name: getKyb
+  description: Get KYB
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getKyb
+- name: updateKyb
+  description: Update KYB
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updateKyb
+- name: getKybLink
+  description: Generate KYB Link
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getKybLink
+- name: createEntity
+  description: Create
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createEntity
+- name: listEntities
+  description: List
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#listEntities
+- name: getEntity
+  description: Get
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getEntity
+- name: updateEntity
+  description: Update
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#updateEntity
+- name: sandboxDeposit
+  description: Deposit
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#sandboxDeposit
+- name: adminDeleteUser
+  description: Delete User
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#adminDeleteUser
+- name: listInvoices
+  description: List Invoices
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#listInvoices
+- name: getInvoice
+  description: Get Invoice
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getInvoice
+- name: getInvoiceUrl
+  description: Get Invoice URL
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getInvoiceUrl
+- name: reviewInvoice
+  description: Review Invoice
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#reviewInvoice
+- name: cancelInvoice
+  description: Cancel Invoice
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#cancelInvoice
+- name: listReimbursements
+  description: List Reimbursements
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#listReimbursements
+- name: createReimbursement
+  description: Create Reimbursement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#createReimbursement
+- name: getReimbursement
+  description: Get Reimbursement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#getReimbursement
+- name: cancelReimbursement
+  description: Cancel Reimbursement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#cancelReimbursement
+- name: reviewReimbursement
+  description: Review (Approve or Reject) Reimbursement
+  source_operation: openapi/cadana-workforce-management-openapi.yaml#reviewReimbursement

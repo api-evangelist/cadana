@@ -1,0 +1,15 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Cadana Embedded Consumer Wallets
+  version: 1.0.0
+extends: openapi/cadana-embedded-consumer-wallets-openapi.yaml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: cadana
+    x-apievangelist-product: Embedded Consumer Wallets
+    x-apievangelist-auth: 'http bearer (Authorization: Bearer)'
+    x-apievangelist-idempotency: request-body idempotencyKey (uuid) on create operations
+    x-apievangelist-pagination: offset (page/limit) with meta envelope
+    x-apievangelist-webhooks: Svix HMAC-SHA256 (svix-* headers); see asyncapi/cadana-webhooks.yml
+    x-apievangelist-sandbox: https://dev-api.cadanapay.com; see sandbox/cadana-sandbox.yml

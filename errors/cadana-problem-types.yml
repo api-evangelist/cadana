@@ -1,0 +1,59 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/*.yaml (4xx/5xx responses)
+format: json
+format_note: Cadana returns plain JSON errors with standard HTTP status codes (not
+  RFC 9457 application/problem+json). This catalog is derived from the response codes
+  declared across all five specs.
+envelope_note: Error bodies carry a message describing the failure; see the per-operation
+  response descriptions in the OpenAPI specs for specifics.
+problems:
+- status: 400
+  title: Bad Request
+  meaning: Invalid input, unsupported currency/chain, a state that does not permit
+    the action (e.g. KYB not editable), or a validation failure.
+  occurrences: 91
+  remediation: Validate request fields against the operation schema and payment-corridor
+    requirements before retrying.
+  example_operation: openapi/cadana-embedded-payments-openapi.yaml#getPaymentRequirements
+- status: 403
+  title: Forbidden
+  meaning: Insufficient permissions, or an incorrect/missing X-MultiTenantKey on a
+    Platform token.
+  occurrences: 1
+  remediation: Confirm the token's access level and the target tenant key.
+  example_operation: openapi/cadana-workforce-management-openapi.yaml#createPlatformTransfer
+- status: 404
+  title: Not Found
+  meaning: The referenced resource does not exist, or a derived artifact (document,
+    receipt) is not yet available.
+  occurrences: 78
+  remediation: Verify the resource id; for not-yet-available documents/receipts, poll
+    or await the corresponding webhook.
+  example_operation: openapi/cadana-workforce-management-openapi.yaml#getKyb
+- status: 409
+  title: Conflict
+  meaning: The resource is in a state that does not allow the requested transition
+    (e.g. a filing cannot be approved/cancelled/amended in its current state).
+  occurrences: 3
+  remediation: Fetch the current resource state and only issue transitions valid for
+    that state.
+  example_operation: openapi/cadana-statutory-compliance-openapi.yaml#approveFiling
+- status: 422
+  title: Unprocessable Entity
+  meaning: The request was well-formed but failed semantic validation.
+  occurrences: 1
+  remediation: Inspect the validation detail and correct the offending fields.
+  example_operation: openapi/cadana-statutory-compliance-openapi.yaml#createFiling
+- status: 500
+  title: Internal Server Error
+  meaning: An unexpected server-side error occurred.
+  occurrences: 2
+  remediation: Retry with backoff; if persistent, contact Cadana support.
+  example_operation: openapi/cadana-workforce-management-openapi.yaml#getPayrollPayslipLinks
+- status: 5XX
+  title: Server Error (range)
+  meaning: Generic server-error response range declared on most operations.
+  occurrences: 105
+  remediation: Retry idempotent requests with backoff; use idempotencyKey on create
+    operations to avoid duplicates.

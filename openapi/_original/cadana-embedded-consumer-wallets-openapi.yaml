@@ -1,0 +1,1523 @@
+openapi: 3.0.0
+info:
+  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  version: 1.0.0
+  title: Embedded Consumer Wallets
+  termsOfService: https://cadanapay.com/terms-and-conditions
+  contact:
+    email: api@cadanapay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.cadanapay.com
+    description: Prod Server
+  - url: https://dev-api.cadanapay.com
+    description: Dev Server
+security:
+  - Authorization: []
+tags:
+  - name: Beneficiaries
+    description: APIs for managing user beneficiaries
+  - name: Transactions
+    description: APIs for managing user transactions
+  - name: Balances
+    description: APIs for managing user account balances
+paths:
+  /v1/users/{userId}/beneficiaries:
+    post:
+      summary: Create beneficiary
+      description: Create a new beneficiary for a user
+      tags:
+        - Beneficiaries
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBeneficiaryRequest'
+            examples:
+              philippinesBankPaymentMethod:
+                $ref: '#/components/examples/philippinesBankPaymentMethod'
+              colombiaBankPaymentMethod:
+                $ref: '#/components/examples/colombiaBankPaymentMethod'
+              momoPaymentMethod:
+                $ref: '#/components/examples/momoPaymentMethod'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBeneficiaryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List beneficiaries
+      description: Retrieve beneficiaries for a user
+      tags:
+        - Beneficiaries
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiariesResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/beneficiaries/{beneficiaryId}:
+    get:
+      summary: Get beneficiary
+      description: Get an existing beneficiary for a user
+      tags:
+        - Beneficiaries
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/beneficiaryId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBeneficiaryResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    delete:
+      summary: Delete beneficiary
+      description: Delete an existing beneficiary for a user
+      tags:
+        - Beneficiaries
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/beneficiaryId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/transactions:
+    post:
+      summary: Create transaction
+      description: Create a new transaction for a user
+      tags:
+        - Transactions
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTransactionRequest'
+            examples:
+              payoutWithDestinationAmount:
+                summary: >-
+                  Payout with destination amount - send exactly 500 PHP to the
+                  beneficiary
+                value:
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  amount:
+                    value: '500.00'
+                    currency: PHP
+                  sourceCurrency: USD
+                  reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+              payoutWithSourceAmount:
+                summary: >-
+                  Payout with source amount - send 10 USD worth to the
+                  beneficiary
+                value:
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  sourceAmount:
+                    value: '10.00'
+                    currency: USD
+                  reference: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateTransactionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+    get:
+      summary: List transactions
+      description: Retrieve transactions for a user
+      tags:
+        - Transactions
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - name: reference
+          in: query
+          required: false
+          description: Client reference to filter transactions
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          description: Transaction type to filter by
+          schema:
+            type: string
+            enum:
+              - payout
+              - savings_funding
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTransactionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/transactions/{transactionId}:
+    get:
+      summary: Get transaction
+      description: Get an existing transaction for a user
+      tags:
+        - Transactions
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/transactionId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+        - name: document
+          in: query
+          required: false
+          description: >-
+            Include a presigned download URL for a transaction document, e.g.
+            `firc` for the FIRC (Foreign Inward Remittance Certificate) on
+            Indian payouts
+          schema:
+            type: string
+            enum:
+              - firc
+      responses:
+        '200':
+          $ref: '#/components/responses/GetTransactionResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/wallets:
+    get:
+      summary: Get user wallets balances
+      description: Get balances for the user wallets
+      operationId: getUserWallets
+      tags:
+        - Balances
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBalancesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+  /v1/users/{userId}/fees:
+    get:
+      summary: Get user fees
+      description: >
+        Retrieve the payout catalog for a user — fees, delivery timelines, and
+        transfer limits per corridor.
+
+
+        `data.payouts` is the full, unfiltered catalog (the user's rate card)
+        and is always returned.
+
+
+        Supply `paymentMethod` together with `destinationCurrency` to also
+        receive `data.estimate` — a per-transaction fee, delivery timeline, and
+        transfer limits for the specified corridor. Add `destinationCountry`
+        when several countries share a currency (e.g. USD sent to Ecuador vs.
+        USD sent to El Salvador) so the estimate resolves to the right country.
+        Add `sourceAmount` to resolve percentage-based fees into a concrete
+        amount.
+      operationId: getUserFees
+      tags:
+        - Transactions
+      security:
+        - Authorization: []
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - name: sourceCurrency
+          in: query
+          required: false
+          description: ISO 4217 currency in which all fees are quoted. Defaults to `USD`.
+          schema:
+            type: string
+            example: USD
+        - name: paymentMethod
+          in: query
+          required: false
+          description: >-
+            Payment method to produce an estimate for. Presence of this field
+            triggers the `estimate` block in the response and requires
+            `destinationCurrency`.
+          schema:
+            type: string
+            enum:
+              - bank
+              - momo
+              - swift
+              - ach
+              - wire
+              - crypto
+              - card
+              - wallet
+            example: bank
+        - name: destinationCurrency
+          in: query
+          required: false
+          description: >-
+            ISO 4217 payout currency — keys the specific corridor for the
+            `estimate`. Required whenever `paymentMethod`, `destinationCountry`,
+            or `sourceAmount` is supplied.
+          schema:
+            type: string
+            example: AUD
+        - name: destinationCountry
+          in: query
+          required: false
+          description: >-
+            ISO 3166-1 alpha-2 destination country code. Use this when several
+            countries share a currency (e.g. USD sent to Ecuador vs. USD sent to
+            El Salvador) so the estimate resolves to the right country. Only
+            meaningful when `destinationCurrency` is also supplied.
+          schema:
+            type: string
+            example: AU
+        - name: sourceAmount
+          in: query
+          required: false
+          description: >-
+            Decimal payout amount used to resolve percentage-based fees into a
+            concrete `estimate.fee.value`. Ignored for fixed-fee corridors.
+            Requires `destinationCurrency`.
+          schema:
+            type: string
+            example: '100'
+        - $ref: '#/components/parameters/XMultiTenantKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetFeesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        5XX:
+          $ref: '#/components/responses/InternalError'
+components:
+  schemas:
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    Amount:
+      type: object
+      required:
+        - value
+        - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    balance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        balance:
+          type: integer
+          description: >-
+            Total balance in the lowest denomination of the currency (e.g.
+            `703448` represents `7034.48` USD).
+          example: 703448
+        available:
+          type: integer
+          description: Available balance in the lowest denomination of the currency.
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance in the lowest denomination of the currency.
+          example: 0
+    CreateBeneficiaryRequest:
+      type: object
+      required:
+        - name
+        - countryCode
+        - currency
+        - paymentDetails
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@example.com
+        countryCode:
+          type: string
+          description: The country code of the beneficiary in ISO 3166-1 alpha-2 format
+          example: KE
+        currency:
+          type: string
+          description: The currency of the beneficiary in ISO 4217 format
+          example: KES
+        paymentDetails:
+          $ref: '#/components/schemas/paymentDetails'
+    Beneficiary:
+      allOf:
+        - $ref: '#/components/schemas/CreateBeneficiaryRequest'
+        - type: object
+          required:
+            - id
+            - createdTimestamp
+            - lastUpdatedTimestamp
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+            createdTimestamp:
+              type: integer
+              description: Unix timestamp when the beneficiary was created
+              example: 1748478276
+            lastUpdatedTimestamp:
+              type: integer
+              description: Unix timestamp when the beneficiary was last updated
+              example: 1748478276
+    address:
+      type: object
+      required:
+        - line1
+        - city
+        - postalCode
+        - state
+        - countryCode
+      properties:
+        line1:
+          type: string
+          description: Address line 1
+          example: Lane 1
+        line2:
+          type: string
+          description: Address line 2
+          example: Apt 1
+        city:
+          type: string
+          description: The city of the address
+          example: Gotham City
+        postalCode:
+          type: string
+          description: The postal code
+          example: '10001'
+        state:
+          type: string
+          description: The state for the address
+          example: NY
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+    paymentDetails:
+      type: object
+      required:
+        - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+            - momo
+            - bank
+            - swift
+            - ach
+            - wallet
+            - crypto
+            - proxy
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        cryptoWallet:
+          $ref: '#/components/schemas/cryptoWalletDetails'
+        proxy:
+          $ref: '#/components/schemas/proxyDetails'
+    proxyDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the proxy account
+          example: John Doe
+        ownerType:
+          type: string
+          description: The type of account owner (individual, business)
+          example: individual
+        type:
+          type: string
+          description: The type of proxy payment system
+          example: pix
+        value:
+          type: string
+          description: The proxy identifier value
+          example: '+5511998765432'
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+        currency:
+          type: string
+          description: The currency of the proxy account
+          example: BRL
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (e.g., Checking, Savings)
+          example: Checking
+        ownerType:
+          type: string
+          description: The type of account owner (e.g., individual, business)
+          example: individual
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: EXMPJPJT
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Gotham City Bank
+        branchName:
+          type: string
+          description: The name of the bank branch
+          example: Downtown Branch
+        sortCode:
+          type: string
+          description: The bank sort code (used in some countries like UK)
+          example: '401234'
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: USD
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+    swiftDetails:
+      type: object
+      required:
+        - currency
+        - iban
+        - accountName
+        - accountNumber
+        - bankName
+        - swiftCode
+        - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    achDetails:
+      type: object
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The ACH routing number of the bank
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (Checking or Savings)
+          example: Checking
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        address:
+          $ref: '#/components/schemas/address'
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+            - user
+            - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    cryptoWalletDetails:
+      type: object
+      properties:
+        address:
+          type: string
+          description: The cryptocurrency wallet address
+          example: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        chain:
+          type: string
+          description: The blockchain network (eth, sol etc)
+          example: ETH
+        memo:
+          type: string
+          description: The memo/tag required for certain cryptocurrencies (e.g., XLM, XRP)
+          example: '123456'
+        type:
+          type: string
+          description: The type of cryptocurrency (BTC, USDC etc)
+          example: USDC
+    phoneNumber:
+      type: object
+      required:
+        - countryCode
+        - number
+      properties:
+        countryCode:
+          type: string
+          description: The country code of the phone number
+          example: '1'
+        number:
+          type: string
+          example: '5551234567'
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+            - NIT
+            - CC
+            - CE
+            - TI
+            - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
+    CreateTransactionRequest:
+      type: object
+      required:
+        - type
+        - beneficiaryId
+        - quoteId
+        - reference
+      properties:
+        type:
+          type: string
+          enum:
+            - payout
+            - savings_funding
+          description: The type of transaction
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          description: The unique identifier for the fx quote
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: >-
+            The destination amount (required if sourceAmount is not provided).
+            When using this field, sourceCurrency is also required.
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+          description: >-
+            The source amount (required if amount is not provided). The currency
+            in this amount object represents the source currency.
+        sourceCurrency:
+          type: string
+          description: >-
+            The source currency code. Required when using the amount field
+            (destination amount).
+          example: USD
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+      oneOf:
+        - required:
+            - amount
+            - sourceCurrency
+        - required:
+            - sourceAmount
+    Transaction:
+      type: object
+      required:
+        - id
+        - type
+        - amount
+        - sourceAmount
+        - fxRate
+        - status
+        - reference
+        - createdTimestamp
+        - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+        type:
+          type: string
+          description: The transaction type, e.g. payout, payroll, deposit, transfer
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+        amount:
+          $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+        feeAmount:
+          $ref: '#/components/schemas/Amount'
+        fxRate:
+          type: string
+          example: '56.1234'
+        status:
+          type: string
+          enum:
+            - initiated
+            - success
+            - processing
+            - failed
+          example: success
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was created
+          example: 1748478276
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was last updated
+          example: 1748478276
+        document:
+          type: object
+          description: >-
+            Present only when a document is requested via the `document` query
+            parameter
+          properties:
+            type:
+              type: string
+              description: The document type
+              example: FIRC
+            presignedURL:
+              type: string
+              description: Presigned URL to download the document; valid until expiresAt
+              example: >-
+                https://bucket.s3.amazonaws.com/firc/d0137ede-7df1-4a54-8206-b3ab7b03876f.pdf
+            expiresAt:
+              type: integer
+              description: Unix timestamp when the presigned URL expires
+              example: 1748481876
+    FeeTableEntry:
+      type: object
+      description: A single corridor entry in the payout catalog
+      required:
+        - paymentMethod
+        - destinationCurrency
+        - fee
+        - feeCurrency
+        - timeline
+      properties:
+        paymentMethod:
+          type: string
+          enum:
+            - bank
+            - momo
+            - swift
+            - ach
+            - wire
+            - crypto
+            - card
+            - wallet
+          example: bank
+        destinationCurrency:
+          type: string
+          description: ISO 4217 payout currency
+          example: AUD
+        destinationCountry:
+          type: string
+          description: >-
+            ISO 3166-1 alpha-2 country code. Only present when several countries
+            share a currency and the country is needed to identify the corridor
+            (e.g. USD sent to Ecuador).
+          example: AU
+        fee:
+          type: object
+          required:
+            - type
+            - value
+          properties:
+            type:
+              type: string
+              enum:
+                - fixed
+                - percentage
+              description: >-
+                Fee model. `fixed` values are denominated in `feeCurrency`;
+                `percentage` values are rates (e.g. `1.5` means 1.5%).
+              example: fixed
+            value:
+              type: number
+              description: Fee amount (for `fixed`) or percentage rate (for `percentage`).
+              example: 1
+            min:
+              type: number
+              description: >-
+                Minimum applicable fee in `feeCurrency`. `0` indicates no
+                minimum.
+              example: 0
+            max:
+              type: number
+              description: >-
+                Maximum applicable fee in `feeCurrency`. `0` indicates no
+                maximum.
+              example: 0
+        feeCurrency:
+          type: string
+          description: >-
+            ISO 4217 currency in which the fee is denominated. Matches the
+            request's `sourceCurrency` (or `USD` if not supplied).
+          example: USD
+        timeline:
+          type: object
+          required:
+            - minDays
+            - maxDays
+            - businessDaysOnly
+          properties:
+            minDays:
+              type: integer
+              description: Minimum delivery time in days
+              example: 1
+            maxDays:
+              type: integer
+              description: Maximum delivery time in days
+              example: 2
+            businessDaysOnly:
+              type: boolean
+              description: When `true`, weekends are excluded from `minDays` and `maxDays`.
+              example: true
+    FeeEstimate:
+      type: object
+      description: >-
+        Per-transaction quote for a specific corridor + payment method. Only
+        returned when `paymentMethod` and `destinationCurrency` are supplied.
+      required:
+        - paymentMethod
+        - destinationCurrency
+        - fee
+        - timeline
+        - limits
+      properties:
+        paymentMethod:
+          type: string
+          enum:
+            - bank
+            - momo
+            - swift
+            - ach
+            - wire
+            - crypto
+            - card
+            - wallet
+          example: bank
+        destinationCurrency:
+          type: string
+          example: AUD
+        destinationCountry:
+          type: string
+          description: >-
+            Only present when several countries share a currency and the country
+            is needed to identify the corridor
+          example: AU
+        fee:
+          type: object
+          required:
+            - value
+            - currency
+          properties:
+            value:
+              type: string
+              description: >-
+                Concrete per-transaction fee. For `percentage` corridors,
+                resolved using the request's `sourceAmount`.
+              example: '1.00'
+            currency:
+              type: string
+              description: >-
+                ISO 4217 currency code — matches the request's `sourceCurrency`
+                (or `USD` if not supplied).
+              example: USD
+        timeline:
+          type: object
+          required:
+            - businessDaysOnly
+          properties:
+            minDays:
+              type: integer
+              example: 1
+            maxDays:
+              type: integer
+              example: 2
+            businessDaysOnly:
+              type: boolean
+              description: When `true`, weekends are excluded from `minDays` and `maxDays`.
+              example: true
+            estimatedArrival:
+              type: string
+              description: >-
+                Human-readable delivery estimate, accounting for weekends and
+                holidays.
+              example: Apr 24, 2026 (excluding holidays)
+            message:
+              type: string
+              description: >-
+                Replaces `minDays`/`maxDays` for special corridors (e.g.
+                `"Instant"`).
+              example: Instant
+        limits:
+          type: object
+          required:
+            - min
+            - max
+            - currency
+          properties:
+            min:
+              type: string
+              description: Minimum transfer amount
+              example: '2'
+            max:
+              type: string
+              description: Maximum transfer amount
+              example: '20000'
+            currency:
+              type: string
+              description: >-
+                Currency the limits are denominated in — matches
+                `destinationCurrency`.
+              example: AUD
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: ca_123
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+            - invalid_request_body
+            - resource_not_found
+            - forbidden
+            - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            params:
+              description: A map for meta data around the error that occurred
+              type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    NotFoundError:
+      description: Not Found
+      allOf:
+        - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+        - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+  securitySchemes:
+    Authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: API_SECRET_KEY
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: >-
+        Required when using a Platform API token. The tenant key identifying
+        which business to operate on.
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    beneficiaryId:
+      name: beneficiaryId
+      in: path
+      description: The unique identifier for the beneficiary
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    transactionId:
+      name: transactionId
+      in: path
+      description: The unique identifier for the transaction
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+  responses:
+    CreateBeneficiaryResponse:
+      description: Beneficiary created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: 0a8753af-7f6b-4bc0-b144-7deea6c7ff1e
+          example:
+            id: 7a7f80a6-1665-4f64-9ef3-d5f90f8f309b
+    GetBeneficiariesResponse:
+      description: List of beneficiaries
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Beneficiary'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            beneficiaries:
+              summary: List of beneficiaries
+              value:
+                data:
+                  - id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                    name: John Doe
+                    countryCode: CO
+                    currency: COP
+                    email: john.doe@example.com
+                    paymentDetails:
+                      preferredMethod: bank
+                      bank:
+                        accountName: John Doe
+                        accountNumber: '123456789'
+                        accountType: Checking
+                        bankCode: EXMPCOBB
+                        bankName: Colombia Bank
+                        currency: COP
+                    createdTimestamp: 1748550207
+                    lastUpdatedTimestamp: 1748550207
+                node:
+                  previous: null
+                  next: null
+    GetBeneficiaryResponse:
+      description: Get beneficiary response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Beneficiary'
+          examples:
+            beneficiary:
+              summary: Single beneficiary
+              value:
+                id: 30e06567-9fa9-48b0-bf67-c54eb49e8b03
+                name: John Doe
+                email: john.doe@example.com
+                countryCode: CO
+                currency: COP
+                paymentDetails:
+                  preferredMethod: bank
+                  bank:
+                    accountName: John Doe
+                    accountNumber: '123456789'
+                    accountType: Checking
+                    bankCode: EXMPCOBB
+                    bankName: Colombia Bank
+                    currency: COP
+                createdTimestamp: 1748550207
+                lastUpdatedTimestamp: 1748550207
+    CreateTransactionResponse:
+      description: Transaction created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+          examples:
+            transaction:
+              summary: Example transaction creation response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+    GetTransactionResponse:
+      description: Get transaction response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transaction'
+          examples:
+            transaction:
+              summary: Example transaction response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                type: payout
+                beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                amount:
+                  value: '500.00'
+                  currency: PHP
+                sourceAmount:
+                  value: '9.00'
+                  currency: USD
+                feeAmount:
+                  value: '0.10'
+                  currency: USD
+                fxRate: '56.1234'
+                reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                status: success
+                createdTimestamp: 1748478276
+                lastUpdatedTimestamp: 1748478276
+    GetTransactionsResponse:
+      description: List of transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            transactions:
+              summary: List of transactions
+              value:
+                data:
+                  - id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                    type: payout
+                    beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                    quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                    amount:
+                      value: '500.00'
+                      currency: PHP
+                    sourceAmount:
+                      value: '9.00'
+                      currency: USD
+                    feeAmount:
+                      value: '0.10'
+                      currency: USD
+                    fxRate: '56.1234'
+                    reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                    status: success
+                    createdTimestamp: 1748478276
+                    lastUpdatedTimestamp: 1748478276
+                node:
+                  previous: null
+                  next: null
+    GetBalancesResponse:
+      description: Get user account balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/balance'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            balances:
+              summary: Example user balances
+              value:
+                data:
+                  - id: 517075a2-17db-469f-9481-eb8347cb920c
+                    currency: USD
+                    balance: 703448
+                    available: 703448
+                    processing: 0
+                  - id: 6a8f81b3-28ec-470c-a592-fc9458dc031d
+                    currency: EUR
+                    balance: 248912
+                    available: 248912
+                    processing: 0
+                node:
+                  previous: null
+                  next: null
+    GetFeesResponse:
+      description: Payout catalog and (optional) corridor estimate
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                required:
+                  - sourceCurrency
+                  - payouts
+                properties:
+                  sourceCurrency:
+                    type: string
+                    description: ISO 4217 currency in which payout fees are quoted
+                    example: USD
+                  payouts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FeeTableEntry'
+                  estimate:
+                    $ref: '#/components/schemas/FeeEstimate'
+          examples:
+            catalogOnly:
+              summary: Catalog only — `paymentMethod` not supplied
+              value:
+                data:
+                  sourceCurrency: USD
+                  payouts:
+                    - paymentMethod: bank
+                      destinationCurrency: AUD
+                      destinationCountry: AU
+                      fee:
+                        type: fixed
+                        value: 1
+                        min: 0
+                        max: 0
+                      feeCurrency: USD
+                      timeline:
+                        minDays: 1
+                        maxDays: 2
+                        businessDaysOnly: true
+                    - paymentMethod: bank
+                      destinationCurrency: USD
+                      destinationCountry: EC
+                      fee:
+                        type: fixed
+                        value: 6.5
+                        min: 0
+                        max: 0
+                      feeCurrency: USD
+                      timeline:
+                        minDays: 0
+                        maxDays: 1
+                        businessDaysOnly: true
+            catalogWithEstimate:
+              summary: >-
+                Catalog + corridor estimate — `paymentMethod` and
+                `destinationCurrency` supplied
+              value:
+                data:
+                  sourceCurrency: USD
+                  payouts:
+                    - paymentMethod: bank
+                      destinationCurrency: AUD
+                      destinationCountry: AU
+                      fee:
+                        type: fixed
+                        value: 1
+                        min: 0
+                        max: 0
+                      feeCurrency: USD
+                      timeline:
+                        minDays: 1
+                        maxDays: 2
+                        businessDaysOnly: true
+                  estimate:
+                    paymentMethod: bank
+                    destinationCurrency: AUD
+                    destinationCountry: AU
+                    fee:
+                      value: '1.00'
+                      currency: USD
+                    timeline:
+                      minDays: 1
+                      maxDays: 2
+                      businessDaysOnly: true
+                      estimatedArrival: Apr 24, 2026 (excluding holidays)
+                    limits:
+                      min: '2'
+                      max: '20000'
+                      currency: AUD
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+  examples:
+    philippinesBankPaymentMethod:
+      summary: Philippines Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: PH
+        currency: PHP
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Philippines Bank
+            bankCode: '001'
+            currency: PHP
+            address:
+              line1: Mabini St
+              line2: Bldg 2
+              city: Manila
+              postalCode: '1000'
+              state: Metro Manila
+              countryCode: PH
+    colombiaBankPaymentMethod:
+      summary: Colombia Bank Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: CO
+        currency: COP
+        paymentDetails:
+          preferredMethod: bank
+          bank:
+            accountName: John Doe
+            accountNumber: '123456789'
+            bankName: Colombia Bank
+            accountType: Checking
+            bankCode: '001'
+            currency: COP
+            email: john.doe@example.com
+            address:
+              line1: Avenida Caracas
+              line2: Oficina 101
+              city: Bogota
+              postalCode: '11001'
+              state: Cundinamarca
+              countryCode: CO
+            beneficiaryId:
+              type: NIT
+              value: '123456789'
+    momoPaymentMethod:
+      summary: Mobile Money Payment Method
+      value:
+        name: John Doe
+        email: john.doe@example.com
+        countryCode: KE
+        currency: KES
+        paymentDetails:
+          preferredMethod: momo
+          momo:
+            accountName: John Doe
+            phoneNumber:
+              countryCode: '254'
+              number: '700000000'
+            providerCode: MPESA
+            provider: M-Pesa
+            currency: KES
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

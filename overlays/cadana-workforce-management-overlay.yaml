@@ -1,0 +1,15 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Cadana Business Workforce Management
+  version: 1.0.0
+extends: openapi/cadana-workforce-management-openapi.yaml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: cadana
+    x-apievangelist-product: Business Workforce Management
+    x-apievangelist-auth: 'http bearer (Authorization: Bearer)'
+    x-apievangelist-idempotency: request-body idempotencyKey (uuid) on create operations
+    x-apievangelist-pagination: offset (page/limit) with meta envelope
+    x-apievangelist-webhooks: Svix HMAC-SHA256 (svix-* headers); see asyncapi/cadana-webhooks.yml
+    x-apievangelist-sandbox: https://dev-api.cadanapay.com; see sandbox/cadana-sandbox.yml

@@ -1,25 +1,724 @@
 aid: cadana
 name: Cadana
-description: Cadana is a company surfaced as a portfolio company of 500-global and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Cadana is a white-label global payment and payroll infrastructure provider for talent
+  platforms, staffing companies, and HR providers. Its APIs let partners onboard and pay
+  employees and contractors in 100+ countries, run multi-currency payroll, provision embedded
+  wallets and virtual accounts, calculate gross-to-net tax across 150+ jurisdictions, and
+  automate statutory filing and government remittance. The platform is delivered as five REST
+  APIs (Workforce Management, Embedded Payments, Embedded Consumer Wallets, Global Tax Engine,
+  and Statutory Compliance) with bearer-token auth, Svix-signed webhooks, a sandbox, and an
+  embeddable white-label UI and salary-calculator widget. Backed by 500 Global.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://framerusercontent.com/images/ikikrpQNMIduf7aphtBIOOee650.png
 url: https://raw.githubusercontent.com/api-evangelist/cadana/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - 500-global
-x-tier: stub
+x-tier: enriched
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
-apis: []
+- Payroll
+- Payments
+- Global Payroll
+- Contractor Payments
+- Embedded Finance
+- Wallets
+- Tax
+- Compliance
+- Fintech
+- Money Transfer
+- White Label
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: cadana:cadana-balances-api
+  name: Cadana Balances API
+  description: APIs for managing user account balances
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Balances
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-balances-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-beneficiaries-api
+  name: Cadana Beneficiaries API
+  description: APIs for managing user beneficiaries
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Beneficiaries
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-beneficiaries-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-businesses-api
+  name: Cadana Businesses API
+  description: APIs for interacting with Business
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Businesses
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-businesses-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-contracts-api
+  name: Cadana Contracts API
+  description: APIs for interacting with contracts
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-contracts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-custom-auth-api
+  name: Cadana Custom Auth API
+  description: APIs for interacting with Custom Authentication
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Custom Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-custom-auth-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-entities-api
+  name: Cadana Entities API
+  description: APIs for managing legal sub-entities (subsidiaries, branches) under a parent business
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Entities
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-entities-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-events-api
+  name: Cadana Events API
+  description: Immutable audit trail
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-files-api
+  name: Cadana Files API
+  description: APIs for interacting with file uploads
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Files
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-files-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-filings-api
+  name: Cadana Filings API
+  description: >-
+    Create, submit, and track statutory returns — from upcoming obligations through acceptance
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Filings
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-filings-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-fx-api
+  name: Cadana FX API
+  description: APIs for managing foreign exchange rates
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - FX
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-fx-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-instant-pay-api
+  name: Cadana Instant Pay API
+  description: APIs for interacting with Instant Pay functionality
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Instant Pay
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-instant-pay-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-invoices-api
+  name: Cadana Invoices API
+  description: APIs for interacting with invoices
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-invoices-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-jurisdictions-api
+  name: Cadana Jurisdictions API
+  description: Discover supported countries, required fields, and filing types
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Jurisdictions
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-jurisdictions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-kyb-api
+  name: Cadana KYB API
+  description: APIs for business verification
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - KYB
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-kyb-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-milestones-api
+  name: Cadana Milestones API
+  description: APIs for milestone-based contractor pay
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Milestones
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-milestones-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-payouts-api
+  name: Cadana Payouts API
+  description: APIs for managing payouts
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Payouts
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-payouts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-payrolls-api
+  name: Cadana Payrolls API
+  description: APIs for interacting with Payroll
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Payrolls
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-payrolls-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-persons-api
+  name: Cadana Persons API
+  description: APIs for interacting with the HR module
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Persons
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-persons-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-platform-api
+  name: Cadana Platform API
+  description: Platform APIs for interacting with businesses
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Platform
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-platform-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-reimbursements-api
+  name: Cadana Reimbursements API
+  description: APIs for interacting with reimbursements
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Reimbursements
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-reimbursements-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-remittances-api
+  name: Cadana Remittances API
+  description: Government payments linked to filings
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Remittances
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-remittances-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-requirements-api
+  name: Cadana Requirements API
+  description: Prerequisites that must be satisfied before filing
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Requirements
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-requirements-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-resources-api
+  name: Cadana Resources API
+  description: Resource APIs to access and manage foundational data
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Resources
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-resources-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-sandbox-api
+  name: Cadana Sandbox API
+  description: APIs for relevant sandbox simulations
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Sandbox
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-sandbox-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-statutory-fields-api
+  name: Cadana Statutory Fields API
+  description: Submit and read entity-level statutory filing data
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Statutory Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-statutory-fields-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-tax-calculator-api
+  name: Cadana Tax Calculator API
+  description: APIs for tax calculations
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Tax Calculator
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-tax-calculator-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-transactions-api
+  name: Cadana Transactions API
+  description: APIs for managing user transactions
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-treasury-api
+  name: Cadana Treasury API
+  description: APIs for business balances, funding, and withdrawals
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Treasury
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-treasury-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-users-api
+  name: Cadana Users API
+  description: APIs for interacting with employee/contractor Cadana accounts
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
+- aid: cadana:cadana-virtual-accounts-api
+  name: Cadana Virtual Accounts API
+  description: APIs for managing virtual accounts
+  humanURL: https://docs.cadanapay.com/workforce/overview
+  baseURL: https://api.cadanapay.com
+  tags:
+  - Virtual Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/cadana-virtual-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.cadanapay.com/workforce/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/payments/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/wallets/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/tax/overview
+  - type: Documentation
+    url: https://docs.cadanapay.com/statutory/overview
 common:
 - type: Website
   url: https://cadanapay.com
+- type: DeveloperPortal
+  url: https://docs.cadanapay.com
+- type: Documentation
+  url: https://docs.cadanapay.com
+- type: APIReference
+  url: https://docs.cadanapay.com/reference/api-overview
+- type: GettingStarted
+  url: https://docs.cadanapay.com/getting-started
+- type: Support
+  url: https://cadanahelp.zendesk.com/hc/en-us
+- type: Blog
+  url: https://cadanapay.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/cadanapay
+- type: SignUp
+  url: https://app.cadanapay.com/signup
+- type: Login
+  url: https://app.cadanapay.com/login
+- type: TermsOfService
+  url: https://cadanapay.com/legal/terms-and-conditions
+- type: PrivacyPolicy
+  url: https://cadanapay.com/legal/privacy-policy
+- type: Postman
+  url: https://www.postman.com/cadana/workspace/cadana-developers
+- type: TrustCenter
+  url: security/cadana-trust-center.yml
+- type: Authentication
+  url: authentication/cadana-authentication.yml
+- type: LLMsTxt
+  url: llms/cadana-llms.txt
+- type: MCPServer
+  url: mcp/cadana-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Conventions
+  url: conventions/cadana-conventions.yml
+- type: Idempotency
+  url: conventions/cadana-conventions.yml
+- type: ErrorCatalog
+  url: errors/cadana-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/cadana-lifecycle.yml
+- type: Conformance
+  url: conformance/cadana-conformance.yml
+- type: Sandbox
+  url: sandbox/cadana-sandbox.yml
+- type: Components
+  url: components/cadana-components.yml
+- type: DataModel
+  url: data-model/cadana-data-model.yml
+- type: Webhooks
+  url: asyncapi/cadana-webhooks.yml
+- type: AgenticAccess
+  url: agentic-access/cadana-agentic-access.yml
+- type: DomainSecurity
+  url: security/cadana-domain-security.yml
+- type: Arazzo
+  name: Pay a contractor end-to-end
+  url: arazzo/cadana-pay-contractor.yml
+- type: Arazzo
+  name: Discover and calculate payroll tax
+  url: arazzo/cadana-calculate-tax.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

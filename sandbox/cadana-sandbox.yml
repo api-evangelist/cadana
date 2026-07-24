@@ -1,0 +1,56 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.cadanapay.com/reference/sandbox
+docs:
+  sandbox: https://docs.cadanapay.com/reference/sandbox
+  payments_testing: https://docs.cadanapay.com/payments/testing
+environments:
+  sandbox:
+    base_url: https://dev-api.cadanapay.com
+    note: Requires an API key generated for the sandbox environment. Production API
+      keys will not work with the sandbox host.
+  production:
+    base_url: https://api.cadanapay.com
+test_values:
+  virtual_account_auto_approval:
+    field: customIdentification.number
+    value: '99999900'
+    outcome: automatically approves the virtual account
+  kyc_identity:
+    field: identity document sentinel
+    values:
+      auto-approve: identity verification automatically approved
+      auto-reject: identity verification automatically rejected
+  kyc_address:
+    field: line2
+    values:
+      auto-approve: address verification automatically approved
+      auto-reject: address verification automatically rejected
+  payout_failure_simulation:
+    field: accountName
+    values:
+      FAILURE_SIM_001: Invalid account
+      FAILURE_SIM_002: Bank unavailable
+      FAILURE_SIM_003: Rejected by compliance
+      FAILURE_SIM_004: Returned by bank
+  kyb_tax_id:
+    field: business tax ID
+    values:
+      000-CAD-AUTO-APPROVE: KYB automatically approved
+      000-CAD-AUTO-REJECT: KYB automatically rejected
+      000-CAD-AUTO-FLAG: sets status to needs-additional-info
+  kyb_principal_ssn:
+    field: principal SSN
+    values:
+      000-11-2222: requests identity and address files
+      000-11-3333: principal receives email for KYC completion
+time_simulation:
+  payroll:
+    technique: Set payrollDate to a past date so the payroll completes immediately on
+      approval (end-to-end testing).
+sandbox_operations:
+  simulate_virtual_account_deposit: POST /v1/... (simulateVirtualAccountDeposit)
+  sandbox_business_deposit: sandboxDeposit (POST /v1/sandbox/business-deposits)
+  sandbox_delete_user: adminDeleteUser (DELETE /v1/sandbox/users/{userId})
+notes: All test values above are published verbatim in the Cadana sandbox docs; never
+  use them against production.

@@ -1,0 +1,30 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/*.yaml + https://docs.cadanapay.com
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: All five specs declare openapi 3.0.0
+- id: http-bearer-auth
+  conforms: true
+  evidence: securitySchemes type http scheme bearer across all specs
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 security scheme declared
+- id: oidc
+  conforms: false
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Error responses use plain JSON with HTTP status codes, not application/problem+json
+- id: pagination
+  conforms: true
+  evidence: Documented offset pagination (page/limit) with a `meta` envelope
+- id: idempotency
+  conforms: true
+  evidence: idempotencyKey (uuid) request-body field on create operations
+- id: webhooks
+  conforms: true
+  evidence: 47 documented webhook events delivered via Svix with HMAC-SHA256 signatures
+- id: kyc-kyb-aml
+  conforms: true
+  evidence: KYC/KYB submission, review, and compliance filing surfaces documented

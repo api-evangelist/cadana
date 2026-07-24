@@ -1,0 +1,16 @@
+generated: '2026-07-18'
+method: searched
+probe: false
+url: https://trust.cadanapay.com/
+source: https://cadanapay.com (Trust Center link) + https://trust.cadanapay.com/
+title: Cadana, Inc Trust Center
+certifications: []
+certifications_note: A hosted trust center exists at trust.cadanapay.com (linked from
+  the Cadana homepage), but its certification list is rendered client-side and could
+  not be enumerated without JavaScript; no specific certifications are claimed here
+  to avoid fabrication. Revisit to capture named attestations.
+evidence:
+- source: https://cadanapay.com/
+  kind: homepage Trust Center link
+- source: https://trust.cadanapay.com/
+  kind: trust center page title

@@ -1,0 +1,38 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.cadanapay.com/tools/calculator/overview
+families:
+- name: Salary Calculator Widget
+  kind: embeddable web widget
+  description: Gross-to-net / net-to-gross salary calculator widget embeddable on a
+    marketing or product site, backed by the Global Tax Engine.
+  docs: https://docs.cadanapay.com/tools/calculator/overview
+  features:
+  - getting-started embed
+  - configuration options
+  - custom events (analytics hooks)
+  - theming via CSS variables
+  - full integration options
+  pages:
+    getting_started: https://docs.cadanapay.com/tools/calculator/getting-started
+    configuration: https://docs.cadanapay.com/tools/calculator/configuration
+    events: https://docs.cadanapay.com/tools/calculator/events
+    theming: https://docs.cadanapay.com/tools/calculator/theming
+    full_integration: https://docs.cadanapay.com/tools/calculator/full-integration
+- name: White-Label Embedded App
+  kind: hosted / embedded UI
+  description: Pre-built, brandable payroll and wallet UI embedded under the partner's
+    brand, with custom authentication (SSO), custom domain, and customizable email
+    notifications.
+  docs: https://docs.cadanapay.com/white-label/overview
+  features:
+  - custom branding / theme
+  - custom domain
+  - custom authentication (SSO)
+  - customizable notifications
+  pages:
+    overview: https://docs.cadanapay.com/white-label/overview
+    theme: https://docs.cadanapay.com/white-label/theme
+    custom_domain: https://docs.cadanapay.com/white-label/custom-domain
+    custom_authentication: https://docs.cadanapay.com/white-label/custom-authentication
+    notifications: https://docs.cadanapay.com/white-label/customizing-notifications
