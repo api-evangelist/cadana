@@ -1,0 +1,167 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Reimbursements API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Reimbursements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Reimbursements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/reimbursements",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List reimbursements for your business."
+        },
+        {
+          "info": {
+            "name": "Create Reimbursement",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/reimbursements",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a reimbursement for a worker in your business. The reimbursement is created in a pending status and must be reviewed (via [`POST /v1/reimbursements/{reimbursementId}/review`](#tag/reimbursements/post/v1/reimbursements/{reimbursementId}/review)) before it is paid out. Each entry may optionally reference one or more `fileIds` of previously uploaded files to attach proof (e.g. receipts)."
+        },
+        {
+          "info": {
+            "name": "Get Reimbursement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/reimbursements/:reimbursementId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "reimbursementId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the reimbursement"
+              },
+              {
+                "name": "potentialSourceCurrency",
+                "value": "",
+                "type": "query",
+                "description": "Return a `potentialSourceAmount` quote — the estimated amount that would be debited from a wallet of this currency to fund the reimbursement, at current FX rates. Only computed while the reimbursement is not yet approved or paid."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a reimbursement's details."
+        },
+        {
+          "info": {
+            "name": "Cancel Reimbursement",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cadanapay.com/v1/reimbursements/:reimbursementId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "reimbursementId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the reimbursement"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancel a reimbursement. Only reimbursements that are not already approved or paid can be cancelled."
+        },
+        {
+          "info": {
+            "name": "Review (Approve or Reject) Reimbursement",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/reimbursements/:reimbursementId/review",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "reimbursementId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the reimbursement"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Approve or reject a reimbursement. **Approving pays it out** — the reimbursement amount is disbursed immediately from the `sourceCurrency` wallet (subject to a balance check), and a `reimbursement.paid` webhook follows once the disbursement settles. Rejecting requires a `reason`. Only reimbursements in a pending status can be reviewed; any other reimbursement returns 400."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

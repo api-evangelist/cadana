@@ -1,0 +1,156 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Statutory Fields API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Statutory Fields",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get person filing data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/persons/:person_id/fields/:country_code",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "person_id",
+                "value": "81933bed-97ba-4477-81a7-b8c5ab507b6f",
+                "type": "path",
+                "description": "Person identifier"
+              },
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ]
+          },
+          "docs": "Returns statutory filing data for a person in a jurisdiction. The response\nis a merged view: fields explicitly submitted via PUT are combined with\ndefaults read from the person service (e.g., firstName, lastName).\n"
+        },
+        {
+          "info": {
+            "name": "Submit person filing fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cadanapay.com/v1/statutory/persons/:person_id/fields/:country_code",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "person_id",
+                "value": "81933bed-97ba-4477-81a7-b8c5ab507b6f",
+                "type": "path",
+                "description": "Person identifier"
+              },
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit statutory filing fields for a person in a jurisdiction. Use this\nendpoint for fields returned by the required-fields endpoint with\n`entity: \"person\"` and `scope` containing `\"filing\"`.\n\nFields are validated against the jurisdiction's field definitions.\nUnknown keys are rejected.\n\nFor `document`-typed fields (e.g. `aadhaarCardFront`), upload the file\nfirst: `POST /v1/files/upload-url` (Workforce Management API) with\n`{\"purpose\": \"statutory-document\", \"contentType\": \"image/png\"}`\nreturns a "
+        },
+        {
+          "info": {
+            "name": "Get business filing data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/businesses/:business_id/fields/:country_code",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "business_id",
+                "value": "4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8",
+                "type": "path",
+                "description": "Business identifier"
+              },
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ]
+          },
+          "docs": "Returns statutory filing data for a business in a jurisdiction. The response\nis a merged view: fields explicitly submitted via PUT are combined with\ndefaults read from the business service.\n"
+        },
+        {
+          "info": {
+            "name": "Submit business filing fields",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cadanapay.com/v1/statutory/businesses/:business_id/fields/:country_code",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "business_id",
+                "value": "4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8",
+                "type": "path",
+                "description": "Business identifier"
+              },
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit statutory filing fields for a business in a jurisdiction. Use this\nendpoint for fields returned by the required-fields endpoint with\n`entity: \"business\"` and `scope` containing `\"filing\"`.\n\nFields are validated against the jurisdiction's field definitions.\nUnknown keys are rejected.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

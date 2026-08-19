@@ -1,0 +1,843 @@
+{
+  "item": [
+    {
+      "id": "bd04f339-a1b7-4eab-b097-d57698562a66",
+      "name": "Virtual Accounts",
+      "description": {
+        "content": "APIs for managing virtual accounts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "da5de596-bd5c-459f-bf82-87d9a2f0b295",
+          "name": "Create Virtual Account",
+          "request": {
+            "name": "Create Virtual Account",
+            "description": {
+              "content": "Create a new virtual account for a user",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":userId",
+                "virtual-accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "userId",
+                  "description": "(Required) The unique identifier for the user"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"<string>\",\n  \"jobInformation\": {\n    \"employerName\": \"<string>\",\n    \"address\": {\n      \"line1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"postalCode\": \"<string>\",\n      \"state\": \"<string>\",\n      \"countryCode\": \"<string>\",\n      \"line2\": \"<string>\"\n    },\n    \"title\": \"<string>\",\n    \"type\": \"<string>\",\n    \"netPay\": {\n      \"amount\": \"<integer>\",\n      \"currency\": \"<string>\"\n    },\n    \"frequency\": \"<string>\",\n    \"contractStartDate\": \"<date>\",\n    \"employerWebsite\": \"<string>\",\n    \"contractEndDate\": \"<date>\"\n  },\n  \"customIdentification\": {\n    \"type\": \"<string>\",\n    \"number\": \"<string>\"\n  },\n  \"suppressNotification\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cb7557cf-e1a1-474a-a972-d1e5fcbb3334",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currency\": \"USD\",\n  \"customIdentification\": {\n    \"type\": \"ssn\",\n    \"number\": \"123-45-6789\"\n  },\n  \"jobInformation\": {\n    \"employerName\": \"Acme Corp\",\n    \"address\": {\n      \"line1\": \"123 Main St\",\n      \"city\": \"Anytown\",\n      \"postalCode\": \"12345\",\n      \"state\": \"CA\",\n      \"countryCode\": \"US\"\n    },\n    \"employerWebsite\": \"\",\n    \"title\": \"Software Engineer\",\n    \"type\": \"full-time\",\n    \"netPay\": {\n      \"amount\": 10000,\n      \"currency\": \"USD\"\n    },\n    \"frequency\": \"monthly\",\n    \"contractStartDate\": \"2021-01-01\",\n    \"contractEndDate\": \"2025-05-06\"\n  },\n  \"suppressNotification\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8b79bf47-8c71-4ff8-93af-d80fdac83d23",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currency\": \"USD\",\n  \"customIdentification\": {\n    \"type\": \"ssn\",\n    \"number\": \"123-45-6789\"\n  },\n  \"jobInformation\": {\n    \"employerName\": \"Acme Corp\",\n    \"address\": {\n      \"line1\": \"123 Main St\",\n      \"city\": \"Anytown\",\n      \"postalCode\": \"12345\",\n      \"state\": \"CA\",\n      \"countryCode\": \"US\"\n    },\n    \"employerWebsite\": \"\",\n    \"title\": \"Software Engineer\",\n    \"type\": \"full-time\",\n    \"netPay\": {\n      \"amount\": 10000,\n      \"currency\": \"USD\"\n    },\n    \"frequency\": \"monthly\",\n    \"contractStartDate\": \"2021-01-01\",\n    \"contractEndDate\": \"2025-05-06\"\n  },\n  \"suppressNotification\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d9fcf166-03e4-457c-8188-47f2d7a1f61b",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currency\": \"USD\",\n  \"customIdentification\": {\n    \"type\": \"ssn\",\n    \"number\": \"123-45-6789\"\n  },\n  \"jobInformation\": {\n    \"employerName\": \"Acme Corp\",\n    \"address\": {\n      \"line1\": \"123 Main St\",\n      \"city\": \"Anytown\",\n      \"postalCode\": \"12345\",\n      \"state\": \"CA\",\n      \"countryCode\": \"US\"\n    },\n    \"employerWebsite\": \"\",\n    \"title\": \"Software Engineer\",\n    \"type\": \"full-time\",\n    \"netPay\": {\n      \"amount\": 10000,\n      \"currency\": \"USD\"\n    },\n    \"frequency\": \"monthly\",\n    \"contractStartDate\": \"2021-01-01\",\n    \"contractEndDate\": \"2025-05-06\"\n  },\n  \"suppressNotification\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "226d455c-1978-4e43-be22-18fd4f09df98",
+          "name": "Get Virtual Accounts",
+          "request": {
+            "name": "Get Virtual Accounts",
+            "description": {
+              "content": "Retrieve virtual accounts for a user",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "users",
+                ":userId",
+                "virtual-accounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "userId",
+                  "description": "(Required) The unique identifier for the user"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "74a88e0d-0ff2-43f2-8a21-7a4be6d6f4d9",
+              "name": "Virtual accounts retrieved successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"3f70be8e-426f-4e89-b883-9c97a1c334d5\",\n      \"status\": \"Requested\",\n      \"currency\": \"USD\",\n      \"createdTimestamp\": 1755693297,\n      \"lastUpdatedTimestamp\": 1755693297\n    }\n  ],\n  \"node\": {\n    \"previous\": null,\n    \"next\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f6c2c83-0283-47ed-9adc-73bd34d6bc81",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "487c5f5b-0993-4be2-9152-ac4721196da1",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "users",
+                    ":userId",
+                    "virtual-accounts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c0ce050d-6cf3-4cb5-8e2b-d1c5d0981203",
+          "name": "Simulate virtual account deposit",
+          "request": {
+            "name": "Simulate virtual account deposit",
+            "description": {
+              "content": "Simulate a virtual account deposit for an active virtual account",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "sandbox",
+                "users",
+                ":userId",
+                "virtual-accounts",
+                ":virtualAccountId",
+                "deposit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "userId",
+                  "description": "(Required) The unique identifier for the user"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "virtualAccountId",
+                  "description": "(Required) The unique identifier for the virtual account"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": {\n    \"value\": \"<integer>\",\n    \"currency\": \"<string>\"\n  },\n  \"reference\": \"<uuid>\",\n  \"description\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "533372e0-adc0-4969-9dfb-73e8c1291e20",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sandbox",
+                    "users",
+                    ":userId",
+                    "virtual-accounts",
+                    ":virtualAccountId",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "virtualAccountId",
+                      "description": "(Required) The unique identifier for the virtual account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"amount\": 10000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"c06f3427-3bbe-4d70-9a54-28acda267e48\",\n  \"description\": \"Payroll 10/10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "11749fdb-e1aa-429f-a3fe-bb65da674938",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sandbox",
+                    "users",
+                    ":userId",
+                    "virtual-accounts",
+                    ":virtualAccountId",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "virtualAccountId",
+                      "description": "(Required) The unique identifier for the virtual account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"amount\": 10000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"c06f3427-3bbe-4d70-9a54-28acda267e48\",\n  \"description\": \"Payroll 10/10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f6502641-261e-4352-8e3d-bd093dbdbe38",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sandbox",
+                    "users",
+                    ":userId",
+                    "virtual-accounts",
+                    ":virtualAccountId",
+                    "deposit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "userId",
+                      "description": "(Required) The unique identifier for the user"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "virtualAccountId",
+                      "description": "(Required) The unique identifier for the virtual account"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": {\n    \"amount\": 10000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"c06f3427-3bbe-4d70-9a54-28acda267e48\",\n  \"description\": \"Payroll 10/10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1238a639-4b69-43ad-a57b-38705112ea6a",
+    "name": "Embedded Consumer Wallets Balances Virtual Accounts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

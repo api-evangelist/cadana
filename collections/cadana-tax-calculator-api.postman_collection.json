@@ -1,0 +1,745 @@
+{
+  "item": [
+    {
+      "id": "0583647b-aae9-4a94-a5e1-941c27963fe9",
+      "name": "Tax Calculator",
+      "description": {
+        "content": "APIs for tax calculations",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "00aa98ba-8d7b-4c62-92a4-fabca57b9311",
+          "name": "Calculate Taxes",
+          "request": {
+            "name": "Calculate Taxes",
+            "description": {
+              "content": "Calculate taxes for an existing Cadana person. The person's address determines the jurisdiction, and their stored compensation and tax profile provide calculation inputs (overridden by `salary` when supplied).\n\nBeyond the base salary, the request accepts the same per-entry earnings as a payroll entry — `allowances`, `bonus`, `overtime`, and voluntary `deductions` — and computes them identically to a payroll run.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tax",
+                "calculate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"personId\": \"<string>\",\n  \"salary\": {\n    \"amount\": \"<number>\",\n    \"currency\": \"<string>\"\n  },\n  \"bonus\": {\n    \"amount\": \"<number>\",\n    \"currency\": \"<string>\"\n  },\n  \"overtime\": {\n    \"amount\": \"<number>\",\n    \"currency\": \"<string>\"\n  },\n  \"allowances\": [\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<number>\",\n        \"currency\": \"<string>\"\n      },\n      \"isTaxable\": false\n    },\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<number>\",\n        \"currency\": \"<string>\"\n      },\n      \"isTaxable\": false\n    }\n  ],\n  \"deductions\": [\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<number>\",\n        \"currency\": \"<string>\"\n      },\n      \"isStatutory\": false\n    },\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<number>\",\n        \"currency\": \"<string>\"\n      },\n      \"isStatutory\": false\n    }\n  ],\n  \"additionalAttributes\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cc23ce02-edc1-4673-b332-9216d0cc9633",
+              "name": "Calculate taxes response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "calculate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"personId\": \"81933bed-97ba-4477-81a7-b8c5ab507b6f\",\n  \"salary\": {\n    \"amount\": 4000000,\n    \"currency\": \"MXN\"\n  },\n  \"additionalAttributes\": {\n    \"ytdSalary\": 4000000\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"personId\": \"81933bed-97ba-4477-81a7-b8c5ab507b6f\",\n  \"grossAmount\": {\n    \"amount\": 1000000,\n    \"currency\": \"BRL\"\n  },\n  \"netAmount\": {\n    \"amount\": 761244,\n    \"currency\": \"BRL\"\n  },\n  \"deductions\": [\n    {\n      \"name\": \"INSS (Instituto Nacional do Seguro Social)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 82839,\n        \"currency\": \"BRL\"\n      }\n    },\n    {\n      \"name\": \"IRRF (Imposto de Renda Retido na Fonte)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 155917,\n        \"currency\": \"BRL\"\n      }\n    }\n  ],\n  \"employerContributions\": [\n    {\n      \"name\": \"FGTS (Fundo de Garantia do Tempo de Serviço)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 80000,\n        \"currency\": \"BRL\"\n      }\n    }\n  ],\n  \"summary\": {\n    \"gross\": {\n      \"name\": \"Gross Salary\",\n      \"amount\": 1000000,\n      \"calculation\": {\n        \"description\": \"Monthly base salary calculation\",\n        \"inputValues\": {\n          \"baseSalary\": 1000000\n        },\n        \"formula\": \"baseSalary\",\n        \"steps\": [\n          \"Base salary amount: R$10000.00\"\n        ]\n      }\n    },\n    \"deductions\": [\n      {\n        \"name\": \"INSS (Instituto Nacional do Seguro Social)\",\n        \"amount\": 82839,\n        \"calculation\": {\n          \"description\": \"Brazilian Social Security contribution based on 2024 INSS tables\",\n          \"inputValues\": {\n            \"grossSalary\": 10000,\n            \"bracket1Rate\": 0.075,\n            \"bracket2Rate\": 0.09,\n            \"bracket3Rate\": 0.12,\n            \"bracket4Rate\": 0.14,\n            \"bracket1Limit\": 1320,\n            \"bracket2Limit\": 2571.29,\n            \"bracket3Limit\": 3856.94,\n            \"bracket4Limit\": 7507.49\n          },\n          \"formula\": \"Progressive rate calculation based on salary brackets\",\n          \"steps\": [\n            \"Bracket 1: 1320.00 * 7.5% = 99.00\",\n            \"Bracket 2: (2571.29 - 1320.00) * 9% = 112.62\",\n            \"Bracket 3: (3856.94 - 2571.29) * 12% = 154.28\",\n            \"Bracket 4: (7507.49 - 3856.94) * 14% = 462.49\",\n            \"Total INSS contribution: R$828.39\"\n          ]\n        }\n      },\n      {\n        \"name\": \"IRRF (Imposto de Renda Retido na Fonte)\",\n        \"amount\": 155917,\n        \"calculation\": {\n          \"description\": \"Brazilian Income Tax calculation based on 2024 rates\",\n          \"inputValues\": {\n            \"grossSalary\": 10000,\n            \"inssDeduction\": 828.39,\n            \"baseCalculation\": 9171.61,\n            \"dependentsDeduction\": 0,\n            \"irrfRate\": 0.275,\n            \"deduction\": 869.36\n          },\n          \"formula\": \"(baseCalculation * irrfRate) - deduction\",\n          \"steps\": [\n            \"Gross salary: R$10000.00\",\n            \"INSS deduction: R$828.39\",\n            \"Base for IRRF: R$9171.61\",\n            \"Apply 27.5% rate: R$9171.61 * 0.275 = R$2522.19\",\n            \"Deduction amount: R$869.36\",\n            \"Final IRRF: R$1559.17\"\n          ]\n        }\n      }\n    ],\n    \"net\": {\n      \"name\": \"Net Salary\",\n      \"amount\": 761244,\n      \"calculation\": {\n        \"description\": \"Final take-home pay calculation\",\n        \"inputValues\": {\n          \"grossSalary\": 10000,\n          \"inssDeduction\": 828.39,\n          \"irrfDeduction\": 1559.17\n        },\n        \"formula\": \"grossSalary - inssDeduction - irrfDeduction\",\n        \"steps\": [\n          \"Gross salary: R$10000.00\",\n          \"INSS deduction: R$828.39\",\n          \"IRRF deduction: R$1559.17\",\n          \"Net salary: R$7612.44\"\n        ]\n      }\n    },\n    \"employerContributions\": [\n      {\n        \"name\": \"FGTS (Fundo de Garantia do Tempo de Serviço)\",\n        \"amount\": 80000,\n        \"calculation\": {\n          \"description\": \"Employer's FGTS contribution calculation\",\n          \"inputValues\": {\n            \"grossSalary\": 10000,\n            \"fgtsRate\": 0.08\n          },\n          \"formula\": \"grossSalary * fgtsRate\",\n          \"steps\": [\n            \"Calculate 8% FGTS: R$10000.00 * 8% = R$800.00\"\n          ]\n        }\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "673c3348-3534-408d-b3b8-aad23e7f4ee4",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "calculate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"personId\": \"81933bed-97ba-4477-81a7-b8c5ab507b6f\",\n  \"salary\": {\n    \"amount\": 4000000,\n    \"currency\": \"MXN\"\n  },\n  \"additionalAttributes\": {\n    \"ytdSalary\": 4000000\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47696ee4-32f8-470d-b5d7-df554c6c0d0c",
+          "name": "List Required Additional Tax Fields by Country",
+          "request": {
+            "name": "List Required Additional Tax Fields by Country",
+            "description": {
+              "content": "Returns a list of tax-related additionalfields required to run calculations in the specified country",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tax",
+                "fields"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "bdaf7a88-cc69-41cb-a317-e75da1986b5f",
+              "name": "Required tax fields by country",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"name\": \"maritalStatus\",\n      \"required\": true,\n      \"type\": \"string\",\n      \"enum\": [\n        \"single\",\n        \"married\",\n        \"divorced\",\n        \"widowed\"\n      ],\n      \"description\": \"Marital status for tax deduction eligibility\"\n    },\n    {\n      \"name\": \"numberOfDependents\",\n      \"required\": false,\n      \"type\": \"number\",\n      \"description\": \"Number of dependents for tax relief\",\n      \"default\": 0\n    },\n    {\n      \"name\": \"isResident\",\n      \"required\": false,\n      \"type\": \"boolean\",\n      \"description\": \"Whether the worker is a tax resident\",\n      \"default\": true\n    },\n    {\n      \"name\": \"employerIndustry\",\n      \"required\": false,\n      \"type\": \"string\",\n      \"description\": \"Industry classification used for local tax variations\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea88e71b-6b1e-4d16-a342-b0e4c430bd43",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "15f32c32-59d0-4c88-ac1a-95a6be54601a",
+          "name": "List Countries and Regions",
+          "request": {
+            "name": "List Countries and Regions",
+            "description": {
+              "content": "Returns a list of supported countries and their valid states/regions",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tax",
+                "locations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "Optional country code to filter for a specific country and its regions"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "03a8a888-dd44-4742-9bea-925131da4306",
+              "name": "Supported countries and regions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"name\": \"Australia\",\n      \"code\": \"AU\",\n      \"regions\": [\n        {\n          \"name\": \"New South Wales\",\n          \"code\": \"NSW\"\n        },\n        {\n          \"name\": \"Victoria\",\n          \"code\": \"VIC\"\n        },\n        {\n          \"name\": \"Queensland\",\n          \"code\": \"QLD\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a20f42f-91fe-4d4f-b604-53dd290eb5b5",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "locations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e21761f6-736e-4304-9f37-89818d2b6b40",
+          "name": "Estimate Gross or Net Salary",
+          "request": {
+            "name": "Estimate Gross or Net Salary",
+            "description": {
+              "content": "Estimate gross or net salary for a given country and type",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tax",
+                "estimate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"countryCode\": \"<string>\",\n  \"type\": \"<string>\",\n  \"salary\": {\n    \"amount\": \"<number>\",\n    \"currency\": \"<string>\"\n  },\n  \"regionCode\": \"<string>\",\n  \"outputCurrency\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5554bf7b-ddfa-4715-a062-e5accf2aef9b",
+              "name": "Estimate taxes response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "estimate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"countryCode\": \"PH\",\n  \"type\": \"gross-to-net\",\n  \"salary\": {\n    \"amount\": 5000000,\n    \"currency\": \"PHP\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"grossAmount\": {\n    \"amount\": 5000000,\n    \"currency\": \"PHP\"\n  },\n  \"netAmount\": {\n    \"amount\": 4223167,\n    \"currency\": \"PHP\"\n  },\n  \"deductions\": [\n    {\n      \"name\": \"Social Security\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 175000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"National Health Insurance (PhilHealth)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 125000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"Home Development Mutual Fund (PAG-IBIG)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 20000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"PAYE (Income Tax)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 456833,\n        \"currency\": \"PHP\"\n      }\n    }\n  ],\n  \"employerContributions\": [\n    {\n      \"name\": \"Social Security\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 350000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"National Health Insurance (PhilHealth)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 125000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"Home Development Mutual Fund (PAG-IBIG)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 20000,\n        \"currency\": \"PHP\"\n      }\n    },\n    {\n      \"name\": \"Employees' Compensation (EC)\",\n      \"isStatutory\": true,\n      \"amount\": {\n        \"amount\": 3000,\n        \"currency\": \"PHP\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "72f0ac7f-32f1-46f4-bfe4-41c6f4b69155",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tax",
+                    "estimate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"countryCode\": \"PH\",\n  \"type\": \"gross-to-net\",\n  \"salary\": {\n    \"amount\": 5000000,\n    \"currency\": \"PHP\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "12bba2a0-080f-4af8-96b9-513c59824045",
+    "name": "Embedded Consumer Wallets Balances Tax Calculator API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

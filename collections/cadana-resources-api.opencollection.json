@@ -1,0 +1,157 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Resources API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Resources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Payment corridor requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/payment-requirements",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "countryCode",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "paymentMethod",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a Draft-07 JSON-Schema fragment that specifies every field, enum, regex and conditional rule for the requested `countryCode` + `currency` + `paymentMethod`.\n"
+        },
+        {
+          "info": {
+            "name": "Get payout providers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/providers",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "countryCode",
+                "value": "BR",
+                "type": "query",
+                "description": "The country code in ISO 3166-1 alpha-2 format"
+              }
+            ]
+          },
+          "docs": "Get a list of providers for a given country code"
+        },
+        {
+          "info": {
+            "name": "Resolve bank provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/providers/resolve",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "code",
+                "value": "341",
+                "type": "query",
+                "description": "The bank code, SWIFT code, or routing number to look up"
+              },
+              {
+                "name": "currency",
+                "value": "BRL",
+                "type": "query",
+                "description": "ISO 4217 currency code"
+              },
+              {
+                "name": "paymentMethod",
+                "value": "bank",
+                "type": "query",
+                "description": "Payment method type: swift, ach, or bank"
+              }
+            ]
+          },
+          "docs": "Resolves a bank code, SWIFT code, or ACH routing number to the corresponding bank name and details. The behaviour depends on the `paymentMethod` parameter:\n- **swift** — resolves an 8 or 11-character SWIFT/BIC code\n- **ach** — resolves a 9-digit US ACH routing number\n- **bank** — resolves against Cadana's internal bank provider list\n  for the given currency"
+        },
+        {
+          "info": {
+            "name": "Get payment methods",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/payment-methods",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "countryCode",
+                "value": "BR",
+                "type": "query",
+                "description": "The country code in ISO 3166-1 alpha-2 format"
+              },
+              {
+                "name": "paymentMethod",
+                "value": "bank",
+                "type": "query",
+                "description": "The payment method to filter by"
+              },
+              {
+                "name": "currency",
+                "value": "USD",
+                "type": "query",
+                "description": "The currency to filter by"
+              }
+            ]
+          },
+          "docs": "Get a list of available payment methods for a given country code"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

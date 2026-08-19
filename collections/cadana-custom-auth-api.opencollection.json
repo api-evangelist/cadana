@@ -1,0 +1,49 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Custom Auth API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Custom Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "JWT",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/auth/login/jwt",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Exchange your internal JWT to a cadana redirect token"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

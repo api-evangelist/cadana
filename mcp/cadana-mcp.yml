@@ -389,3 +389,9 @@ tools:
 - name: reviewReimbursement
   description: Review (Approve or Reject) Reimbursement
   source_operation: openapi/cadana-workforce-management-openapi.yaml#reviewReimbursement
+deployment:
+  mode: none
+  verified: derived
+  tools: 126
+  checked: '2026-08-12'
+  source: catalog MCP census

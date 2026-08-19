@@ -1,0 +1,132 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Remittances API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Remittances",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List remittances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/remittances",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by business"
+              },
+              {
+                "name": "countryCode",
+                "value": "",
+                "type": "query",
+                "description": "Filter by jurisdiction (ISO 3166-1 alpha-2)"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by remittance status"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nReturns government payments across jurisdictions for a business. Each\nremittance is linked to one or more filings and tracks the actual money\nmovement to the government authority.\n\nThe response includes a `summary` object with counts by status.\n"
+        },
+        {
+          "info": {
+            "name": "Create a remittance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/remittances",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nInitiates a government payment. A remittance is always tied to one or\nmore `accepted` filings — whether Cadana prepared them\n(`source: cadana`) or you filed them externally and submitted the\ntotals (`source: external`). Funds are debited from your business\nbalance and routed to the authority through Cadana's local rails.\n\nBy default Cadana uses its internal mapping for the authority's bank\naccount. Provide a `paymentDetails` block — "
+        },
+        {
+          "info": {
+            "name": "Get a remittance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/remittances/:remittance_id",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "remittance_id",
+                "value": "rem_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Remittance identifier"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nReturns full remittance details including payment status, FX conversion\ninformation, and proof of payment (when available).\n"
+        },
+        {
+          "info": {
+            "name": "Download remittance receipt",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/remittances/:remittance_id/receipt",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "remittance_id",
+                "value": "rem_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Remittance identifier"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a signed URL to download proof of government payment.\nAvailable after the remittance reaches `completed` status.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

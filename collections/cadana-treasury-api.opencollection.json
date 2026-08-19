@@ -1,0 +1,417 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Treasury API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Treasury",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Balances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/balances",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of additional fields to include (e.g. reserves)"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a business's account balances"
+        },
+        {
+          "info": {
+            "name": "Get Balance Ledger",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/transactions",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "Currency code for transactions (required)"
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start date for transactions filter (required)"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a business's balance ledger — every credit and debit on the business's balance, including funding deposits and outgoing payments, with the direction and balance effect of each entry. Use this endpoint to reconcile balance movements against your own books.\n\nFor full disbursement records of each movement — payment method, FX rate, and fee breakdown — use [Platform Disbursements](/api-reference/workforce/platform/list-disbursements) filtered by `businessId` instead.\n"
+        },
+        {
+          "info": {
+            "name": "Get Statement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/statement",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "Currency code for the statement (required)"
+              },
+              {
+                "name": "periodStart",
+                "value": "",
+                "type": "query",
+                "description": "Start of the statement period (ISO 8601 date, required)"
+              },
+              {
+                "name": "periodEnd",
+                "value": "",
+                "type": "query",
+                "description": "End of the statement period (ISO 8601 date, required)"
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Response format. Omit for JSON; `csv` or `bai2` return a downloadable file."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Download a business's account statement for a date range. Returns JSON by default; set `format` to `csv` or `bai2` to download a file instead."
+        },
+        {
+          "info": {
+            "name": "Get Funding Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/funding-details",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              },
+              {
+                "name": "currency",
+                "value": "",
+                "type": "query",
+                "description": "Filter funding details by currency (ISO 4217 code, e.g. USD or EUR)"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the business's funding details."
+        },
+        {
+          "info": {
+            "name": "Create Deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/deposits",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a deposit to add funds to a business account"
+        },
+        {
+          "info": {
+            "name": "Create Crypto Deposit Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/crypto-deposit-addresses",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a crypto deposit address for the business on the given chain. Fails if an address already exists for that currency and chain."
+        },
+        {
+          "info": {
+            "name": "Create Reserve",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/reserves",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lock or release business reserves (e.g. security deposits)"
+        },
+        {
+          "info": {
+            "name": "Generate Withdrawal Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/withdrawal/link",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate a short-lived JWT-signed URL that lets a business\nowner withdraw funds from their wallet to an external bank beneficiary\nwithout signing into the dashboard.\n"
+        },
+        {
+          "info": {
+            "name": "Get External Accounts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/external-accounts",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get external accounts linked to a business"
+        },
+        {
+          "info": {
+            "name": "Generate External Account Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/external-accounts/link",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate External Account Link"
+        },
+        {
+          "info": {
+            "name": "Delete External Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/external-accounts/:externalAccountId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              },
+              {
+                "name": "externalAccountId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the external account"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an external account linked to a business"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

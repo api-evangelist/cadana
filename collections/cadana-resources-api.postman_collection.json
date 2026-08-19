@@ -1,0 +1,961 @@
+{
+  "item": [
+    {
+      "id": "0d3d259f-f8f2-4695-a4cc-9eac7dd16f11",
+      "name": "Resources",
+      "description": {
+        "content": "Resource APIs to access and manage foundational data",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "303f0da5-b905-4633-9ce6-88d9b8236d2b",
+          "name": "Payment corridor requirements",
+          "request": {
+            "name": "Payment corridor requirements",
+            "description": {
+              "content": "Returns a Draft-07 JSON-Schema fragment that specifies every field, enum, regex and conditional rule for the requested `countryCode` + `currency` + `paymentMethod`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payment-requirements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "paymentMethod",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/schema+json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9a6925b3-2fdb-40cc-a3ba-fc1e0f9375cc",
+              "name": "Draft-07 JSON-Schema fragment",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "CO"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "COP"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/schema+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/schema+json"
+                }
+              ],
+              "body": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"$id\": \"https://api.cadana.com/schemas/paymentDetails.bank.CO.json\",\n  \"title\": \"Colombia - bank payment details\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\n    \"accountName\",\n    \"accountNumber\",\n    \"bankCode\",\n    \"bankName\",\n    \"accountType\",\n    \"beneficiaryId\",\n    \"address\",\n    \"email\"\n  ],\n  \"properties\": {\n    \"accountName\": {\n      \"type\": \"string\",\n      \"maxLength\": 60\n    },\n    \"accountNumber\": {\n      \"type\": \"string\",\n      \"pattern\": \"^[0-9]{9,16}$\",\n      \"description\": \"9-16-digit Colombian account number\"\n    },\n    \"bankCode\": {\n      \"type\": \"string\",\n      \"pattern\": \"^[A-Za-z0-9]{1,11}$\",\n      \"description\": \"1-11 alphanumeric bank code\"\n    },\n    \"accountType\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"Checking\",\n        \"Saving\"\n      ]\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"format\": \"email\",\n      \"maxLength\": 100\n    },\n    \"beneficiaryId\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"type\",\n        \"value\"\n      ],\n      \"properties\": {\n        \"type\": {\n          \"type\": \"string\",\n          \"enum\": [\n            \"NIT\",\n            \"CC\",\n            \"CE\",\n            \"TI\",\n            \"PASS\"\n          ]\n        },\n        \"value\": {\n          \"type\": \"string\"\n        }\n      },\n      \"allOf\": [\n        {\n          \"if\": {\n            \"properties\": {\n              \"type\": {\n                \"const\": \"NIT\"\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"value\": {\n                \"pattern\": \"^\\\\d{9,11}$\"\n              }\n            }\n          }\n        },\n        {\n          \"if\": {\n            \"properties\": {\n              \"type\": {\n                \"const\": \"CC\"\n              }\n            }\n          },\n          \"then\": {\n            \"properties\": {\n              \"value\": {\n                \"pattern\": \"^\\\\d{6,10}$\"\n              }\n            }\n          }\n        }\n      ]\n    },\n    \"address\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"line1\",\n        \"city\",\n        \"countryCode\"\n      ],\n      \"properties\": {\n        \"line1\": {\n          \"type\": \"string\",\n          \"maxLength\": 70\n        },\n        \"city\": {\n          \"type\": \"string\",\n          \"maxLength\": 50\n        },\n        \"countryCode\": {\n          \"const\": \"CO\"\n        }\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "461c4283-fdb7-43a0-8c6d-16e3701c9ca0",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "CO"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "COP"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0fd64474-e5c0-4871-adb7-fb11c9a306dd",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "CO"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "COP"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e511a45-90dc-49de-ac33-9629b1bc05e8",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "CO"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "COP"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "021724f6-1ad7-4e21-8e66-b8cf0d081bf9",
+          "name": "Get payout providers",
+          "request": {
+            "name": "Get payout providers",
+            "description": {
+              "content": "Get a list of providers for a given country code",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "providers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "(Required) The country code in ISO 3166-1 alpha-2 format"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7f362f6e-394a-4776-8f0a-4d125a5e031b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "providers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "BR"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"code\": \"BR123\",\n      \"name\": \"Nubank Brazil\",\n      \"countryCode\": \"BR\",\n      \"currency\": \"BRL\",\n      \"type\": \"bank\"\n    },\n    {\n      \"code\": \"BR123\",\n      \"name\": \"Nubank Brazil\",\n      \"countryCode\": \"BR\",\n      \"currency\": \"BRL\",\n      \"type\": \"bank\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ba6cc72f-9b30-4794-9ddf-f254787f77e7",
+          "name": "Resolve bank provider",
+          "request": {
+            "name": "Resolve bank provider",
+            "description": {
+              "content": "Resolves a bank code, SWIFT code, or ACH routing number to the corresponding bank name and details. The behaviour depends on the `paymentMethod` parameter:\n- **swift** — resolves an 8 or 11-character SWIFT/BIC code\n- **ach** — resolves a 9-digit US ACH routing number\n- **bank** — resolves against Cadana's internal bank provider list\n  for the given currency",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "providers",
+                "resolve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "code",
+                  "value": "<string>",
+                  "description": "(Required) The bank code, SWIFT code, or routing number to look up"
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "(Required) ISO 4217 currency code"
+                },
+                {
+                  "disabled": false,
+                  "key": "paymentMethod",
+                  "value": "<string>",
+                  "description": "(Required) Payment method type: swift, ach, or bank"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e6f6da4a-d396-42f1-b555-45fc327e49e7",
+              "name": "Resolved bank provider details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "providers",
+                    "resolve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "code",
+                      "value": "341"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BRL"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"bankName\": \"Itaú Unibanco\",\n  \"countryCode\": \"BR\",\n  \"city\": \"\",\n  \"routingNumber\": \"\",\n  \"swiftCode\": \"ITAUBRSP\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1d03a376-2ab7-4450-8876-c9ac601419e3",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "providers",
+                    "resolve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "code",
+                      "value": "341"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "BRL"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0db3366f-7ebb-4f5a-be13-220f5a060cb8",
+          "name": "Get payment methods",
+          "request": {
+            "name": "Get payment methods",
+            "description": {
+              "content": "Get a list of available payment methods for a given country code",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payment-methods"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "The country code in ISO 3166-1 alpha-2 format"
+                },
+                {
+                  "disabled": false,
+                  "key": "paymentMethod",
+                  "value": "<string>",
+                  "description": "The payment method to filter by"
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "The currency to filter by"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a482d7d9-8c1b-4a08-b4c3-6bdeb15f90c4",
+              "name": "Available payment methods, one entry per country matching the query",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "BR"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"country\": \"BR\",\n    \"countryName\": \"Brazil\",\n    \"paymentMethods\": [\n      {\n        \"type\": \"bank\",\n        \"currency\": \"BRL\",\n        \"status\": \"active\"\n      },\n      {\n        \"type\": \"proxy\",\n        \"currency\": \"BRL\",\n        \"status\": \"active\"\n      },\n      {\n        \"type\": \"swift\",\n        \"currency\": \"USD\",\n        \"status\": \"active\"\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dcff785b-e12d-4840-b4b0-153a8934adac",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "BR"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b1be75a7-ab89-4f7c-b487-209be233e9ca",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "BR"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ba640b0-9704-442c-b20e-e7970e344fca",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payment-methods"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "countryCode",
+                      "value": "BR"
+                    },
+                    {
+                      "key": "paymentMethod",
+                      "value": "bank"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1986fce1-452a-45c3-8756-7eadf69336c3",
+    "name": "Embedded Consumer Wallets Balances Resources API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

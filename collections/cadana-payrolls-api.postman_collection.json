@@ -1,0 +1,1576 @@
+{
+  "item": [
+    {
+      "id": "eca21259-0296-4bf6-b0b0-26734d2dcd82",
+      "name": "Payrolls",
+      "description": {
+        "content": "APIs for interacting with Payroll",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "062eafa1-a501-483f-b084-fe219aaa3fe6",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Create a new payroll",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workerType\": \"<string>\",\n  \"type\": \"<string>\",\n  \"tags\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5922c7e1-0904-4a86-b260-5b23148fa019",
+              "name": "create payroll response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workerType\": \"EMPLOYEE\",\n  \"type\": \"ONE_OFF\",\n  \"tags\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payrollId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7d5181aa-e95a-4d2b-8a67-ccb4b9983f22",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workerType\": \"EMPLOYEE\",\n  \"type\": \"ONE_OFF\",\n  \"tags\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0ccd123a-0fee-432b-acf9-ce98c8ec36be",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workerType\": \"EMPLOYEE\",\n  \"type\": \"ONE_OFF\",\n  \"tags\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bc7a894b-dd29-4c35-923d-001df8cac76d",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Fetch all payrolls",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "eeff495b-c273-4385-b774-6a717b2fb012",
+              "name": "get payrolls response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"payrollId\": \"2f9c95eb-935f-3f89-8841-afb36715bd18\",\n      \"workerType\": \"EMPLOYEE\",\n      \"status\": \"Completed\",\n      \"numPeople\": 50,\n      \"type\": \"ONE-OFF\",\n      \"payrollDate\": \"1997-01-04\",\n      \"debit\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"gross\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"net\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"tax\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"pension\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"statutoryDeductions\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"employerContributions\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"payPeriod\": {\n        \"fromDate\": \"2018-11-02\",\n        \"toDate\": \"1991-05-16\"\n      }\n    },\n    {\n      \"payrollId\": \"de4eeb1d-3f99-aead-387e-9a911b08f699\",\n      \"workerType\": \"EMPLOYEE\",\n      \"status\": \"Completed\",\n      \"numPeople\": 50,\n      \"type\": \"ONE-OFF\",\n      \"payrollDate\": \"1994-05-24\",\n      \"debit\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"gross\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"net\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"tax\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"pension\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"statutoryDeductions\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"employerContributions\": {\n        \"amount\": 10000,\n        \"currency\": \"USD\"\n      },\n      \"payPeriod\": {\n        \"fromDate\": \"1967-04-07\",\n        \"toDate\": \"1963-03-03\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af063e30-e885-44e7-a6f9-6cdbd7ed616c",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9e35ee16-8a95-4b78-9f84-1e8d3c1d0229",
+          "name": "Save",
+          "request": {
+            "name": "Save",
+            "description": {
+              "content": "Save a payroll",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls",
+                ":payrollId",
+                "save"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "includeFxRates",
+                  "value": "false",
+                  "description": "When `true`, the response is `200 OK` with the captured FX rates in the body, keyed as `<funding>-<salary>` currency pairs. Any other value (or omitting the parameter) returns `204 No Content`.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payrollId",
+                  "description": "(Required) The unique identifier for the payroll"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payrollDate\": \"<date>\",\n  \"payPeriod\": {\n    \"fromDate\": \"<date>\",\n    \"toDate\": \"<date>\"\n  },\n  \"entries\": [\n    {\n      \"salary\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"personId\": \"<uuid>\",\n      \"timeWorked\": \"<number>\",\n      \"overtime\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"overtimeWorked\": \"<number>\",\n      \"bonus\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"commission\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"allowances\": [\n        {\n          \"name\": \"<string>\",\n          \"isTaxable\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        },\n        {\n          \"name\": \"<string>\",\n          \"isTaxable\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        }\n      ],\n      \"deductions\": [\n        {\n          \"name\": \"<string>\",\n          \"isStatutory\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        },\n        {\n          \"name\": \"<string>\",\n          \"isStatutory\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        }\n      ],\n      \"invoiceIds\": [\n        \"<uuid>\",\n        \"<uuid>\"\n      ],\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\",\n        \"key_4\": \"<string>\",\n        \"key_5\": \"<string>\"\n      }\n    },\n    {\n      \"salary\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"personId\": \"<uuid>\",\n      \"timeWorked\": \"<number>\",\n      \"overtime\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"overtimeWorked\": \"<number>\",\n      \"bonus\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"commission\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"allowances\": [\n        {\n          \"name\": \"<string>\",\n          \"isTaxable\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        },\n        {\n          \"name\": \"<string>\",\n          \"isTaxable\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        }\n      ],\n      \"deductions\": [\n        {\n          \"name\": \"<string>\",\n          \"isStatutory\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        },\n        {\n          \"name\": \"<string>\",\n          \"isStatutory\": \"<boolean>\",\n          \"amount\": {\n            \"amount\": \"<integer>\",\n            \"currency\": \"<string>\"\n          }\n        }\n      ],\n      \"invoiceIds\": [\n        \"<uuid>\",\n        \"<uuid>\"\n      ],\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\",\n        \"key_4\": \"<string>\",\n        \"key_5\": \"<string>\",\n        \"key_6\": \"<string>\",\n        \"key_7\": \"<string>\",\n        \"key_8\": \"<string>\",\n        \"key_9\": \"<string>\",\n        \"key_10\": \"<string>\",\n        \"key_11\": \"<string>\",\n        \"key_12\": \"<string>\",\n        \"key_13\": \"<string>\",\n        \"key_14\": \"<string>\",\n        \"key_15\": \"<string>\",\n        \"key_16\": \"<string>\",\n        \"key_17\": \"<string>\"\n      }\n    }\n  ],\n  \"fxRateExpiresAt\": \"<dateTime>\",\n  \"customFees\": [\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\",\n        \"key_4\": \"<string>\"\n      }\n    },\n    {\n      \"name\": \"<string>\",\n      \"amount\": {\n        \"amount\": \"<integer>\",\n        \"currency\": \"<string>\"\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\",\n        \"key_4\": \"<string>\",\n        \"key_5\": \"<string>\",\n        \"key_6\": \"<string>\",\n        \"key_7\": \"<string>\",\n        \"key_8\": \"<string>\",\n        \"key_9\": \"<string>\",\n        \"key_10\": \"<string>\",\n        \"key_11\": \"<string>\",\n        \"key_12\": \"<string>\",\n        \"key_13\": \"<string>\",\n        \"key_14\": \"<string>\"\n      }\n    }\n  ],\n  \"tags\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cc0980c2-6194-4ac5-a324-bf1754621429",
+              "name": "FX rates captured at save time. Returned only when `includeFxRates=true`. Keys are `<funding>-<salary>` currency pairs; each value is the number of salary-currency units per unit of funding currency. Salary-currency amounts are divided by the rate to get the funding-currency debit.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "save"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeFxRates",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payrollDate\": \"2026-03-01\",\n  \"payPeriod\": {\n    \"fromDate\": \"2026-02-01\",\n    \"toDate\": \"2026-02-28\"\n  },\n  \"entries\": [\n    {\n      \"personId\": \"8ab2ba37-3c37-485d-9af9-122d11c96bf9\",\n      \"salary\": {\n        \"amount\": 500000,\n        \"currency\": \"USD\"\n      }\n    },\n    {\n      \"personId\": \"ca49c55b-12c7-4085-8a0d-ebd006ed8002\",\n      \"salary\": {\n        \"amount\": 375000,\n        \"currency\": \"USD\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"fxRates\": {\n    \"USD-PHP\": 58.75,\n    \"USD-EUR\": 0.9217\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d32d3571-c997-4fa9-821f-4486dc9ef824",
+              "name": "Successful operation. Default response when `includeFxRates` is omitted or not `true`.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "save"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeFxRates",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payrollDate\": \"2026-03-01\",\n  \"payPeriod\": {\n    \"fromDate\": \"2026-02-01\",\n    \"toDate\": \"2026-02-28\"\n  },\n  \"entries\": [\n    {\n      \"personId\": \"8ab2ba37-3c37-485d-9af9-122d11c96bf9\",\n      \"salary\": {\n        \"amount\": 500000,\n        \"currency\": \"USD\"\n      }\n    },\n    {\n      \"personId\": \"ca49c55b-12c7-4085-8a0d-ebd006ed8002\",\n      \"salary\": {\n        \"amount\": 375000,\n        \"currency\": \"USD\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8d58ecf7-b551-4ca6-8403-8ccad83d1ae2",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "save"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeFxRates",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payrollDate\": \"2026-03-01\",\n  \"payPeriod\": {\n    \"fromDate\": \"2026-02-01\",\n    \"toDate\": \"2026-02-28\"\n  },\n  \"entries\": [\n    {\n      \"personId\": \"8ab2ba37-3c37-485d-9af9-122d11c96bf9\",\n      \"salary\": {\n        \"amount\": 500000,\n        \"currency\": \"USD\"\n      }\n    },\n    {\n      \"personId\": \"ca49c55b-12c7-4085-8a0d-ebd006ed8002\",\n      \"salary\": {\n        \"amount\": 375000,\n        \"currency\": \"USD\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e095f952-94bc-4e86-a7d6-9c97d2b75da7",
+          "name": "Get",
+          "request": {
+            "name": "Get",
+            "description": {
+              "content": "Fetch a payroll's details",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls",
+                ":payrollId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payrollId",
+                  "description": "(Required) The unique identifier for the payroll"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a995e3a0-4b2b-46dd-a5c2-3893d5bbb791",
+              "name": "Payroll details. Employee payrolls include tax, pension, statutory deduction, and employer contribution aggregates plus per-entry allowance, deduction, and employer-contribution line items. Contractor payrolls omit those fields entirely and return only the salary-based shape.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payrollId\": \"7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11\",\n  \"workerType\": \"EMPLOYEE\",\n  \"type\": \"REGULAR\",\n  \"status\": \"Pending Submission\",\n  \"payrollDate\": \"2021-06-26\",\n  \"debit\": {\n    \"amount\": 31947900,\n    \"currency\": \"PHP\"\n  },\n  \"gross\": {\n    \"amount\": 31947900,\n    \"currency\": \"PHP\"\n  },\n  \"net\": {\n    \"amount\": 31947900,\n    \"currency\": \"PHP\"\n  },\n  \"tax\": {\n    \"amount\": 0,\n    \"currency\": \"PHP\"\n  },\n  \"pension\": {\n    \"amount\": 0,\n    \"currency\": \"PHP\"\n  },\n  \"statutoryDeductions\": {\n    \"amount\": 0,\n    \"currency\": \"PHP\"\n  },\n  \"employerContributions\": {\n    \"amount\": 0,\n    \"currency\": \"PHP\"\n  },\n  \"payPeriod\": {\n    \"fromDate\": \"2021-06-01\",\n    \"toDate\": \"2021-06-30\"\n  },\n  \"entries\": [\n    {\n      \"personId\": \"04a8977d-5d99-4b28-8de4-8161401ca3fa\",\n      \"salary\": {\n        \"amount\": 75000,\n        \"currency\": \"PHP\"\n      },\n      \"bonus\": {\n        \"amount\": 10000,\n        \"currency\": \"PHP\"\n      },\n      \"gross\": {\n        \"amount\": 85000,\n        \"currency\": \"PHP\"\n      },\n      \"net\": {\n        \"amount\": 75704,\n        \"currency\": \"PHP\"\n      },\n      \"allowances\": [\n        {\n          \"name\": \"Transport\",\n          \"isTaxable\": true,\n          \"amount\": {\n            \"amount\": 5000,\n            \"currency\": \"PHP\"\n          }\n        },\n        {\n          \"name\": \"Housing\",\n          \"isTaxable\": true,\n          \"amount\": {\n            \"amount\": 10000,\n            \"currency\": \"PHP\"\n          }\n        }\n      ],\n      \"deductions\": [\n        {\n          \"name\": \"SSS\",\n          \"isStatutory\": true,\n          \"amount\": {\n            \"amount\": 4125,\n            \"currency\": \"PHP\"\n          }\n        },\n        {\n          \"name\": \"Bonus Tax\",\n          \"isStatutory\": false,\n          \"amount\": {\n            \"amount\": 500,\n            \"currency\": \"PHP\"\n          }\n        },\n        {\n          \"name\": \"Withholding Tax\",\n          \"isStatutory\": true,\n          \"amount\": {\n            \"amount\": 4671,\n            \"currency\": \"PHP\"\n          }\n        }\n      ],\n      \"employerContributions\": [\n        {\n          \"name\": \"SSS\",\n          \"isStatutory\": false,\n          \"amount\": {\n            \"amount\": 9750,\n            \"currency\": \"PHP\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b5bda4d8-a540-49dc-83bc-6f671afd511a",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "55d28c01-ff22-4b90-a014-be3fc1cc7cf6",
+          "name": "Delete",
+          "request": {
+            "name": "Delete",
+            "description": {
+              "content": "Delete a payroll. Cannot delete payrolls in Processing or Completed status.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls",
+                ":payrollId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payrollId",
+                  "description": "(Required) The unique identifier for the payroll"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "dd5b74f2-a647-477c-a0f3-4e844fb73cc2",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3abfb912-c39b-46b0-9df7-75b8ecdda2c7",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4604fdd3-cc51-451a-86d8-5c8edcaa5a0e",
+          "name": "Approve",
+          "request": {
+            "name": "Approve",
+            "description": {
+              "content": "Approve a payroll",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls",
+                ":payrollId",
+                "approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payrollId",
+                  "description": "(Required) The unique identifier for the payroll"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d1d6cbd8-113a-4032-9275-127cde14ae0e",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c195f853-dc49-4982-b208-e8605a197d7c",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "214c7ac6-ffad-49b2-8ef9-c5f7edd72e94",
+          "name": "Get Payslip Links",
+          "request": {
+            "name": "Get Payslip Links",
+            "description": {
+              "content": "Retrieve presigned download links for a payroll's payslips. Payslips exist only once the payroll is `Completed`; for payrolls that have not yet processed, entries appear under `notReady` with status `not_found`. Each link expires after a short window, so fetch and use them promptly.\n\nPass `format=zip` to receive a single presigned URL pointing to a bundled archive of all ready payslips instead of per-person links.\n\nPayslips that are still being generated (or failed to generate) are returned under `notReady` with a `status` of `generating` or `error`. Retry the request after generation completes to receive their links.\n\nIn sandbox, a payroll saved with a past `payrollDate` completes immediately on approval — the fastest way to obtain payslips for testing.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "payrolls",
+                ":payrollId",
+                "payslip-links"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "<string>",
+                  "description": "When set to `zip`, ready payslips are bundled into a single archive and returned as one presigned URL via `zipUrl`. Omit for per-person links under `links`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "payrollId",
+                  "description": "(Required) The unique identifier for the payroll"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f17581da-987b-4c2d-a8fa-4a28c2742e1a",
+              "name": "Presigned download links for the payroll's payslips. Returns per-person links under `links` by default, or a single bundled archive under `zipUrl` when `format=zip` was requested. Payslips still generating (or failed) are listed under `notReady`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "payslip-links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"payrollId\": \"7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11\",\n  \"links\": [\n    {\n      \"personId\": \"04a8977d-5d99-4b28-8de4-8161401ca3fa\",\n      \"personName\": \"Jane Doe\",\n      \"paystubId\": \"1b2e3f4a-5c6d-7e8f-9012-345678901234\",\n      \"url\": \"https://example-bucket.s3.amazonaws.com/payslips/04a8977d.pdf?X-Amz-Signature=...\",\n      \"expiresAt\": \"2026-05-11T17:00:00Z\"\n    },\n    {\n      \"personId\": \"11111111-2222-3333-4444-555555555555\",\n      \"personName\": \"John Smith\",\n      \"paystubId\": \"2c3d4e5f-6a7b-8c9d-0e1f-234567890123\",\n      \"url\": \"https://example-bucket.s3.amazonaws.com/payslips/11111111.pdf?X-Amz-Signature=...\",\n      \"expiresAt\": \"2026-05-11T17:00:00Z\"\n    }\n  ],\n  \"notReady\": [\n    {\n      \"personId\": \"22222222-3333-4444-5555-666666666666\",\n      \"status\": \"generating\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74dfd052-3c61-4961-a66f-accab3752fef",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "payslip-links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d329a53-bda1-43b8-9afe-0b65352db958",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "payslip-links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c1d2475-7dde-48bf-a8a0-237a04c94d17",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "payrolls",
+                    ":payrollId",
+                    "payslip-links"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "payrollId",
+                      "description": "(Required) The unique identifier for the payroll"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5e15cad5-a1d1-4952-90eb-d4b689c2e8e3",
+    "name": "Embedded Consumer Wallets Balances Payrolls API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

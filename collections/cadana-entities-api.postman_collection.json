@@ -1,0 +1,1000 @@
+{
+  "item": [
+    {
+      "id": "cff5f4e6-7292-4fe9-83e8-f13dce962b5b",
+      "name": "Entities",
+      "description": {
+        "content": "APIs for managing legal sub-entities (subsidiaries, branches) under a parent business",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "87114f52-8cb4-482d-8895-caf78fa11d5d",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Create a new legal entity under the current business",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "entities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"legalName\": \"<string>\",\n  \"country\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"entityType\": \"<string>\",\n  \"address\": {\n    \"countryCode\": \"<string>\",\n    \"line1\": \"<string>\",\n    \"line2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postalCode\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"<string>\",\n    \"number\": \"<string>\"\n  },\n  \"registrationNumber\": \"<string>\",\n  \"taxId\": \"<string>\",\n  \"incorporationDate\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "42254adc-b5da-45f0-a347-cc3278fb4236",
+              "name": "Entity created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana\",\n  \"country\": \"GH\",\n  \"currency\": \"GHS\",\n  \"entityType\": \"corporation\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-123456\",\n  \"taxId\": \"TIN-789012\",\n  \"incorporationDate\": \"2020-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"37ad8c1e-0187-4e10-8c54-395e3385b4d2\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "393d5558-81a1-4509-b574-03da111a7d4e",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana\",\n  \"country\": \"GH\",\n  \"currency\": \"GHS\",\n  \"entityType\": \"corporation\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-123456\",\n  \"taxId\": \"TIN-789012\",\n  \"incorporationDate\": \"2020-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f63567a0-22aa-4ba6-b15d-06c6d24f3908",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana\",\n  \"country\": \"GH\",\n  \"currency\": \"GHS\",\n  \"entityType\": \"corporation\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-123456\",\n  \"taxId\": \"TIN-789012\",\n  \"incorporationDate\": \"2020-01-15\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a67af315-fa35-4764-b891-3fe418b48235",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "List all legal entities for the current tenant",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "entities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c4a58f57-2b34-4b62-80b2-6967552cee3d",
+              "name": "List of entities",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"37ad8c1e-0187-4e10-8c54-395e3385b4d2\",\n    \"legalName\": \"Acme Corp Ghana\",\n    \"country\": \"GH\",\n    \"currency\": \"GHS\",\n    \"entityType\": \"corporation\",\n    \"status\": \"ACTIVE\",\n    \"createdTimestamp\": 1609459200,\n    \"lastUpdatedTimestamp\": 1609459200\n  },\n  {\n    \"id\": \"37ad8c1e-0187-4e10-8c54-395e3385b4d2\",\n    \"legalName\": \"Acme Corp Ghana\",\n    \"country\": \"GH\",\n    \"currency\": \"GHS\",\n    \"entityType\": \"corporation\",\n    \"status\": \"ACTIVE\",\n    \"createdTimestamp\": 1609459200,\n    \"lastUpdatedTimestamp\": 1609459200\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5104215-38cc-40c7-94ff-882f1676d72e",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "306005b2-10e8-4d86-a2f8-e6fb22025e9c",
+          "name": "Get",
+          "request": {
+            "name": "Get",
+            "description": {
+              "content": "Fetch a single legal entity by ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "entities",
+                ":entityId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "entityId",
+                  "description": "(Required) The unique identifier of the entity"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d7542378-75d3-46db-a3db-687f3a3356bc",
+              "name": "Entity details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"37ad8c1e-0187-4e10-8c54-395e3385b4d2\",\n  \"tenantKey\": \"cad617152\",\n  \"legalName\": \"Acme Corp Ghana\",\n  \"country\": \"GH\",\n  \"currency\": \"GHS\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-123456\",\n  \"taxId\": \"TIN-789012\",\n  \"incorporationDate\": \"2020-01-15\",\n  \"entityType\": \"corporation\",\n  \"status\": \"ACTIVE\",\n  \"createdTimestamp\": 1609459200,\n  \"lastUpdatedTimestamp\": 1609459200\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "17b9393a-f7bc-40b2-b519-df78955f8ba7",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f5f198f-f9d9-4bc2-9fbb-892fa2e9577c",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6eba7d27-1f29-4bf6-80e8-d953b41ca60e",
+          "name": "Update",
+          "request": {
+            "name": "Update",
+            "description": {
+              "content": "Update an existing legal entity",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "entities",
+                ":entityId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "entityId",
+                  "description": "(Required) The unique identifier of the entity"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"legalName\": \"<string>\",\n  \"entityType\": \"<string>\",\n  \"address\": {\n    \"countryCode\": \"<string>\",\n    \"line1\": \"<string>\",\n    \"line2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postalCode\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"<string>\",\n    \"number\": \"<string>\"\n  },\n  \"registrationNumber\": \"<string>\",\n  \"taxId\": \"<string>\",\n  \"incorporationDate\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9357a020-8d8e-41be-89b8-0b8fd61d7843",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana Updated\",\n  \"entityType\": \"limited liability company\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-654321\",\n  \"taxId\": \"TIN-210987\",\n  \"incorporationDate\": \"2019-06-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "edbd8e1f-290e-42af-8e37-b6bf06b96b63",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana Updated\",\n  \"entityType\": \"limited liability company\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-654321\",\n  \"taxId\": \"TIN-210987\",\n  \"incorporationDate\": \"2019-06-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcb551dc-6006-4762-bf3f-945f72c66cc2",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana Updated\",\n  \"entityType\": \"limited liability company\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-654321\",\n  \"taxId\": \"TIN-210987\",\n  \"incorporationDate\": \"2019-06-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "966d91a4-6eb4-425d-886f-31781c0023ca",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "entities",
+                    ":entityId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "entityId",
+                      "description": "(Required) The unique identifier of the entity"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"legalName\": \"Acme Corp Ghana Updated\",\n  \"entityType\": \"limited liability company\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"registrationNumber\": \"BN-654321\",\n  \"taxId\": \"TIN-210987\",\n  \"incorporationDate\": \"2019-06-01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "61c07ca6-bd2f-4e43-9fd1-1c7587128e97",
+    "name": "Embedded Consumer Wallets Balances Entities API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

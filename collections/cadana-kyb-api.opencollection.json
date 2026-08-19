@@ -1,0 +1,152 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances KYB API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "KYB",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get KYB",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/kyb",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the business's KYB details. Returns 404 if KYB has not been started for the business."
+        },
+        {
+          "info": {
+            "name": "Submit KYB",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/kyb",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Submit Know Your Business (KYB) information for verification. Use POST to provide new information — the initial submission and any change to the set of principals; to correct information already on file, use PATCH instead."
+        },
+        {
+          "info": {
+            "name": "Update KYB",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/kyb",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update KYB information already provided. Only the fields you include are changed; new principals cannot be added with PATCH — re-POST the full submission instead. Document arrays are appended to, not replaced."
+        },
+        {
+          "info": {
+            "name": "Generate KYB Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/businesses/:businessId/kyb-link",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the business"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get KYB Link"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

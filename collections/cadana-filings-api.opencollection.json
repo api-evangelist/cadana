@@ -1,0 +1,266 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Filings API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Filings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List filings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/filings",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by business"
+              },
+              {
+                "name": "countryCode",
+                "value": "",
+                "type": "query",
+                "description": "Filter by jurisdiction (ISO 3166-1 alpha-2)"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by filing status"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nReturns filings across all jurisdictions for a business. Use this as\nboth a compliance calendar (\"what's due?\") and a filing history\n(\"what's done?\").\n\nThe response includes a `summary` object with counts by status —\nuse this to power compliance health dashboards without additional\nAPI calls.\n"
+        },
+        {
+          "info": {
+            "name": "Create a filing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/filings",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nCreates a single statutory filing. Every filing is described by a\n`breakdown` array of contribution lines that sum to the filing total.\nThe `source` field selects who's submitting the return to the\nauthority:\n\n- **`source: cadana`** (default) — Cadana will submit the return. Each\n  breakdown line must reference a `personId`. Provide `payrollRunIds`\n  as a shortcut (Cadana populates the breakdown from the tax engine)\n  or pass the `br"
+        },
+        {
+          "info": {
+            "name": "Create all filings for a period",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/batch",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nCreates statutory filings for a business and period in a single call.\nSupports two modes:\n\n**Cadana payroll:** Provide `payrollRunIds` — Cadana determines which\nfiling types apply based on active workers and their compensation flags\n(IMSS-eligible, INFONAVIT-eligible, etc.) and pulls amounts from the tax engine.\n\n**External payroll:** Provide a `filings` array with explicit amounts and\nperson IDs per filing "
+        },
+        {
+          "info": {
+            "name": "Get a filing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/:filing_id",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filing_id",
+                "value": "fil_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Filing identifier"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nReturns full filing details including amounts, status history,\nblocked reasons, and linked payroll runs.\n"
+        },
+        {
+          "info": {
+            "name": "Approve a filing for submission",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/:filing_id/approve",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filing_id",
+                "value": "fil_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Filing identifier"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nApproves a filing, moving it from `in_review` to `approved`. Once approved,\nCadana will submit the filing to the government authority within the\njurisdiction's processing window.\n\nRequires all requirements to be satisfied and no active blocked reasons.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a filing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/:filing_id/cancel",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filing_id",
+                "value": "fil_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Filing identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\nCancels a filing that has not yet been submitted. Cannot cancel filings\nthat are already submitted, accepted, or rejected.\n"
+        },
+        {
+          "info": {
+            "name": "Amend a previously accepted filing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/:filing_id/amend",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filing_id",
+                "value": "fil_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Filing identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nCreates an amendment filing linked to the original. The original filing's\nstatus remains `accepted` and gains an `amended_by` reference. The new\namendment filing starts in `pending` status.\n"
+        },
+        {
+          "info": {
+            "name": "Download filing document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/filings/:filing_id/document",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "filing_id",
+                "value": "fil_01HQ3K4N7XYZABC",
+                "type": "path",
+                "description": "Filing identifier"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a signed URL to download the filing document (PDF). Only available\nafter the filing has been submitted.\n"
+        },
+        {
+          "info": {
+            "name": "Get compliance health summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/compliance/summary",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "countryCode",
+                "value": "",
+                "type": "query",
+                "description": "Filter to a specific jurisdiction"
+              }
+            ]
+          },
+          "docs": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a single-call overview of the business's entire statutory\ncompliance posture across all jurisdictions. Includes filing counts by\nstatus, remittance totals, upcoming deadlines, and outstanding\nrequirements.\n\nThis is the \"how are we doing?\" endpoint — designed to power compliance\ndashboards without needing multiple API calls.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

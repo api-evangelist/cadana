@@ -1,0 +1,231 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Payrolls API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Payrolls",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/payrolls",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fetch all payrolls"
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/payrolls",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new payroll"
+        },
+        {
+          "info": {
+            "name": "Save",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/payrolls/:payrollId/save",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payrollId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the payroll"
+              },
+              {
+                "name": "includeFxRates",
+                "value": "",
+                "type": "query",
+                "description": "When `true`, the response is `200 OK` with the captured FX rates in the body, keyed as `<funding>-<salary>` currency pairs. Any other value (or omitting the parameter) returns `204 No Content`.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Save a payroll"
+        },
+        {
+          "info": {
+            "name": "Get",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/payrolls/:payrollId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payrollId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the payroll"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fetch a payroll's details"
+        },
+        {
+          "info": {
+            "name": "Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cadanapay.com/v1/payrolls/:payrollId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payrollId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the payroll"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a payroll. Cannot delete payrolls in Processing or Completed status."
+        },
+        {
+          "info": {
+            "name": "Approve",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/payrolls/:payrollId/approve",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payrollId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the payroll"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Approve a payroll"
+        },
+        {
+          "info": {
+            "name": "Get Payslip Links",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/payrolls/:payrollId/payslip-links",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "payrollId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the payroll"
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "When set to `zip`, ready payslips are bundled into a single archive and returned as one presigned URL via `zipUrl`. Omit for per-person links under `links`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve presigned download links for a payroll's payslips. Payslips exist only once the payroll is `Completed`; for payrolls that have not yet processed, entries appear under `notReady` with status `not_found`. Each link expires after a short window, so fetch and use them promptly.\n\nPass `format=zip` to receive a single presigned URL pointing to a bundled archive of all ready payslips instead of per-person links.\n\nPayslips that are still being generated (or failed to generate) are returned unde"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

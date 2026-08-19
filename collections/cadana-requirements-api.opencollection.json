@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Requirements API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Requirements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List outstanding requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/requirements",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "businessId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by business. Required unless `personId` is provided."
+              },
+              {
+                "name": "personId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by person. Returns only `worker_data` requirements where\nthis person appears in `affected_persons`. Useful for building\nper-worker onboarding or compliance views. `countryCode` must be\nprovided alongside this parameter.\n"
+              },
+              {
+                "name": "countryCode",
+                "value": "",
+                "type": "query",
+                "description": "Filter by jurisdiction (ISO 3166-1 alpha-2). Required when `personId` is provided; the request fails with `400` if omitted."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns requirements — data inputs, documents, or registrations needed\nbefore filings can proceed.\n\nFilter by `businessId` for a business-wide view (all categories), or\nby `personId` to see what a specific worker is missing. At least one\nof `businessId` or `personId` must be provided, and `countryCode` is\nrequired whenever `personId` is used.\n\nRequirements are generated automatically based on the business's\njurisdictions and workforce composition. They update dynamically as\nworkers are added or "
+        },
+        {
+          "info": {
+            "name": "Get a requirement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/requirements/:requirement_id",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "requirement_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "**Not yet implemented.**\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

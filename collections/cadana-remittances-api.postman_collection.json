@@ -1,0 +1,684 @@
+{
+  "item": [
+    {
+      "id": "8fe8af85-1e3c-4ce7-af3f-b9a69b2a1d5b",
+      "name": "Remittances",
+      "description": {
+        "content": "Government payments linked to filings",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7a8ce61d-7061-4082-ab26-ebf0c9f6a856",
+          "name": "List remittances",
+          "request": {
+            "name": "List remittances",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nReturns government payments across jurisdictions for a business. Each\nremittance is linked to one or more filings and tracks the actual money\nmovement to the government authority.\n\nThe response includes a `summary` object with counts by status.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "remittances"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<string>",
+                  "description": "Filter by business"
+                },
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "Filter by jurisdiction (ISO 3166-1 alpha-2)"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter by remittance status"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "da231df7-cc04-48ac-aa5d-64bd41a5a7e8",
+              "name": "List of remittances with summary",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "countryCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"rem_01HQ3K4N7XYZABC\",\n      \"businessId\": \"string\",\n      \"countryCode\": \"MX\",\n      \"authorityName\": \"SAT\",\n      \"status\": \"failed\",\n      \"amount\": 45000,\n      \"createdAt\": 1709280000,\n      \"updatedAt\": 1709280000\n    },\n    {\n      \"id\": \"rem_01HQ3K4N7XYZABC\",\n      \"businessId\": \"string\",\n      \"countryCode\": \"MX\",\n      \"authorityName\": \"SAT\",\n      \"status\": \"processing\",\n      \"amount\": 45000,\n      \"createdAt\": 1709280000,\n      \"updatedAt\": 1709280000\n    }\n  ],\n  \"summary\": {\n    \"total\": 5488,\n    \"pending\": 6155,\n    \"processing\": 3767,\n    \"completed\": 3498,\n    \"failed\": 8106\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "434705e7-1529-476b-bb41-fb89774b0a50",
+          "name": "Create a remittance",
+          "request": {
+            "name": "Create a remittance",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nInitiates a government payment. A remittance is always tied to one or\nmore `accepted` filings — whether Cadana prepared them\n(`source: cadana`) or you filed them externally and submitted the\ntotals (`source: external`). Funds are debited from your business\nbalance and routed to the authority through Cadana's local rails.\n\nBy default Cadana uses its internal mapping for the authority's bank\naccount. Provide a `paymentDetails` block — the same `paymentMethods`\nobject used by vendor payments and beneficiaries elsewhere in the API —\nto specify the routing yourself (for example, a Mexican CLABE under\n`bank.accountNumber`). Use the top-level `paymentReference` field to\nset the bank attribution reference (defaults to the linked filing's\n`filingReference`).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "remittances"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"<string>\",\n  \"filingIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"fundFromCurrency\": \"<string>\",\n  \"paymentDetails\": {\n    \"preferredMethod\": \"<string>\",\n    \"momo\": {\n      \"accountName\": \"<string>\",\n      \"provider\": \"<string>\",\n      \"providerCode\": \"<string>\",\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"currency\": \"<string>\"\n    },\n    \"bank\": {\n      \"accountName\": \"<string>\",\n      \"accountNumber\": \"<string>\",\n      \"accountType\": \"<string>\",\n      \"ownerType\": \"<string>\",\n      \"bankCode\": \"<string>\",\n      \"bankName\": \"<string>\",\n      \"branchName\": \"<string>\",\n      \"sortCode\": \"<string>\",\n      \"iban\": \"<string>\",\n      \"provider\": \"<string>\",\n      \"currency\": \"<string>\",\n      \"beneficiaryId\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      \"address\": {\n        \"line1\": \"<string>\",\n        \"city\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"state\": \"<string>\",\n        \"countryCode\": \"<string>\",\n        \"line2\": \"<string>\"\n      },\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"email\": \"<email>\"\n    }\n  },\n  \"paymentReference\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a7c5ef98-708c-4868-82c3-222c29c7e0f9",
+              "name": "Remittance created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"MX\",\n  \"filingIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"fundFromCurrency\": \"USD\",\n  \"paymentDetails\": {\n    \"preferredMethod\": \"bank\",\n    \"momo\": {\n      \"accountName\": \"John Doe\",\n      \"provider\": \"MTN\",\n      \"providerCode\": \"MTN\",\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"currency\": \"GHS\"\n    },\n    \"bank\": {\n      \"accountName\": \"SAT — ISR Federal Treasury\",\n      \"accountNumber\": \"<string>\",\n      \"accountType\": \"Checking\",\n      \"ownerType\": \"business\",\n      \"bankCode\": \"012\",\n      \"bankName\": \"BBVA México\",\n      \"branchName\": \"Sucursal Reforma\",\n      \"sortCode\": \"401234\",\n      \"iban\": \"GB00000000000000000000\",\n      \"provider\": \"wise\",\n      \"currency\": \"MXN\",\n      \"beneficiaryId\": {\n        \"type\": \"NIT\",\n        \"value\": \"123456789\"\n      },\n      \"address\": {\n        \"line1\": \"Av. Paseo de la Reforma 10\",\n        \"city\": \"Ciudad de México\",\n        \"postalCode\": \"06600\",\n        \"state\": \"CDMX\",\n        \"countryCode\": \"MX\",\n        \"line2\": \"Piso 30\"\n      },\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"email\": \"<email>\"\n    }\n  },\n  \"paymentReference\": \"0123456ABCD7890EF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"fil_01HQ3K4N7XYZABC\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b3e4819-0c89-42c5-96f4-8a285874cf7f",
+              "name": "Invalid request parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"MX\",\n  \"filingIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"fundFromCurrency\": \"USD\",\n  \"paymentDetails\": {\n    \"preferredMethod\": \"bank\",\n    \"momo\": {\n      \"accountName\": \"John Doe\",\n      \"provider\": \"MTN\",\n      \"providerCode\": \"MTN\",\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"currency\": \"GHS\"\n    },\n    \"bank\": {\n      \"accountName\": \"SAT — ISR Federal Treasury\",\n      \"accountNumber\": \"<string>\",\n      \"accountType\": \"Checking\",\n      \"ownerType\": \"business\",\n      \"bankCode\": \"012\",\n      \"bankName\": \"BBVA México\",\n      \"branchName\": \"Sucursal Reforma\",\n      \"sortCode\": \"401234\",\n      \"iban\": \"GB00000000000000000000\",\n      \"provider\": \"wise\",\n      \"currency\": \"MXN\",\n      \"beneficiaryId\": {\n        \"type\": \"NIT\",\n        \"value\": \"123456789\"\n      },\n      \"address\": {\n        \"line1\": \"Av. Paseo de la Reforma 10\",\n        \"city\": \"Ciudad de México\",\n        \"postalCode\": \"06600\",\n        \"state\": \"CDMX\",\n        \"countryCode\": \"MX\",\n        \"line2\": \"Piso 30\"\n      },\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"email\": \"<email>\"\n    }\n  },\n  \"paymentReference\": \"0123456ABCD7890EF\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "53a72e59-3771-45b7-b8c2-2a2aefe5bccf",
+          "name": "Get a remittance",
+          "request": {
+            "name": "Get a remittance",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nReturns full remittance details including payment status, FX conversion\ninformation, and proof of payment (when available).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "remittances",
+                ":remittance_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "remittance_id",
+                  "description": "(Required) Remittance identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f245710a-0731-4303-b842-a0a0538df412",
+              "name": "Remittance details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances",
+                    ":remittance_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "remittance_id",
+                      "description": "(Required) Remittance identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"rem_01HQ3K4N7XYZABC\",\n  \"businessId\": \"string\",\n  \"filingIds\": [\n    \"string\",\n    \"string\"\n  ],\n  \"countryCode\": \"MX\",\n  \"authorityId\": \"auth_mx_sat\",\n  \"authorityName\": \"SAT\",\n  \"status\": \"completed\",\n  \"amount\": 45000,\n  \"fxRate\": 18.001,\n  \"fundedCurrency\": \"USD\",\n  \"fundedAmount\": 2571.43,\n  \"paymentMethod\": \"local_rails\",\n  \"paymentDetails\": {\n    \"preferredMethod\": \"bank\",\n    \"momo\": {\n      \"accountName\": \"John Doe\",\n      \"provider\": \"MTN\",\n      \"providerCode\": \"MTN\",\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"currency\": \"GHS\"\n    },\n    \"bank\": {\n      \"accountName\": \"SAT — ISR Federal Treasury\",\n      \"accountNumber\": \"<string>\",\n      \"accountType\": \"Checking\",\n      \"ownerType\": \"business\",\n      \"bankCode\": \"012\",\n      \"bankName\": \"BBVA México\",\n      \"branchName\": \"Sucursal Reforma\",\n      \"sortCode\": \"401234\",\n      \"iban\": \"GB00000000000000000000\",\n      \"provider\": \"wise\",\n      \"currency\": \"MXN\",\n      \"beneficiaryId\": {\n        \"type\": \"NIT\",\n        \"value\": \"123456789\"\n      },\n      \"address\": {\n        \"line1\": \"Av. Paseo de la Reforma 10\",\n        \"city\": \"Ciudad de México\",\n        \"postalCode\": \"06600\",\n        \"state\": \"CDMX\",\n        \"countryCode\": \"MX\",\n        \"line2\": \"Piso 30\"\n      },\n      \"phoneNumber\": {\n        \"countryCode\": \"52\",\n        \"number\": \"5512345678\"\n      },\n      \"email\": \"<email>\"\n    }\n  },\n  \"paymentReference\": \"SAT-2026-01-RFC-XAXX010101000-ISR\",\n  \"receiptUrl\": \"string\",\n  \"statusHistory\": [\n    {\n      \"from\": \"pending\",\n      \"to\": \"in_review\",\n      \"timestamp\": 1709654400\n    },\n    {\n      \"from\": \"pending\",\n      \"to\": \"in_review\",\n      \"timestamp\": 1709654400\n    }\n  ],\n  \"createdAt\": 1709280000,\n  \"updatedAt\": 1709280000\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f372e83-5d63-4678-bdab-b79f0f198dca",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances",
+                    ":remittance_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "remittance_id",
+                      "description": "(Required) Remittance identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9a121387-a9eb-4ce3-af01-1df0ffdd6ae0",
+          "name": "Download remittance receipt",
+          "request": {
+            "name": "Download remittance receipt",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a signed URL to download proof of government payment.\nAvailable after the remittance reaches `completed` status.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "remittances",
+                ":remittance_id",
+                "receipt"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "remittance_id",
+                  "description": "(Required) Remittance identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fcc34dad-86bb-47a9-b971-bce4148ef186",
+              "name": "Receipt download URL",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances",
+                    ":remittance_id",
+                    "receipt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "remittance_id",
+                      "description": "(Required) Remittance identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"http://cRjFArbtWmdpvcTfUVgsnOLxIQcwXirea.wza,U2ZeEpFwZgR+bHtV,J,3e2lnxg5PJSoV.INZTwGDY2-O7tcsZIj4Oey0.pnReLALKu\",\n  \"expiresAt\": \"1976-03-27T03:41:09.808Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "705f57c5-4d51-4140-be17-406c3f640d29",
+              "name": "Receipt not yet available",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "remittances",
+                    ":remittance_id",
+                    "receipt"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "remittance_id",
+                      "description": "(Required) Remittance identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "05941541-c4f1-43da-ae84-136cc814770c",
+    "name": "Embedded Consumer Wallets Balances Remittances API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

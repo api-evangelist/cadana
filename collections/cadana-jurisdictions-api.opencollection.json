@@ -1,0 +1,128 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Jurisdictions API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Jurisdictions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List supported jurisdictions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/jurisdictions",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns all countries and regions where Cadana supports statutory filing.\nEach jurisdiction includes a summary of filing types, payroll frequency, and currency.\n"
+        },
+        {
+          "info": {
+            "name": "Get jurisdiction details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/jurisdictions/:country_code",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ]
+          },
+          "docs": "Returns full configuration for a jurisdiction: required employee fields,\nfiling types, statutory benefits, compliance rules, and termination rules.\n\nThe embedded field lists (`employeeFields`, `employerFields`) cover\nfiling-scope fields only. For the complete set — including\ncalculation-scope fields — use\n`GET /v1/statutory/jurisdictions/{country_code}/required-fields`.\n"
+        },
+        {
+          "info": {
+            "name": "List filing types for a jurisdiction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/jurisdictions/:country_code/filing-types",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              }
+            ]
+          },
+          "docs": "Returns every type of statutory return that must be filed in this jurisdiction.\nEach filing type includes the government authority, frequency, and required data.\n"
+        },
+        {
+          "info": {
+            "name": "Get required fields for tax calculation and statutory filing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/statutory/jurisdictions/:country_code/required-fields",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "country_code",
+                "value": "MX",
+                "type": "path",
+                "description": "ISO 3166-1 alpha-2 country code"
+              },
+              {
+                "name": "worker_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter fields by worker type"
+              },
+              {
+                "name": "scope",
+                "value": "",
+                "type": "query",
+                "description": "Filter fields by scope — \"calculation\" for tax engine inputs, \"filing\" for statutory return fields. Omit to return all fields."
+              }
+            ]
+          },
+          "docs": "Returns all fields required for tax calculation and/or statutory filing\nin this jurisdiction. This is a **discovery endpoint** — it tells you\nwhat data needs to be collected for both persons (workers) and businesses\n(employers).\n\nEach field includes:\n- **`entity`** — Who the field belongs to: `person` (worker data) or\n  `business` (employer data)\n- **`scope`** — Whether the field is needed for `calculation` (tax engine input),\n  `filing` (statutory return), or both\n- **`condition`** — When prese"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

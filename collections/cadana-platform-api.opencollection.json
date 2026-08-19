@@ -1,0 +1,224 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Platform API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Platform",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/platform/businesses",
+            "params": [
+              {
+                "name": "idempotencyKey",
+                "value": "",
+                "type": "query",
+                "description": "Idempotency key of a business"
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Query next set of results based on limit"
+              },
+              {
+                "name": "previous",
+                "value": "",
+                "type": "query",
+                "description": "Query previous set of results based on limit"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fetch all businesses"
+        },
+        {
+          "info": {
+            "name": "Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/platform/businesses",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a business"
+        },
+        {
+          "info": {
+            "name": "List Disbursements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/platform/disbursements",
+            "params": [
+              {
+                "name": "businessId",
+                "value": "1e6c5a83-7b86-4a32-a7da-0e5e2b3d8f10",
+                "type": "query",
+                "description": "Scope results to a single business account. Returns only rows where that business's account is the sender or recipient — both money it sent (payroll, vendor payments, payouts) and money it received (deposits, refunds/reversals). This is narrower than `tenantKey`, which returns every row under a tenant.\n"
+              },
+              {
+                "name": "currency",
+                "value": "USD",
+                "type": "query",
+                "description": "Filter by the business-facing currency — matches either the destination `amount` or the `sourceAmount`."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Start of date range (ISO 8601, e.g. 2026-01-01). Defaults to 7 days ago."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End of date range (ISO 8601, e.g. 2026-02-01). Defaults to now."
+              },
+              {
+                "name": "type",
+                "value": "PAYROLL,PAYOUT",
+                "type": "query",
+                "description": "Comma-separated, repeatable filter of disbursement type(s) to include. Supported values: PAYROLL, PAYOUT, TRANSFER, CARD_MAINTENANCE_FEE, CARD_CREATION_FEE, STOCK_BUY, STOCK_SELL, PAYROLL_FEE, INTEREST. When scoped to a single business with `businessId`, the business-relevant types are PAYROLL_TOTAL, PAYROLL, PAYROLL_FEE, PAYROLL_REVERSAL, DEPOSIT, DEPOSIT_REVERSAL, VENDOR, REVENUE_SHARE_PAYOUT, REIMBURSEMENT, SUBSCRIPTION_PAYMENT, STATUTORY_DEPOSIT; by default the per-employee PAYROLL legs and PAYROLL_FEE are collapsed into the single PAYROLL_TOTAL row, and passing an explicit `type` returns the raw rows.\n"
+              },
+              {
+                "name": "status",
+                "value": "SUCCESS",
+                "type": "query",
+                "description": "Filter by transaction status."
+              },
+              {
+                "name": "includeRevenueShare",
+                "value": "true",
+                "type": "query",
+                "description": "Set to `true` to include the revenue-share fields (`feeRevenueShare`, `fxRevenueShare`, `totalRevenueShare`) in each item. Omitted by default."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page."
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Opaque cursor for the next page — pass the `cursor.next` value from the previous response. Keep paging until `cursor.next` is null."
+              },
+              {
+                "name": "previous",
+                "value": "",
+                "type": "query",
+                "description": "Cursor to fetch the previous page of results."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve all disbursements across all businesses under the platform. Use this endpoint for financial reconciliation across your sub-businesses."
+        },
+        {
+          "info": {
+            "name": "Get Disbursement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/platform/disbursements/:disbursementId",
+            "params": [
+              {
+                "name": "disbursementId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the disbursement"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fetch a single disbursement by ID."
+        },
+        {
+          "info": {
+            "name": "Create Transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/platform/transfers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Move money between your own business accounts — your main business and\nits child businesses — internally and same-currency only. Settles\nimmediately with no fee.\n\nSet `sourceTenantKey` to the business funds move from (omit it to send\nfrom your main business) and `destinationTenantKey` to the business they\nmove to. Allowed movements are main → child, child → child, and\nchild → main.\n\nThere is no `GET` for a transfer — track it via the\n[platform disbursements endpoint](/api-reference/workforce/pla"
+        },
+        {
+          "info": {
+            "name": "Custom Roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/permissions/roles",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get Custom Roles"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

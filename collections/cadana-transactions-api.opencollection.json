@@ -1,0 +1,198 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Transactions API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/users/:userId/transactions",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              },
+              {
+                "name": "reference",
+                "value": "",
+                "type": "query",
+                "description": "Client reference to filter transactions"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Transaction type to filter by"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve transactions for a user"
+        },
+        {
+          "info": {
+            "name": "Create transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/users/:userId/transactions",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new transaction for a user"
+        },
+        {
+          "info": {
+            "name": "Get transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/users/:userId/transactions/:transactionId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              },
+              {
+                "name": "transactionId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the transaction"
+              },
+              {
+                "name": "document",
+                "value": "",
+                "type": "query",
+                "description": "Include a presigned download URL for a transaction document, e.g. `firc` for the FIRC (Foreign Inward Remittance Certificate) on Indian payouts"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get an existing transaction for a user"
+        },
+        {
+          "info": {
+            "name": "Get user fees",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/users/:userId/fees",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              },
+              {
+                "name": "sourceCurrency",
+                "value": "",
+                "type": "query",
+                "description": "ISO 4217 currency in which all fees are quoted. Defaults to `USD`."
+              },
+              {
+                "name": "paymentMethod",
+                "value": "",
+                "type": "query",
+                "description": "Payment method to produce an estimate for. Presence of this field triggers the `estimate` block in the response and requires `destinationCurrency`."
+              },
+              {
+                "name": "destinationCurrency",
+                "value": "",
+                "type": "query",
+                "description": "ISO 4217 payout currency — keys the specific corridor for the `estimate`. Required whenever `paymentMethod`, `destinationCountry`, or `sourceAmount` is supplied."
+              },
+              {
+                "name": "destinationCountry",
+                "value": "",
+                "type": "query",
+                "description": "ISO 3166-1 alpha-2 destination country code. Use this when several countries share a currency (e.g. USD sent to Ecuador vs. USD sent to El Salvador) so the estimate resolves to the right country. Only meaningful when `destinationCurrency` is also supplied."
+              },
+              {
+                "name": "sourceAmount",
+                "value": "",
+                "type": "query",
+                "description": "Decimal payout amount used to resolve percentage-based fees into a concrete `estimate.fee.value`. Ignored for fixed-fee corridors. Requires `destinationCurrency`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the payout catalog for a user — fees, delivery timelines, and transfer limits per corridor.\n\n`data.payouts` is the full, unfiltered catalog (the user's rate card) and is always returned.\n\nSupply `paymentMethod` together with `destinationCurrency` to also receive `data.estimate` — a per-transaction fee, delivery timeline, and transfer limits for the specified corridor. Add `destinationCountry` when several countries share a currency (e.g. USD sent to Ecuador vs. USD sent to El Salvador) "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

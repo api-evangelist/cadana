@@ -1,0 +1,205 @@
+{
+  "item": [
+    {
+      "id": "9fb5342e-8888-4630-862a-23af53c44251",
+      "name": "Events",
+      "description": {
+        "content": "Immutable audit trail",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f0c67f71-45ac-41ac-8dbc-9c733e7b0855",
+          "name": "List audit events",
+          "request": {
+            "name": "List audit events",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns the immutable audit log. Every state change on every resource\n(filing, remittance, requirement) is recorded as an event with the\nactor, timestamp, and before/after state.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_id",
+                  "value": "<string>",
+                  "description": "Filter events for a specific resource"
+                },
+                {
+                  "disabled": false,
+                  "key": "event_type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "since",
+                  "value": "<dateTime>",
+                  "description": "Return events after this timestamp"
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor from previous response"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "25",
+                  "description": "Number of items per page"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "20a47f1f-8d52-4112-9e59-1cbc3bfc247d",
+              "name": "List of events",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "since",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"evt_01HQ3K4N7XYZABC\",\n      \"type\": \"filing.submitted\",\n      \"resourceType\": \"remittance\",\n      \"resourceId\": \"string\",\n      \"businessId\": \"string\",\n      \"actor\": {\n        \"type\": \"system\",\n        \"id\": \"string\"\n      },\n      \"data\": {\n        \"key_0\": true\n      },\n      \"occurredAt\": \"2000-08-02T22:14:23.736Z\"\n    },\n    {\n      \"id\": \"evt_01HQ3K4N7XYZABC\",\n      \"type\": \"filing.submitted\",\n      \"resourceType\": \"filing\",\n      \"resourceId\": \"string\",\n      \"businessId\": \"string\",\n      \"actor\": {\n        \"type\": \"system\",\n        \"id\": \"string\"\n      },\n      \"data\": {\n        \"key_0\": \"string\",\n        \"key_1\": true\n      },\n      \"occurredAt\": \"2006-04-21T05:10:55.853Z\"\n    }\n  ],\n  \"pagination\": {\n    \"nextCursor\": \"string\",\n    \"hasMore\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ddd3bb35-408c-4416-8a5e-eca207eb9357",
+    "name": "Embedded Consumer Wallets Balances Events API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

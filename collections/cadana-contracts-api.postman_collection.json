@@ -1,0 +1,1107 @@
+{
+  "item": [
+    {
+      "id": "ef12f7f2-ccf2-4c4c-b1f8-176a2739a310",
+      "name": "Contracts",
+      "description": {
+        "content": "APIs for interacting with contracts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c1e6633c-324a-4366-a77a-7a78a3ec832f",
+          "name": "List Templates",
+          "request": {
+            "name": "List Templates",
+            "description": {
+              "content": "Fetch all contract tempaltes",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contract-templates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ecdacd83-41c8-4fce-a30f-0001de3f36cf",
+              "name": "get contract templates response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-templates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"createdTimestamp\": 1702002274,\n      \"lastUpdatedTimestamp\": 1702002274,\n      \"personType\": \"employee\",\n      \"type\": \"regular\",\n      \"country\": \"US\",\n      \"name\": \"Standard Employee Agreement\",\n      \"templateString\": \"string\",\n      \"templateVariables\": [\n        {\n          \"name\": \"firstName\",\n          \"label\": \"First Name\",\n          \"ref\": \"person.firstName\",\n          \"type\": \"string\",\n          \"description\": \"This is the employee's first name\",\n          \"isRequired\": true\n        },\n        {\n          \"name\": \"firstName\",\n          \"label\": \"First Name\",\n          \"ref\": \"person.firstName\",\n          \"type\": \"string\",\n          \"description\": \"This is the employee's first name\",\n          \"isRequired\": true\n        }\n      ],\n      \"tenantKey\": \"abc123\"\n    },\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"createdTimestamp\": 1702002274,\n      \"lastUpdatedTimestamp\": 1702002274,\n      \"personType\": \"employee\",\n      \"type\": \"regular\",\n      \"country\": \"US\",\n      \"name\": \"Standard Employee Agreement\",\n      \"templateString\": \"string\",\n      \"templateVariables\": [\n        {\n          \"name\": \"firstName\",\n          \"label\": \"First Name\",\n          \"ref\": \"person.firstName\",\n          \"type\": \"string\",\n          \"description\": \"This is the employee's first name\",\n          \"isRequired\": true\n        },\n        {\n          \"name\": \"firstName\",\n          \"label\": \"First Name\",\n          \"ref\": \"person.firstName\",\n          \"type\": \"string\",\n          \"description\": \"This is the employee's first name\",\n          \"isRequired\": true\n        }\n      ],\n      \"tenantKey\": \"abc123\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1c906db-9575-4fb8-be8b-04630b647fcc",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contract-templates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d932d281-d5f9-47c4-848a-3549f061c949",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Fetch all contracts",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "personId",
+                  "value": "<uuid>",
+                  "description": "Optional UUID of the person to filter the contracts"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e35ae613-a68a-472b-a5ae-45dc95cf65dd",
+              "name": "get contracts response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "personId",
+                      "value": "c30133cc-8d0e-42e5-b18c-24532e46b53e"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"templateId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"status\": \"completed\",\n      \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Edward Petersen - Standard Global Contractor Agreement\",\n      \"signatures\": [\n        {\n          \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n          \"emailAddress\": \"signer@example.com\",\n          \"name\": \"John Doe\",\n          \"order\": 0,\n          \"status\": \"signed\",\n          \"signedAt\": 1689759850,\n          \"lastViewedAt\": 1689759850\n        },\n        {\n          \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n          \"emailAddress\": \"signer@example.com\",\n          \"name\": \"John Doe\",\n          \"order\": 0,\n          \"status\": \"signed\",\n          \"signedAt\": 1689759850,\n          \"lastViewedAt\": 1689759850\n        }\n      ],\n      \"createdAt\": 1689759850,\n      \"customContractAttached\": false\n    },\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"templateId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"status\": \"completed\",\n      \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Edward Petersen - Standard Global Contractor Agreement\",\n      \"signatures\": [\n        {\n          \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n          \"emailAddress\": \"signer@example.com\",\n          \"name\": \"John Doe\",\n          \"order\": 0,\n          \"status\": \"signed\",\n          \"signedAt\": 1689759850,\n          \"lastViewedAt\": 1689759850\n        },\n        {\n          \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n          \"emailAddress\": \"signer@example.com\",\n          \"name\": \"John Doe\",\n          \"order\": 0,\n          \"status\": \"signed\",\n          \"signedAt\": 1689759850,\n          \"lastViewedAt\": 1689759850\n        }\n      ],\n      \"createdAt\": 1689759850,\n      \"customContractAttached\": false\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcecfe13-fcca-4f75-af47-c1c46cf3319d",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "personId",
+                      "value": "c30133cc-8d0e-42e5-b18c-24532e46b53e"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b84b11e2-b944-4c7c-939f-bbf142c3df08",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Create a contract",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateId\": \"<uuid>\",\n  \"personId\": \"<uuid>\",\n  \"sender\": {\n    \"email\": \"<email>\",\n    \"name\": \"<string>\"\n  },\n  \"suppressNotification\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7de97724-91cb-4810-a3bf-40b1926e7a01",
+              "name": "create contract response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"templateId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"sender\": {\n    \"email\": \"batman@gothammail.com\",\n    \"name\": \"Batman Jr\"\n  },\n  \"suppressNotification\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n  \"name\": \"Jane Doe - Standard Global Contractor Agreement\",\n  \"personId\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n  \"signatures\": [\n    {\n      \"emailAddress\": \"admin@example.com\",\n      \"id\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n      \"lastViewedAt\": 0,\n      \"name\": \"Admin\",\n      \"order\": 0,\n      \"signedAt\": 0,\n      \"status\": \"unsigned\"\n    },\n    {\n      \"emailAddress\": \"worker@example.com\",\n      \"id\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n      \"lastViewedAt\": 0,\n      \"name\": \"Jane Doe\",\n      \"order\": 1,\n      \"signedAt\": 0,\n      \"status\": \"unsigned\"\n    }\n  ],\n  \"status\": \"awaiting business signature\",\n  \"subject\": \"The contract is ready for signature\",\n  \"templateId\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n  \"title\": \"Acme Corp has sent you a contract for signature\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dcb7959b-8afd-4e31-893c-a405389db710",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"templateId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"sender\": {\n    \"email\": \"batman@gothammail.com\",\n    \"name\": \"Batman Jr\"\n  },\n  \"suppressNotification\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2c5b058e-7b02-4b9b-bb09-efcb3c5760c9",
+          "name": "Retrieve",
+          "request": {
+            "name": "Retrieve",
+            "description": {
+              "content": "Retrieve a single contract by ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                ":contractId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "includeDownloadUrl",
+                  "value": "false",
+                  "description": "When true, includes a presigned download URL for the contract PDF (valid for 15 minutes)"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "contractId",
+                  "description": "(Required) The unique identifier for the the contract"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e8ef028b-f179-47a2-90b9-f12c5d30995c",
+              "name": "retrieve contract response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDownloadUrl",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "contractId",
+                      "description": "(Required) The unique identifier for the the contract"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"templateId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"status\": \"completed\",\n  \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"name\": \"Edward Petersen - Standard Global Contractor Agreement\",\n  \"signatures\": [\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"emailAddress\": \"signer@example.com\",\n      \"name\": \"John Doe\",\n      \"order\": 0,\n      \"status\": \"signed\",\n      \"signedAt\": 1689759850,\n      \"lastViewedAt\": 1689759850\n    },\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"emailAddress\": \"signer@example.com\",\n      \"name\": \"John Doe\",\n      \"order\": 0,\n      \"status\": \"signed\",\n      \"signedAt\": 1689759850,\n      \"lastViewedAt\": 1689759850\n    }\n  ],\n  \"createdAt\": 1689759850,\n  \"customContractAttached\": false,\n  \"downloadUrl\": \"https://storage.example.com/contracts/d52e4a13-7b6f-4c8d-a9e1-2f3b5c7d8e9a.pdf?token=abc123&expires=900\",\n  \"downloadUrlExpiresAt\": 1689760750\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "007a52af-d424-4112-8c8b-0a9d6630a619",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeDownloadUrl",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "contractId",
+                      "description": "(Required) The unique identifier for the the contract"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e9819fb2-386d-44eb-be4a-7f262c2a06e7",
+          "name": "Signing URL",
+          "request": {
+            "name": "Signing URL",
+            "description": {
+              "content": "Get contract signing URL. The generated links last for 336 hours.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts",
+                ":contractId",
+                "signingUrl"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "redirectUrl",
+                  "value": "<uri>",
+                  "description": "URL to redirect to after signing the contract"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "contractId",
+                  "description": "(Required) The unique identifier for the the contract"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "29db4b66-4735-4b50-b13c-854a502ea6e3",
+              "name": "get contract signing url response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    ":contractId",
+                    "signingUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "redirectUrl",
+                      "value": "https://www.google.com"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "contractId",
+                      "description": "(Required) The unique identifier for the the contract"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://app.cadanapay.com/sign-contract?token=abc123&redirectUrl=https%3A%2F%2Fwww.google.com\",\n  \"signer\": \"business\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cc226d23-8dcc-4091-9d9b-f7339c869eab",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts",
+                    ":contractId",
+                    "signingUrl"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "redirectUrl",
+                      "value": "https://www.google.com"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "contractId",
+                      "description": "(Required) The unique identifier for the the contract"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ededbbd3-6c3e-4520-b69b-64b207e93fe6",
+          "name": "Upload Contract",
+          "request": {
+            "name": "Upload Contract",
+            "description": {
+              "content": "Upload a contract PDF using a fileId from the files API",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contracts-upload"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"personId\": \"<uuid>\",\n  \"fileId\": \"<uuid>\",\n  \"contractName\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0e052578-1135-48fe-b024-96548b515021",
+              "name": "upload contract response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"fileId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"contractName\": \"Employment Agreement\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n  \"name\": \"Employment Agreement\",\n  \"personId\": \"ca51f42c-0adc-4a77-8dd1-a03dd4fb955f\",\n  \"status\": \"completed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fdfec54c-9292-4c6d-8e97-7114344497c0",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contracts-upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"personId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"fileId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"contractName\": \"Employment Agreement\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "340ed025-c7af-4e08-afcf-78c4e0f1ee55",
+    "name": "Embedded Consumer Wallets Balances Contracts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

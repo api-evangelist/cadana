@@ -1,0 +1,1509 @@
+{
+  "item": [
+    {
+      "id": "fb5fba82-9ec4-47a2-a9c3-83b03669409a",
+      "name": "Platform",
+      "description": {
+        "content": "Platform APIs for interacting with businesses",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "449ab94a-d6f9-492a-ab13-7fa34e6c2812",
+          "name": "Create",
+          "request": {
+            "name": "Create",
+            "description": {
+              "content": "Create a business",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "platform",
+                "businesses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"<string>\",\n  \"adminFirstName\": \"<string>\",\n  \"adminLastName\": \"<string>\",\n  \"address\": {\n    \"countryCode\": \"<string>\",\n    \"line1\": \"<string>\",\n    \"line2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postalCode\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"adminEmail\": \"<string>\",\n  \"idempotencyKey\": \"<string>\",\n  \"country\": \"<string>\",\n  \"businessShortName\": \"<string>\",\n  \"suppressWelcomeEmail\": false,\n  \"registrationId\": \"<string>\",\n  \"adminPhoneNumber\": {\n    \"countryCode\": \"<string>\",\n    \"number\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1f64a5ec-9b81-4556-b2aa-831da0bbf25b",
+              "name": "get user kyc response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "businesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessName\": \"Wayne Enterprise\",\n  \"adminFirstName\": \"Jane\",\n  \"adminLastName\": \"Founder\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"adminEmail\": \"admin@example.com\",\n  \"idempotencyKey\": \"b6ae5da9-6342-4a58-bd50-8564d68d3f7e\",\n  \"country\": \"US\",\n  \"businessShortName\": \"W.E.\",\n  \"suppressWelcomeEmail\": false,\n  \"registrationId\": \"991234567\",\n  \"adminPhoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"businessId\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"tenantKey\": \"biz123456\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63c40288-136a-4c03-80d8-ca6bce08ef97",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "businesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessName\": \"Wayne Enterprise\",\n  \"adminFirstName\": \"Jane\",\n  \"adminLastName\": \"Founder\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"adminEmail\": \"admin@example.com\",\n  \"idempotencyKey\": \"b6ae5da9-6342-4a58-bd50-8564d68d3f7e\",\n  \"country\": \"US\",\n  \"businessShortName\": \"W.E.\",\n  \"suppressWelcomeEmail\": false,\n  \"registrationId\": \"991234567\",\n  \"adminPhoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2739010-c927-4ad1-9094-2864ea8a9b25",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "businesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessName\": \"Wayne Enterprise\",\n  \"adminFirstName\": \"Jane\",\n  \"adminLastName\": \"Founder\",\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"adminEmail\": \"admin@example.com\",\n  \"idempotencyKey\": \"b6ae5da9-6342-4a58-bd50-8564d68d3f7e\",\n  \"country\": \"US\",\n  \"businessShortName\": \"W.E.\",\n  \"suppressWelcomeEmail\": false,\n  \"registrationId\": \"991234567\",\n  \"adminPhoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1f7e0254-a73b-4e31-a8e1-72eb5a3db1a0",
+          "name": "List",
+          "request": {
+            "name": "List",
+            "description": {
+              "content": "Fetch all businesses",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "platform",
+                "businesses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "idempotencyKey",
+                  "value": "<string>",
+                  "description": "Idempotency key of a business"
+                },
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Query next set of results based on limit"
+                },
+                {
+                  "disabled": false,
+                  "key": "previous",
+                  "value": "<string>",
+                  "description": "Query previous set of results based on limit"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Maximum number of items to return per page"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b3acc381-2553-47bd-899d-efdf38d55b6e",
+              "name": "get businesses response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "businesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "idempotencyKey",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Wayne Enterprise\",\n      \"shortName\": \"W.E.\",\n      \"status\": \"ACTIVE\",\n      \"tenantKey\": \"abc123\",\n      \"country\": \"US\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"requiresKYB\": true,\n      \"admin\": {\n        \"name\": \"Jane Founder\",\n        \"email\": \"jane@example.com\"\n      },\n      \"createdTimestamp\": 1765359752,\n      \"idempotencyKey\": \"b6ae5da9-6342-4a58-bd50-8564d68d3f7e\"\n    },\n    {\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Wayne Enterprise\",\n      \"shortName\": \"W.E.\",\n      \"status\": \"ACTIVE\",\n      \"tenantKey\": \"abc123\",\n      \"country\": \"US\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"requiresKYB\": true,\n      \"admin\": {\n        \"name\": \"Jane Founder\",\n        \"email\": \"jane@example.com\"\n      },\n      \"createdTimestamp\": 1765359752,\n      \"idempotencyKey\": \"b6ae5da9-6342-4a58-bd50-8564d68d3f7e\"\n    }\n  ],\n  \"node\": {\n    \"next\": \"string\",\n    \"previous\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50a01aaf-e684-44b5-a499-5e37600d4a38",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "businesses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "idempotencyKey",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9a189cfd-7ec1-476b-bf9f-deaea3fd6d65",
+          "name": "List Disbursements",
+          "request": {
+            "name": "List Disbursements",
+            "description": {
+              "content": "Retrieve all disbursements across all businesses under the platform. Use this endpoint for financial reconciliation across your sub-businesses.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "platform",
+                "disbursements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<uuid>",
+                  "description": "Scope results to a single business account. Returns only rows where that business's account is the sender or recipient — both money it sent (payroll, vendor payments, payouts) and money it received (deposits, refunds/reversals). This is narrower than `tenantKey`, which returns every row under a tenant.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "currency",
+                  "value": "<string>",
+                  "description": "Filter by the business-facing currency — matches either the destination `amount` or the `sourceAmount`."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<date>",
+                  "description": "Start of date range (ISO 8601, e.g. 2026-01-01). Defaults to 7 days ago."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<date>",
+                  "description": "End of date range (ISO 8601, e.g. 2026-02-01). Defaults to now."
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Comma-separated, repeatable filter of disbursement type(s) to include. Supported values: PAYROLL, PAYOUT, TRANSFER, CARD_MAINTENANCE_FEE, CARD_CREATION_FEE, STOCK_BUY, STOCK_SELL, PAYROLL_FEE, INTEREST. When scoped to a single business with `businessId`, the business-relevant types are PAYROLL_TOTAL, PAYROLL, PAYROLL_FEE, PAYROLL_REVERSAL, DEPOSIT, DEPOSIT_REVERSAL, VENDOR, REVENUE_SHARE_PAYOUT, REIMBURSEMENT, SUBSCRIPTION_PAYMENT, STATUTORY_DEPOSIT; by default the per-employee PAYROLL legs and PAYROLL_FEE are collapsed into the single PAYROLL_TOTAL row, and passing an explicit `type` returns the raw rows.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter by transaction status."
+                },
+                {
+                  "disabled": false,
+                  "key": "includeRevenueShare",
+                  "value": "false",
+                  "description": "Set to `true` to include the revenue-share fields (`feeRevenueShare`, `fxRevenueShare`, `totalRevenueShare`) in each item. Omitted by default."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Maximum number of items to return per page."
+                },
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Opaque cursor for the next page — pass the `cursor.next` value from the previous response. Keep paging until `cursor.next` is null."
+                },
+                {
+                  "disabled": false,
+                  "key": "previous",
+                  "value": "<string>",
+                  "description": "Cursor to fetch the previous page of results."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c2b5f400-f723-4a14-ab25-ce07d39d52d6",
+              "name": "List of disbursements across all platform businesses",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "1e6c5a83-7b86-4a32-a7da-0e5e2b3d8f10"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "PAYROLL,PAYOUT"
+                    },
+                    {
+                      "key": "status",
+                      "value": "SUCCESS"
+                    },
+                    {
+                      "key": "includeRevenueShare",
+                      "value": "true"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"c6250a16-eb63-41de-a952-8122d305ebbf\",\n      \"tenantKey\": \"tbl12101631\",\n      \"status\": \"SUCCESS\",\n      \"referenceId\": \"7b82d74e-4ad5-4fbf-af9c-a0f11b224c7a\",\n      \"description\": \"January 2026 Payment\",\n      \"type\": \"PAYROLL\",\n      \"paymentMethod\": \"wallet\",\n      \"paymentDetails\": {\n        \"preferredMethod\": \"wallet\",\n        \"wallet\": {\n          \"type\": \"USER\",\n          \"identifier\": \"060e3aeb-4a9d-4a90-aff5-17f8d69635ce\",\n          \"currency\": \"USD\"\n        }\n      },\n      \"userId\": \"060e3aeb-4a9d-4a90-aff5-17f8d69635ce\",\n      \"personId\": \"8ab2ba37-3c37-485d-9af9-122d11c96bf9\",\n      \"userName\": \"Reed Maygone\",\n      \"amount\": {\n        \"value\": \"1000.00\",\n        \"currency\": \"USD\"\n      },\n      \"sourceAmount\": {\n        \"value\": \"1000.00\",\n        \"currency\": \"USD\"\n      },\n      \"feeAmount\": {\n        \"value\": \"0.00\",\n        \"currency\": \"USD\"\n      },\n      \"totalAmount\": {\n        \"value\": \"1000.00\",\n        \"currency\": \"USD\"\n      },\n      \"createdTimestamp\": \"2026-01-28 14:20:47 +0000 UTC\",\n      \"lastUpdatedTimestamp\": \"2026-01-28 14:20:55 +0000 UTC\"\n    },\n    {\n      \"id\": \"6658ae8b-07fd-4e33-b66d-eb1e1420e102\",\n      \"tenantKey\": \"cad35916961\",\n      \"status\": \"SUCCESS\",\n      \"referenceId\": \"aaae74a1-b4ac-44e8-b3a8-abd3bcaa0d3b\",\n      \"type\": \"PAYOUT\",\n      \"fxRate\": 5.7896,\n      \"paymentMethod\": \"bank\",\n      \"paymentDetails\": {\n        \"preferredMethod\": \"bank\",\n        \"bank\": {\n          \"accountName\": \"Maria Santos\",\n          \"accountNumber\": \"00123456\",\n          \"bankCode\": \"001\",\n          \"bankName\": \"Banco do Brasil\",\n          \"currency\": \"BRL\"\n        }\n      },\n      \"userId\": \"3ace5e66-9981-4bdc-b694-8a4e5dd9d1c6\",\n      \"userName\": \"Maria Santos\",\n      \"amount\": {\n        \"value\": \"578.96\",\n        \"currency\": \"BRL\"\n      },\n      \"sourceAmount\": {\n        \"value\": \"100.00\",\n        \"currency\": \"USD\"\n      },\n      \"feeAmount\": {\n        \"value\": \"13.50\",\n        \"currency\": \"USD\"\n      },\n      \"totalAmount\": {\n        \"value\": \"113.50\",\n        \"currency\": \"USD\"\n      },\n      \"fxRevenueShare\": {\n        \"amount\": {\n          \"value\": \"1.00\",\n          \"currency\": \"USD\"\n        },\n        \"rate\": 1\n      },\n      \"feeRevenueShare\": {\n        \"amount\": {\n          \"value\": \"10.00\",\n          \"currency\": \"USD\"\n        }\n      },\n      \"totalRevenueShare\": {\n        \"value\": \"11.00\",\n        \"currency\": \"USD\"\n      },\n      \"createdTimestamp\": \"2026-01-12 19:58:28 +0000 UTC\",\n      \"lastUpdatedTimestamp\": \"2026-01-12 19:58:41 +0000 UTC\"\n    }\n  ],\n  \"cursor\": {\n    \"previous\": null,\n    \"next\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cc5b5ad6-4a62-42ec-9587-59c6c0d0ff23",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "1e6c5a83-7b86-4a32-a7da-0e5e2b3d8f10"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "PAYROLL,PAYOUT"
+                    },
+                    {
+                      "key": "status",
+                      "value": "SUCCESS"
+                    },
+                    {
+                      "key": "includeRevenueShare",
+                      "value": "true"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4bd6121-497d-4581-9000-93fe7cc8587e",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "1e6c5a83-7b86-4a32-a7da-0e5e2b3d8f10"
+                    },
+                    {
+                      "key": "currency",
+                      "value": "USD"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "type",
+                      "value": "PAYROLL,PAYOUT"
+                    },
+                    {
+                      "key": "status",
+                      "value": "SUCCESS"
+                    },
+                    {
+                      "key": "includeRevenueShare",
+                      "value": "true"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "next",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "previous",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9ba6ec0c-8e38-483f-aaf1-8ea2fc132c0c",
+          "name": "Get Disbursement",
+          "request": {
+            "name": "Get Disbursement",
+            "description": {
+              "content": "Fetch a single disbursement by ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "platform",
+                "disbursements",
+                ":disbursementId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "disbursementId",
+                  "description": "(Required) The unique identifier for the disbursement"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "23156680-91ac-4e44-a9ac-ba9d32a56755",
+              "name": "Disbursement details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements",
+                    ":disbursementId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "disbursementId",
+                      "description": "(Required) The unique identifier for the disbursement"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"87eec1a4-d757-45be-a75e-f3638d044750\",\n  \"tenantKey\": \"tbl28153208\",\n  \"status\": \"SUCCESS\",\n  \"referenceId\": \"9c4829a8-0177-4dad-a0d8-e4f8fc42276a\",\n  \"description\": \"January 2026 Payment\",\n  \"type\": \"PAYROLL_TOTAL\",\n  \"fxRate\": 5.7896,\n  \"paymentMethod\": \"bank\",\n  \"paymentDetails\": {\n    \"preferredMethod\": \"bank\",\n    \"momo\": {\n      \"accountName\": \"John Doe\",\n      \"provider\": \"MTN\",\n      \"providerCode\": \"MTN\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"currency\": \"GHS\"\n    },\n    \"bank\": {\n      \"accountName\": \"John Doe\",\n      \"accountNumber\": \"1234567890\",\n      \"accountType\": \"Checking\",\n      \"ownerType\": \"Individual\",\n      \"bankCode\": \"EXMPJPJT\",\n      \"bankName\": \"Gotham City Bank\",\n      \"branchName\": \"Downtown Branch\",\n      \"sortCode\": \"401234\",\n      \"iban\": \"GB00000000000000000000\",\n      \"provider\": \"wise\",\n      \"currency\": \"USD\",\n      \"beneficiaryId\": {\n        \"type\": \"NIT\",\n        \"value\": \"123456789\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"email\": \"john.doe@example.com\"\n    },\n    \"swift\": {\n      \"currency\": \"EUR\",\n      \"iban\": \"DE00000000000000000000\",\n      \"accountName\": \"John Doe\",\n      \"accountNumber\": \"1234567890\",\n      \"bankName\": \"Example Bank\",\n      \"swiftCode\": \"EXMPDEFF\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      }\n    },\n    \"ach\": {\n      \"bankName\": \"Example Bank\",\n      \"accountName\": \"John Doe\",\n      \"routingNumber\": \"000000000\",\n      \"accountNumber\": \"1234567890\",\n      \"accountType\": \"Checking\",\n      \"provider\": \"wise\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      }\n    },\n    \"wallet\": {\n      \"type\": \"user\",\n      \"identifier\": \"69a2a928-ed49-4e53-92ec-a72b4ee7eacc\",\n      \"currency\": \"USD\"\n    },\n    \"wire\": {\n      \"bankName\": \"Example Bank\",\n      \"accountName\": \"John Doe\",\n      \"routingNumber\": \"000000000\",\n      \"accountNumber\": \"123456789\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      }\n    }\n  },\n  \"userId\": \"8cb1d569-5dfd-4b33-b25e-4fab0ee14251\",\n  \"personId\": \"7fc25070-8037-44f8-8c42-9d05ffc01f0b\",\n  \"userName\": \"Paula Torres\",\n  \"amount\": {\n    \"value\": \"10.00\",\n    \"currency\": \"USD\"\n  },\n  \"sourceAmount\": {\n    \"value\": \"10.00\",\n    \"currency\": \"USD\"\n  },\n  \"feeAmount\": {\n    \"value\": \"10.00\",\n    \"currency\": \"USD\"\n  },\n  \"totalAmount\": {\n    \"value\": \"10.00\",\n    \"currency\": \"USD\"\n  },\n  \"fxRevenueShare\": {\n    \"amount\": {\n      \"value\": \"10.00\",\n      \"currency\": \"USD\"\n    },\n    \"rate\": 1\n  },\n  \"feeRevenueShare\": {\n    \"amount\": {\n      \"value\": \"10.00\",\n      \"currency\": \"USD\"\n    },\n    \"rate\": 1\n  },\n  \"totalRevenueShare\": {\n    \"value\": \"10.00\",\n    \"currency\": \"USD\"\n  },\n  \"estimatedDelivery\": \"string\",\n  \"externalReference\": \"string\",\n  \"createdTimestamp\": \"2026-01-28 14:29:09 +0000 UTC\",\n  \"lastUpdatedTimestamp\": \"2026-01-28 14:29:18 +0000 UTC\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8bf9d9dc-7822-497a-bf58-c24015d10989",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements",
+                    ":disbursementId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "disbursementId",
+                      "description": "(Required) The unique identifier for the disbursement"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b7dbfa3-ff97-4256-8977-f30a116131d3",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements",
+                    ":disbursementId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "disbursementId",
+                      "description": "(Required) The unique identifier for the disbursement"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a6d1556-92de-4479-b2a1-78909f594dd4",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "disbursements",
+                    ":disbursementId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "disbursementId",
+                      "description": "(Required) The unique identifier for the disbursement"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "04d9d481-d46d-4176-81ff-352d8a572780",
+          "name": "Create Transfer",
+          "request": {
+            "name": "Create Transfer",
+            "description": {
+              "content": "Move money between your own business accounts — your main business and\nits child businesses — internally and same-currency only. Settles\nimmediately with no fee.\n\nSet `sourceTenantKey` to the business funds move from (omit it to send\nfrom your main business) and `destinationTenantKey` to the business they\nmove to. Allowed movements are main → child, child → child, and\nchild → main.\n\nThere is no `GET` for a transfer — track it via the\n[platform disbursements endpoint](/api-reference/workforce/platform/list-disbursements)\nfiltered to `type=TRANSFER`, matching the returned `id` or your `reference`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "platform",
+                "transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinationTenantKey\": \"<string>\",\n  \"amount\": {\n    \"amount\": \"<integer>\",\n    \"currency\": \"<string>\"\n  },\n  \"reference\": \"<string>\",\n  \"sourceTenantKey\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8911675d-7cc0-406e-b434-e921e8d414c6",
+              "name": "Transfer created response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sourceTenantKey\": \"blm123456\",\n  \"destinationTenantKey\": \"blm998877\",\n  \"amount\": {\n    \"amount\": 500000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"transfer-123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "04c7856d-5d94-4f26-b9e5-01383eb6d88f",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sourceTenantKey\": \"blm123456\",\n  \"destinationTenantKey\": \"blm998877\",\n  \"amount\": {\n    \"amount\": 500000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"transfer-123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d8b8083-30eb-4e75-943c-cde4a7a28fef",
+              "name": "The caller is not permitted to perform this action",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sourceTenantKey\": \"blm123456\",\n  \"destinationTenantKey\": \"blm998877\",\n  \"amount\": {\n    \"amount\": 500000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"transfer-123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"Transfers are only available to platform businesses.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6fe414e4-e98d-488e-ab8a-949e8b297ea2",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "platform",
+                    "transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sourceTenantKey\": \"blm123456\",\n  \"destinationTenantKey\": \"blm998877\",\n  \"amount\": {\n    \"amount\": 500000,\n    \"currency\": \"USD\"\n  },\n  \"reference\": \"transfer-123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "710846ec-71bb-4742-bb55-688241c6730d",
+          "name": "Custom Roles",
+          "request": {
+            "name": "Custom Roles",
+            "description": {
+              "content": "Get Custom Roles",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "permissions",
+                "roles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "08e3c771-322b-49a9-8eae-3dceed9879dd",
+              "name": "get permission roles response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "permissions",
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"description\": \"This is the role for a finance manager\",\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Finance Manager\",\n      \"operations\": [\n        {\n          \"description\": \"Operations related to user management\",\n          \"permissions\": [\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"resource\": \"user\"\n        },\n        {\n          \"description\": \"Operations related to user management\",\n          \"permissions\": [\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"resource\": \"user\"\n        }\n      ],\n      \"roleType\": \"custom\"\n    },\n    {\n      \"description\": \"This is the role for a finance manager\",\n      \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n      \"name\": \"Finance Manager\",\n      \"operations\": [\n        {\n          \"description\": \"Operations related to user management\",\n          \"permissions\": [\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"resource\": \"user\"\n        },\n        {\n          \"description\": \"Operations related to user management\",\n          \"permissions\": [\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"action\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"resource\": \"user\"\n        }\n      ],\n      \"roleType\": \"custom\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f5ab4cc1-fc4c-46cd-899b-a335000736ca",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "permissions",
+                    "roles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5af1a56f-5477-45a0-a24e-dc0090aaf976",
+    "name": "Embedded Consumer Wallets Balances Platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

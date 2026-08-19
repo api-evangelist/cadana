@@ -1,0 +1,1613 @@
+{
+  "item": [
+    {
+      "id": "b9220457-4abe-4baf-ae5f-500763465568",
+      "name": "Filings",
+      "description": {
+        "content": "Create, submit, and track statutory returns — from upcoming obligations through acceptance",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6f02b54d-52ae-4ae4-bbcd-7cfec61efacb",
+          "name": "List filings",
+          "request": {
+            "name": "List filings",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nReturns filings across all jurisdictions for a business. Use this as\nboth a compliance calendar (\"what's due?\") and a filing history\n(\"what's done?\").\n\nThe response includes a `summary` object with counts by status —\nuse this to power compliance health dashboards without additional\nAPI calls.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<string>",
+                  "description": "Filter by business"
+                },
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "Filter by jurisdiction (ISO 3166-1 alpha-2)"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter by filing status"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7936d988-5337-47b5-a7f9-1d6505e662ba",
+              "name": "List of filings with compliance summary",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "countryCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"fil_01HQ3K4N7XYZABC\",\n      \"businessId\": \"biz_01HQ3K4N7XYZABC\",\n      \"countryCode\": \"MX\",\n      \"source\": \"cadana\",\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"filingTypeName\": \"ISR Withholding\",\n      \"authorityName\": \"SAT\",\n      \"status\": \"in_review\",\n      \"period\": {\n        \"start\": \"1950-02-18\",\n        \"end\": \"2016-02-22\",\n        \"label\": \"string\"\n      },\n      \"dueAt\": \"2026-02-10\",\n      \"workerCount\": 15,\n      \"createdAt\": 1709280000,\n      \"updatedAt\": 1709280000\n    },\n    {\n      \"id\": \"fil_01HQ3K4N7XYZABC\",\n      \"businessId\": \"biz_01HQ3K4N7XYZABC\",\n      \"countryCode\": \"MX\",\n      \"source\": \"cadana\",\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"filingTypeName\": \"ISR Withholding\",\n      \"authorityName\": \"SAT\",\n      \"status\": \"in_review\",\n      \"period\": {\n        \"start\": \"1959-05-24\",\n        \"end\": \"1957-06-20\",\n        \"label\": \"string\"\n      },\n      \"dueAt\": \"2026-02-10\",\n      \"workerCount\": 15,\n      \"createdAt\": 1709280000,\n      \"updatedAt\": 1709280000\n    }\n  ],\n  \"summary\": {\n    \"total\": 592,\n    \"pending\": 3836,\n    \"inReview\": 8367,\n    \"approved\": 4283,\n    \"submitted\": 2151,\n    \"accepted\": 8195,\n    \"blocked\": 821,\n    \"cancelled\": 1775,\n    \"rejected\": 4018\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a292af7a-0c30-4abb-942e-f99e97191474",
+          "name": "Create a filing",
+          "request": {
+            "name": "Create a filing",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nCreates a single statutory filing. Every filing is described by a\n`breakdown` array of contribution lines that sum to the filing total.\nThe `source` field selects who's submitting the return to the\nauthority:\n\n- **`source: cadana`** (default) — Cadana will submit the return. Each\n  breakdown line must reference a `personId`. Provide `payrollRunIds`\n  as a shortcut (Cadana populates the breakdown from the tax engine)\n  or pass the `breakdown` explicitly if you computed amounts outside\n  Cadana. The filing is created in `pending` and runs the full\n  lifecycle through `accepted`. If requirements are missing, it\n  transitions to `blocked` with actionable reasons.\n- **`source: external`** — You have already filed with the authority\n  yourself. Provide the `breakdown` plus the `filingReference` (e.g.,\n  the Línea de Captura from SAT). Breakdown lines may use `personId`,\n  `externalEmployeeId`, or neither (for business-level taxes). The\n  filing is created directly in `accepted` and skips the submission\n  lifecycle. Used by the remittance-only flow.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"<string>\",\n  \"filingTypeId\": \"<string>\",\n  \"periodStart\": \"<date>\",\n  \"periodEnd\": \"<date>\",\n  \"currency\": \"<string>\",\n  \"source\": \"cadana\",\n  \"filingReference\": \"<string>\",\n  \"breakdown\": [\n    {\n      \"amount\": \"<decimal>\",\n      \"personId\": \"<string>\",\n      \"externalEmployeeId\": \"<string>\",\n      \"employeeName\": \"<string>\"\n    },\n    {\n      \"amount\": \"<decimal>\",\n      \"personId\": \"<string>\",\n      \"externalEmployeeId\": \"<string>\",\n      \"employeeName\": \"<string>\"\n    }\n  ],\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f7afdd6f-8f76-4da2-a503-916c79db2689",
+              "name": "Filing created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"MX\",\n  \"filingTypeId\": \"ft_mx_isr_monthly\",\n  \"periodStart\": \"<date>\",\n  \"periodEnd\": \"<date>\",\n  \"currency\": \"MXN\",\n  \"source\": \"external\",\n  \"filingReference\": \"0123456ABCD7890EF\",\n  \"breakdown\": [\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    },\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    }\n  ],\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"fil_01HQ3K4N7XYZABC\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2dc7827f-443c-447a-a6c1-04e4116a0984",
+              "name": "Invalid request parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"MX\",\n  \"filingTypeId\": \"ft_mx_isr_monthly\",\n  \"periodStart\": \"<date>\",\n  \"periodEnd\": \"<date>\",\n  \"currency\": \"MXN\",\n  \"source\": \"external\",\n  \"filingReference\": \"0123456ABCD7890EF\",\n  \"breakdown\": [\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    },\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    }\n  ],\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c85b2e07-ddcf-4e0c-8c19-16e07dd25c1a",
+              "name": "Request understood but cannot be processed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"countryCode\": \"MX\",\n  \"filingTypeId\": \"ft_mx_isr_monthly\",\n  \"periodStart\": \"<date>\",\n  \"periodEnd\": \"<date>\",\n  \"currency\": \"MXN\",\n  \"source\": \"external\",\n  \"filingReference\": \"0123456ABCD7890EF\",\n  \"breakdown\": [\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    },\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    }\n  ],\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c0698073-e678-4775-abea-ac20b67ceaa3",
+          "name": "Create all filings for a period",
+          "request": {
+            "name": "Create all filings for a period",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nCreates statutory filings for a business and period in a single call.\nSupports two modes:\n\n**Cadana payroll:** Provide `payrollRunIds` — Cadana determines which\nfiling types apply based on active workers and their compensation flags\n(IMSS-eligible, INFONAVIT-eligible, etc.) and pulls amounts from the tax engine.\n\n**External payroll:** Provide a `filings` array with explicit amounts and\nperson IDs per filing type. Use this when the client runs payroll outside\nCadana and just needs Cadana to file and remit.\n\nFor example, a Mexican business with 15 employees would get up to 4 filings:\nISR, IMSS, INFONAVIT, and ISN.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessId\": \"<string>\",\n  \"periodStart\": \"<date>\",\n  \"periodEnd\": \"<date>\",\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"filings\": [\n    {\n      \"filingTypeId\": \"<string>\",\n      \"currency\": \"<string>\",\n      \"breakdown\": [\n        {\n          \"amount\": \"<decimal>\",\n          \"personId\": \"<string>\",\n          \"externalEmployeeId\": \"<string>\",\n          \"employeeName\": \"<string>\"\n        },\n        {\n          \"amount\": \"<decimal>\",\n          \"personId\": \"<string>\",\n          \"externalEmployeeId\": \"<string>\",\n          \"employeeName\": \"<string>\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"<string>\"\n    },\n    {\n      \"filingTypeId\": \"<string>\",\n      \"currency\": \"<string>\",\n      \"breakdown\": [\n        {\n          \"amount\": \"<decimal>\",\n          \"personId\": \"<string>\",\n          \"externalEmployeeId\": \"<string>\",\n          \"employeeName\": \"<string>\"\n        },\n        {\n          \"amount\": \"<decimal>\",\n          \"personId\": \"<string>\",\n          \"externalEmployeeId\": \"<string>\",\n          \"employeeName\": \"<string>\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"<string>\"\n    }\n  ],\n  \"countryCode\": \"<string>\",\n  \"filingTypeIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "092336ef-aa9b-4731-8876-0e6b51af1f51",
+              "name": "Filings created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"periodStart\": \"2026-02-01\",\n  \"periodEnd\": \"2026-02-28\",\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"filings\": [\n    {\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"currency\": \"MXN\",\n      \"breakdown\": [\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        },\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"0123456ABCD7890EF\"\n    },\n    {\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"currency\": \"MXN\",\n      \"breakdown\": [\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        },\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"0123456ABCD7890EF\"\n    }\n  ],\n  \"countryCode\": \"<string>\",\n  \"filingTypeIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"fil_01HQ3K4N7XYZABC\"\n    },\n    {\n      \"id\": \"fil_01HQ3K4N7XYZABC\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6e1013d0-9106-4e3c-ab1c-4acaf1b6bd0f",
+              "name": "Invalid request parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"businessId\": \"<string>\",\n  \"periodStart\": \"2026-02-01\",\n  \"periodEnd\": \"2026-02-28\",\n  \"payrollRunIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"filings\": [\n    {\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"currency\": \"MXN\",\n      \"breakdown\": [\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        },\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"0123456ABCD7890EF\"\n    },\n    {\n      \"filingTypeId\": \"ft_mx_isr_monthly\",\n      \"currency\": \"MXN\",\n      \"breakdown\": [\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        },\n        {\n          \"amount\": 4250,\n          \"personId\": \"per_01HQ3K4N7XYZABC\",\n          \"externalEmployeeId\": \"EMP-00142\",\n          \"employeeName\": \"María García López\"\n        }\n      ],\n      \"source\": \"cadana\",\n      \"filingReference\": \"0123456ABCD7890EF\"\n    }\n  ],\n  \"countryCode\": \"<string>\",\n  \"filingTypeIds\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d5f79714-a286-4cf4-ba27-409d243a51ac",
+          "name": "Get a filing",
+          "request": {
+            "name": "Get a filing",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nReturns full filing details including amounts, status history,\nblocked reasons, and linked payroll runs.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                ":filing_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filing_id",
+                  "description": "(Required) Filing identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f27aae67-cb9c-4176-8fd6-7652585c08a0",
+              "name": "Filing details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"fil_01HQ3K4N7XYZABC\",\n  \"businessId\": \"biz_01HQ3K4N7XYZABC\",\n  \"countryCode\": \"MX\",\n  \"source\": \"cadana\",\n  \"filingTypeId\": \"ft_mx_isr_monthly\",\n  \"filingTypeName\": \"ISR Withholding\",\n  \"authorityId\": \"auth_mx_sat\",\n  \"authorityName\": \"SAT\",\n  \"filingReference\": \"0123456ABCD7890EF\",\n  \"status\": \"pending\",\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-01-31\",\n    \"label\": \"January 2026\"\n  },\n  \"dueAt\": \"2026-02-10\",\n  \"amounts\": {\n    \"currency\": \"MXN\",\n    \"total\": 82345\n  },\n  \"workerCount\": 15,\n  \"payrollRunIds\": [\n    \"string\",\n    \"string\"\n  ],\n  \"breakdown\": [\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    },\n    {\n      \"amount\": 4250,\n      \"personId\": \"per_01HQ3K4N7XYZABC\",\n      \"externalEmployeeId\": \"EMP-00142\",\n      \"employeeName\": \"María García López\"\n    }\n  ],\n  \"blockedReasons\": [\n    \"Missing worker RFC for per_01ABC\",\n    \"Business IMSS registration not found\"\n  ],\n  \"statusHistory\": [\n    {\n      \"from\": \"pending\",\n      \"to\": \"in_review\",\n      \"timestamp\": 1709654400\n    },\n    {\n      \"from\": \"pending\",\n      \"to\": \"in_review\",\n      \"timestamp\": 1709654400\n    }\n  ],\n  \"createdAt\": 1709280000,\n  \"updatedAt\": 1709280000\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b4c56af-e4fc-4d15-a83f-bbdcc3a6f392",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "551dfdd3-adc3-4add-83d3-f68ee147aed5",
+          "name": "Approve a filing for submission",
+          "request": {
+            "name": "Approve a filing for submission",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nApproves a filing, moving it from `in_review` to `approved`. Once approved,\nCadana will submit the filing to the government authority within the\njurisdiction's processing window.\n\nRequires all requirements to be satisfied and no active blocked reasons.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                ":filing_id",
+                "approve"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filing_id",
+                  "description": "(Required) Filing identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "210a9d7e-1bd6-45b1-8bda-c134a0897337",
+              "name": "Filing approved",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2f2ee23f-7a8c-45a0-aa3d-842202ae0d13",
+              "name": "Filing cannot be approved (requirements unsatisfied or invalid state)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "approve"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f2208fc6-c078-49cd-ac9a-b50fca9be150",
+          "name": "Cancel a filing",
+          "request": {
+            "name": "Cancel a filing",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\nCancels a filing that has not yet been submitted. Cannot cancel filings\nthat are already submitted, accepted, or rejected.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                ":filing_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filing_id",
+                  "description": "(Required) Filing identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "93dfda2b-da61-4a6d-9b63-a6e0a94ce442",
+              "name": "Filing cancelled",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fce7648c-afbb-4d1f-ac3c-618a05bc390d",
+              "name": "Filing cannot be cancelled in its current state",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2805c5d4-5ba6-4c01-83fa-cadf6b4274be",
+          "name": "Amend a previously accepted filing",
+          "request": {
+            "name": "Amend a previously accepted filing",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nCreates an amendment filing linked to the original. The original filing's\nstatus remains `accepted` and gains an `amended_by` reference. The new\namendment filing starts in `pending` status.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                ":filing_id",
+                "amend"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filing_id",
+                  "description": "(Required) Filing identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"<string>\",\n  \"correctedAmounts\": {\n    \"currency\": \"<string>\",\n    \"total\": \"<decimal>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4308783b-3f07-455b-9063-064b6bbc880f",
+              "name": "Amendment filing created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "amend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\",\n  \"correctedAmounts\": {\n    \"currency\": \"MXN\",\n    \"total\": 82345\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"fil_01HQ3K4N7XYZABC\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d969148b-21c1-48c4-9d4e-d616dd7b0990",
+              "name": "Original filing is not in a state that can be amended",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "amend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\",\n  \"correctedAmounts\": {\n    \"currency\": \"MXN\",\n    \"total\": 82345\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "df5d348b-8a6e-4e5c-a8bb-dd77bc03c7f5",
+          "name": "Download filing document",
+          "request": {
+            "name": "Download filing document",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a signed URL to download the filing document (PDF). Only available\nafter the filing has been submitted.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "filings",
+                ":filing_id",
+                "document"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "filing_id",
+                  "description": "(Required) Filing identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6bce2e6b-328b-4680-bfb4-91d1b0f4c649",
+              "name": "Filing document download URL",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "document"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"http://RaTV.zfrWl0YCHSf7KiZWdAEnCi0p8zk0C4Rr3nM\",\n  \"expiresAt\": \"1989-04-02T01:11:41.476Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dea594a4-f435-4912-9d78-87e75b970c8e",
+              "name": "Document not yet available",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "filings",
+                    ":filing_id",
+                    "document"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "filing_id",
+                      "description": "(Required) Filing identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "00926367-1085-4181-9151-ef57cf7388b1",
+          "name": "Get compliance health summary",
+          "request": {
+            "name": "Get compliance health summary",
+            "description": {
+              "content": "**Beta** — contact Cadana to enable access for your business.\n\n**Not yet implemented.**\n\nReturns a single-call overview of the business's entire statutory\ncompliance posture across all jurisdictions. Includes filing counts by\nstatus, remittance totals, upcoming deadlines, and outstanding\nrequirements.\n\nThis is the \"how are we doing?\" endpoint — designed to power compliance\ndashboards without needing multiple API calls.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "compliance",
+                "summary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "Filter to a specific jurisdiction"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "84790895-29c2-4761-99d0-5ced04989fb4",
+              "name": "Compliance health summary",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "compliance",
+                    "summary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "countryCode",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"businessId\": \"string\",\n  \"asOf\": \"1955-01-04T18:34:02.472Z\",\n  \"filings\": {\n    \"total\": 9999,\n    \"byStatus\": {\n      \"pending\": 1461,\n      \"blocked\": 5392,\n      \"in_review\": 1136,\n      \"approved\": 2406,\n      \"submitted\": 5603,\n      \"accepted\": 8293,\n      \"rejected\": 6845\n    }\n  },\n  \"remittances\": {\n    \"pendingCount\": 8020,\n    \"pendingAmount\": 8669.838818317006,\n    \"completedThisMonth\": 2393,\n    \"completedAmountThisMonth\": 6024.07755153423\n  },\n  \"requirements\": {\n    \"outstanding\": 3009,\n    \"byCategory\": {\n      \"businessRegistration\": 977,\n      \"businessDocument\": 1253,\n      \"businessTaxParameter\": 6697,\n      \"workerData\": 4713\n    }\n  },\n  \"nextDeadlines\": [\n    {\n      \"filingId\": \"string\",\n      \"filingTypeName\": \"string\",\n      \"countryCode\": \"string\",\n      \"dueAt\": \"1976-02-07T04:22:31.257Z\",\n      \"status\": \"string\"\n    },\n    {\n      \"filingId\": \"string\",\n      \"filingTypeName\": \"string\",\n      \"countryCode\": \"string\",\n      \"dueAt\": \"1960-09-06T01:49:19.369Z\",\n      \"status\": \"string\"\n    }\n  ],\n  \"jurisdictions\": [\n    {\n      \"countryCode\": \"string\",\n      \"countryName\": \"string\",\n      \"workerCount\": 484,\n      \"filingsCompleted\": 1679,\n      \"filingsTotal\": 2201,\n      \"requirementsOutstanding\": 2818\n    },\n    {\n      \"countryCode\": \"string\",\n      \"countryName\": \"string\",\n      \"workerCount\": 3120,\n      \"filingsCompleted\": 5320,\n      \"filingsTotal\": 1037,\n      \"requirementsOutstanding\": 5740\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d8b6f162-f6fe-4529-800e-3057381199f0",
+    "name": "Embedded Consumer Wallets Balances Filings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

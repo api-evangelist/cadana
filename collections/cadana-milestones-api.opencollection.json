@@ -1,0 +1,201 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Embedded Consumer Wallets Balances Milestones API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Milestones",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List milestones",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cadanapay.com/v1/persons/:personId/milestones",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "personId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the person"
+              },
+              {
+                "name": "includeDocuments",
+                "value": "",
+                "type": "query",
+                "description": "When true, each milestone's documents are returned as presigned download URLs"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List a milestone-type contractor's milestones. Set `includeDocuments=true` to receive presigned document download URLs."
+        },
+        {
+          "info": {
+            "name": "Add milestone",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/persons/:personId/milestones",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "personId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the person"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Add a milestone (deliverable) to a milestone-type contractor. `documentIds` are file ids from the upload-url flow (POST /v1/files/upload-url with purpose `milestone-document`)."
+        },
+        {
+          "info": {
+            "name": "Update milestone",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cadanapay.com/v1/persons/:personId/milestones/:milestoneId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "personId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the person"
+              },
+              {
+                "name": "milestoneId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the milestone"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a planned milestone. `documentIds` are file ids from the upload-url flow and replace the milestone's documents."
+        },
+        {
+          "info": {
+            "name": "Delete milestone",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cadanapay.com/v1/persons/:personId/milestones/:milestoneId",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "personId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the person"
+              },
+              {
+                "name": "milestoneId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the milestone"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a planned milestone."
+        },
+        {
+          "info": {
+            "name": "Complete milestone",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cadanapay.com/v1/persons/:personId/milestones/:milestoneId/complete",
+            "headers": [
+              {
+                "name": "X-MultiTenantKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "personId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the person"
+              },
+              {
+                "name": "milestoneId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the milestone"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark a planned or rejected milestone complete. Generates a contractor invoice and returns its `invoiceId`, and moves the milestone to `Submitted`. As that invoice is approved, rejected, or paid, the milestone status updates to match."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

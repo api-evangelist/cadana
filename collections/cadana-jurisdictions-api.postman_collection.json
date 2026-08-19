@@ -1,0 +1,557 @@
+{
+  "item": [
+    {
+      "id": "8872cd05-76b0-4e0a-bf96-61aee0faa2f0",
+      "name": "Jurisdictions",
+      "description": {
+        "content": "Discover supported countries, required fields, and filing types",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7a3a82f4-6c7a-40ec-842e-236c7d282910",
+          "name": "List supported jurisdictions",
+          "request": {
+            "name": "List supported jurisdictions",
+            "description": {
+              "content": "Returns all countries and regions where Cadana supports statutory filing.\nEach jurisdiction includes a summary of filing types, payroll frequency, and currency.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "jurisdictions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "23d769cd-97c0-4b10-aa47-37d9f9a1f092",
+              "name": "List of supported jurisdictions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "jurisdictions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"countryCode\": \"MX\",\n      \"countryName\": \"Mexico\",\n      \"currency\": \"MXN\",\n      \"filingTypesCount\": 4,\n      \"payrollFrequency\": \"MONTHLY\",\n      \"status\": \"live\"\n    },\n    {\n      \"countryCode\": \"MX\",\n      \"countryName\": \"Mexico\",\n      \"currency\": \"MXN\",\n      \"filingTypesCount\": 4,\n      \"payrollFrequency\": \"MONTHLY\",\n      \"status\": \"live\"\n    }\n  ],\n  \"pagination\": {\n    \"nextCursor\": \"string\",\n    \"hasMore\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a8d185ee-c8dd-41ea-aee5-53eccd6410c4",
+          "name": "Get jurisdiction details",
+          "request": {
+            "name": "Get jurisdiction details",
+            "description": {
+              "content": "Returns full configuration for a jurisdiction: required employee fields,\nfiling types, statutory benefits, compliance rules, and termination rules.\n\nThe embedded field lists (`employeeFields`, `employerFields`) cover\nfiling-scope fields only. For the complete set — including\ncalculation-scope fields — use\n`GET /v1/statutory/jurisdictions/{country_code}/required-fields`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "jurisdictions",
+                ":country_code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "country_code",
+                  "description": "(Required) ISO 3166-1 alpha-2 country code"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5e492f6c-ce08-4621-a94a-6513a3d8d408",
+              "name": "Jurisdiction details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "jurisdictions",
+                    ":country_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "country_code",
+                      "description": "(Required) ISO 3166-1 alpha-2 country code"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"countryCode\": \"MX\",\n  \"countryName\": \"Mexico\",\n  \"currency\": \"MXN\",\n  \"status\": \"live\",\n  \"payrollFrequency\": \"BIWEEKLY\",\n  \"employeeFields\": {\n    \"countryCode\": \"MX\",\n    \"version\": 3,\n    \"fields\": [\n      {\n        \"key\": \"taxId\",\n        \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n        \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n        \"type\": \"string\",\n        \"required\": true,\n        \"entity\": \"person\",\n        \"scope\": [\n          \"calculation\",\n          \"filing\"\n        ],\n        \"enum\": [\n          \"string\",\n          \"string\"\n        ],\n        \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n        \"condition\": {\n          \"field\": \"is_pensionable\",\n          \"equals\": {}\n        }\n      },\n      {\n        \"key\": \"taxId\",\n        \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n        \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n        \"type\": \"string\",\n        \"required\": true,\n        \"entity\": \"person\",\n        \"scope\": [\n          \"calculation\",\n          \"filing\"\n        ],\n        \"enum\": [\n          \"string\",\n          \"string\"\n        ],\n        \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n        \"condition\": {\n          \"field\": \"is_pensionable\",\n          \"equals\": {}\n        }\n      }\n    ],\n    \"workerType\": \"employee\"\n  },\n  \"employerFields\": {\n    \"countryCode\": \"MX\",\n    \"version\": 3,\n    \"fields\": [\n      {\n        \"key\": \"taxId\",\n        \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n        \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n        \"type\": \"string\",\n        \"required\": true,\n        \"entity\": \"person\",\n        \"scope\": [\n          \"calculation\",\n          \"filing\"\n        ],\n        \"enum\": [\n          \"string\",\n          \"string\"\n        ],\n        \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n        \"condition\": {\n          \"field\": \"is_pensionable\",\n          \"equals\": {}\n        }\n      },\n      {\n        \"key\": \"taxId\",\n        \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n        \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n        \"type\": \"string\",\n        \"required\": true,\n        \"entity\": \"person\",\n        \"scope\": [\n          \"calculation\",\n          \"filing\"\n        ],\n        \"enum\": [\n          \"string\",\n          \"string\"\n        ],\n        \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n        \"condition\": {\n          \"field\": \"is_pensionable\",\n          \"equals\": {}\n        }\n      }\n    ],\n    \"workerType\": \"employee\"\n  },\n  \"filingTypes\": [\n    {\n      \"id\": \"ft_mx_isr_monthly\",\n      \"name\": \"ISR Withholding\",\n      \"description\": \"ISR income tax withholding return filed monthly with SAT\",\n      \"governmentFormName\": \"Declaración Provisional ISR\",\n      \"authority\": {\n        \"id\": \"auth_mx_sat\",\n        \"name\": \"Servicio de Administración Tributaria\",\n        \"abbreviation\": \"SAT\"\n      },\n      \"frequency\": \"MONTHLY\",\n      \"dueDay\": 10,\n      \"includesRemittance\": true,\n      \"legislativeReference\": \"Ley del Impuesto Sobre la Renta (LISR), Artículo 96\"\n    },\n    {\n      \"id\": \"ft_mx_isr_monthly\",\n      \"name\": \"ISR Withholding\",\n      \"description\": \"ISR income tax withholding return filed monthly with SAT\",\n      \"governmentFormName\": \"Declaración Provisional ISR\",\n      \"authority\": {\n        \"id\": \"auth_mx_sat\",\n        \"name\": \"Servicio de Administración Tributaria\",\n        \"abbreviation\": \"SAT\"\n      },\n      \"frequency\": \"MONTHLY\",\n      \"dueDay\": 10,\n      \"includesRemittance\": true,\n      \"legislativeReference\": \"Ley del Impuesto Sobre la Renta (LISR), Artículo 96\"\n    }\n  ],\n  \"statutoryBenefits\": [\n    {\n      \"name\": \"IMSS Employer-Employee Contributions\",\n      \"description\": \"Mandatory social security contribution under the Ley del Seguro Social (LSS)\",\n      \"employerRate\": 0.1,\n      \"employeeRate\": 0.08,\n      \"authority\": \"IMSS\",\n      \"legislativeReference\": \"Ley del Seguro Social (LSS), Artículo 39\"\n    },\n    {\n      \"name\": \"IMSS Employer-Employee Contributions\",\n      \"description\": \"Mandatory social security contribution under the Ley del Seguro Social (LSS)\",\n      \"employerRate\": 0.1,\n      \"employeeRate\": 0.08,\n      \"authority\": \"IMSS\",\n      \"legislativeReference\": \"Ley del Seguro Social (LSS), Artículo 39\"\n    }\n  ],\n  \"compliance\": {\n    \"workingHoursPerWeek\": 48,\n    \"annualLeave\": \"12 working days after 1 year, increasing with seniority\",\n    \"sickLeave\": \"Up to 52 weeks (60% pay via IMSS after 3-day waiting period)\",\n    \"publicHolidays\": \"Paid, nationally observed (approx 7 mandatory rest days)\",\n    \"probationPeriod\": \"30 days (up to 180 days for managerial/technical roles)\",\n    \"onboardingTimeline\": \"5-10 business days\",\n    \"payrollCutoffs\": {\n      \"inputs\": \"5 business days before pay date\",\n      \"approval\": \"3 business days before pay date\"\n    }\n  },\n  \"termination\": {\n    \"noticeRequired\": false,\n    \"description\": \"string\",\n    \"finalPayIncludes\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7de45040-a56a-4325-9211-cd12a565f1bc",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "jurisdictions",
+                    ":country_code"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "country_code",
+                      "description": "(Required) ISO 3166-1 alpha-2 country code"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a4e6cd17-d0d4-471d-974b-0107273db8a3",
+          "name": "List filing types for a jurisdiction",
+          "request": {
+            "name": "List filing types for a jurisdiction",
+            "description": {
+              "content": "Returns every type of statutory return that must be filed in this jurisdiction.\nEach filing type includes the government authority, frequency, and required data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "jurisdictions",
+                ":country_code",
+                "filing-types"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "country_code",
+                  "description": "(Required) ISO 3166-1 alpha-2 country code"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e40200af-379c-4ef3-94ed-89f81cc4af5e",
+              "name": "Filing types for the jurisdiction",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "jurisdictions",
+                    ":country_code",
+                    "filing-types"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "country_code",
+                      "description": "(Required) ISO 3166-1 alpha-2 country code"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"ft_mx_isr_monthly\",\n      \"name\": \"ISR Withholding\",\n      \"description\": \"ISR income tax withholding return filed monthly with SAT\",\n      \"governmentFormName\": \"Declaración Provisional ISR\",\n      \"authority\": {\n        \"id\": \"auth_mx_sat\",\n        \"name\": \"Servicio de Administración Tributaria\",\n        \"abbreviation\": \"SAT\"\n      },\n      \"frequency\": \"MONTHLY\",\n      \"dueDay\": 10,\n      \"includesRemittance\": true,\n      \"legislativeReference\": \"Ley del Impuesto Sobre la Renta (LISR), Artículo 96\"\n    },\n    {\n      \"id\": \"ft_mx_isr_monthly\",\n      \"name\": \"ISR Withholding\",\n      \"description\": \"ISR income tax withholding return filed monthly with SAT\",\n      \"governmentFormName\": \"Declaración Provisional ISR\",\n      \"authority\": {\n        \"id\": \"auth_mx_sat\",\n        \"name\": \"Servicio de Administración Tributaria\",\n        \"abbreviation\": \"SAT\"\n      },\n      \"frequency\": \"MONTHLY\",\n      \"dueDay\": 10,\n      \"includesRemittance\": true,\n      \"legislativeReference\": \"Ley del Impuesto Sobre la Renta (LISR), Artículo 96\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3035af67-334b-450e-9462-64734278f4b9",
+          "name": "Get required fields for tax calculation and statutory filing",
+          "request": {
+            "name": "Get required fields for tax calculation and statutory filing",
+            "description": {
+              "content": "Returns all fields required for tax calculation and/or statutory filing\nin this jurisdiction. This is a **discovery endpoint** — it tells you\nwhat data needs to be collected for both persons (workers) and businesses\n(employers).\n\nEach field includes:\n- **`entity`** — Who the field belongs to: `person` (worker data) or\n  `business` (employer data)\n- **`scope`** — Whether the field is needed for `calculation` (tax engine input),\n  `filing` (statutory return), or both\n- **`condition`** — When present, the field only applies if another field\n  matches a specific value (e.g. pension PIN only when `is_pensionable` is true)\n\nUse this to:\n- Render onboarding forms with the right fields for each country\n- Split fields into separate person vs. business forms using each\n  field's `entity` value in the response (there is no `entity` query\n  parameter — use the `scope` and `worker_type` parameters to narrow\n  the results server-side)\n- Validate that existing records have complete data\n- Understand what `worker_data` requirements will surface if fields are missing\n\n**How to submit fields by scope:**\n- `scope: [\"filing\"]` fields → Submit via\n  `PUT /v1/statutory/persons/{id}/fields/{countryCode}` (person entity) or\n  `PUT /v1/statutory/businesses/{id}/fields/{countryCode}` (business entity)\n- `scope: [\"calculation\"]` fields → Submit via\n  `PUT /v1/persons/{id}/taxProfile`\n- `scope: [\"filing\", \"calculation\"]` fields → Submit to both endpoints\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "jurisdictions",
+                ":country_code",
+                "required-fields"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "worker_type",
+                  "value": "<string>",
+                  "description": "Filter fields by worker type"
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "<string>",
+                  "description": "Filter fields by scope — \"calculation\" for tax engine inputs, \"filing\" for statutory return fields. Omit to return all fields."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "country_code",
+                  "description": "(Required) ISO 3166-1 alpha-2 country code"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ea37f7c1-babe-4b8c-b97d-6c054965b896",
+              "name": "Required fields with entity, scope, type, and validation rules",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "jurisdictions",
+                    ":country_code",
+                    "required-fields"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "worker_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "country_code",
+                      "description": "(Required) ISO 3166-1 alpha-2 country code"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"countryCode\": \"MX\",\n  \"version\": 3,\n  \"fields\": [\n    {\n      \"key\": \"taxId\",\n      \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n      \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n      \"type\": \"string\",\n      \"required\": true,\n      \"entity\": \"person\",\n      \"scope\": [\n        \"calculation\",\n        \"filing\"\n      ],\n      \"enum\": [\n        \"string\",\n        \"string\"\n      ],\n      \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n      \"condition\": {\n        \"field\": \"is_pensionable\",\n        \"equals\": {}\n      }\n    },\n    {\n      \"key\": \"taxId\",\n      \"name\": \"RFC (Registro Federal de Contribuyentes)\",\n      \"description\": \"SAT-issued RFC, required on all ISR withholding returns\",\n      \"type\": \"string\",\n      \"required\": true,\n      \"entity\": \"person\",\n      \"scope\": [\n        \"calculation\",\n        \"filing\"\n      ],\n      \"enum\": [\n        \"string\",\n        \"string\"\n      ],\n      \"pattern\": \"^[A-Z&Ñ]{4}\\\\d{6}[A-Z0-9]{3}$\",\n      \"condition\": {\n        \"field\": \"is_pensionable\",\n        \"equals\": {}\n      }\n    }\n  ],\n  \"workerType\": \"employee\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3eca6b75-2bf8-4fbb-acd1-f807cb1492aa",
+    "name": "Embedded Consumer Wallets Balances Jurisdictions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

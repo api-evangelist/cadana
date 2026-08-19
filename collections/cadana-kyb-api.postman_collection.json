@@ -1,0 +1,1368 @@
+{
+  "item": [
+    {
+      "id": "af13e92f-b69d-4846-8906-cbb071e140d8",
+      "name": "KYB",
+      "description": {
+        "content": "APIs for business verification",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e6b5bf66-8efd-43f9-a925-78f67f8f9610",
+          "name": "Submit KYB",
+          "request": {
+            "name": "Submit KYB",
+            "description": {
+              "content": "Submit Know Your Business (KYB) information for verification. Use POST to provide new information — the initial submission and any change to the set of principals; to correct information already on file, use PATCH instead.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "businesses",
+                ":businessId",
+                "kyb"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "businessId",
+                  "description": "(Required) The unique identifier for the business"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entityName\": \"<string>\",\n  \"entityType\": \"<string>\",\n  \"taxIdentificationNumber\": \"<string>\",\n  \"incorporation\": {\n    \"date\": \"<date>\",\n    \"address\": {\n      \"countryCode\": \"<string>\",\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"postalCode\": \"<string>\",\n      \"state\": \"<string>\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"<string>\",\n    \"number\": \"<string>\"\n  },\n  \"websiteURL\": \"<uri>\",\n  \"natureOfBusiness\": \"<string>\",\n  \"sizeOfCompany\": \"<string>\",\n  \"sourceOfFunds\": \"<string>\",\n  \"annualRevenue\": {\n    \"currency\": \"<string>\",\n    \"min\": \"<number>\",\n    \"max\": \"<number>\"\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"<string>\",\n    \"min\": \"<number>\",\n    \"max\": \"<number>\"\n  },\n  \"address\": {\n    \"countryCode\": \"<string>\",\n    \"line1\": \"<string>\",\n    \"line2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postalCode\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"ownershipPercentage\": \"<float>\",\n      \"email\": \"<email>\",\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"address\": {\n        \"countryCode\": \"<string>\",\n        \"line1\": \"<string>\",\n        \"line2\": \"<string>\",\n        \"city\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"state\": \"<string>\"\n      },\n      \"isExecutive\": \"<boolean>\",\n      \"title\": \"<string>\",\n      \"dateOfBirth\": \"<date>\",\n      \"isEntity\": \"<boolean>\",\n      \"entity\": {\n        \"companyName\": \"<string>\",\n        \"entityType\": \"<string>\",\n        \"taxIdentificationNumber\": \"<string>\",\n        \"email\": \"<email>\",\n        \"websiteURL\": \"<uri>\",\n        \"incorporation\": {\n          \"date\": \"<date>\",\n          \"address\": {\n            \"countryCode\": \"<string>\",\n            \"line1\": \"<string>\",\n            \"line2\": \"<string>\",\n            \"city\": \"<string>\",\n            \"postalCode\": \"<string>\",\n            \"state\": \"<string>\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"<string>\",\n          \"line1\": \"<string>\",\n          \"line2\": \"<string>\",\n          \"city\": \"<string>\",\n          \"postalCode\": \"<string>\",\n          \"state\": \"<string>\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"<string>\",\n            \"lastName\": \"<string>\",\n            \"ownershipPercentage\": \"<float>\",\n            \"email\": \"<email>\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": \"<boolean>\",\n            \"title\": \"<string>\",\n            \"dateOfBirth\": \"<date>\",\n            \"identifier\": {\n              \"type\": \"<string>\",\n              \"value\": \"<string>\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": \"<boolean>\",\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"<string>\",\n            \"lastName\": \"<string>\",\n            \"ownershipPercentage\": \"<float>\",\n            \"email\": \"<email>\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": \"<boolean>\",\n            \"title\": \"<string>\",\n            \"dateOfBirth\": \"<date>\",\n            \"identifier\": {\n              \"type\": \"<string>\",\n              \"value\": \"<string>\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": \"<boolean>\",\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"ownershipPercentage\": \"<float>\",\n      \"email\": \"<email>\",\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"address\": {\n        \"countryCode\": \"<string>\",\n        \"line1\": \"<string>\",\n        \"line2\": \"<string>\",\n        \"city\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"state\": \"<string>\"\n      },\n      \"isExecutive\": \"<boolean>\",\n      \"title\": \"<string>\",\n      \"dateOfBirth\": \"<date>\",\n      \"isEntity\": \"<boolean>\",\n      \"entity\": {\n        \"companyName\": \"<string>\",\n        \"entityType\": \"<string>\",\n        \"taxIdentificationNumber\": \"<string>\",\n        \"email\": \"<email>\",\n        \"websiteURL\": \"<uri>\",\n        \"incorporation\": {\n          \"date\": \"<date>\",\n          \"address\": {\n            \"countryCode\": \"<string>\",\n            \"line1\": \"<string>\",\n            \"line2\": \"<string>\",\n            \"city\": \"<string>\",\n            \"postalCode\": \"<string>\",\n            \"state\": \"<string>\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"<string>\",\n          \"line1\": \"<string>\",\n          \"line2\": \"<string>\",\n          \"city\": \"<string>\",\n          \"postalCode\": \"<string>\",\n          \"state\": \"<string>\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"<string>\",\n            \"lastName\": \"<string>\",\n            \"ownershipPercentage\": \"<float>\",\n            \"email\": \"<email>\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": \"<boolean>\",\n            \"title\": \"<string>\",\n            \"dateOfBirth\": \"<date>\",\n            \"identifier\": {\n              \"type\": \"<string>\",\n              \"value\": \"<string>\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": \"<boolean>\",\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"<string>\",\n            \"lastName\": \"<string>\",\n            \"ownershipPercentage\": \"<float>\",\n            \"email\": \"<email>\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": \"<boolean>\",\n            \"title\": \"<string>\",\n            \"dateOfBirth\": \"<date>\",\n            \"identifier\": {\n              \"type\": \"<string>\",\n              \"value\": \"<string>\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": \"<boolean>\",\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "62b53fb2-c74c-4efc-bd31-3848c079d896",
+              "name": "KYB information submitted successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "35288a6b-a85a-49cb-90bb-35e67cc17aa1",
+              "name": "Bad input, or the KYB is not editable. Submission is only allowed while the KYB status is `initialized`, `incomplete`, `awaiting-principal-kyc`, or `needs-additional-info` — a KYB that is `pending-review`, `complete`, or `rejected` cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "39d5399b-a910-46cc-8527-2c355886d0eb",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78e2e5d1-cec7-4561-a693-3d4991241781",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"number\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"address\": {\n              \"countryCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line1\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line2\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"city\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"postalCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": \"ssn\",\n              \"value\": \"987-65-4321\",\n              \"identityFileId\": \"<uuid>\",\n              \"identityBackPageFileId\": \"<uuid>\",\n              \"addressFileId\": \"<uuid>\"\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\"\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b5b9d37d-b38a-4ccc-bf0e-4e4ad55cc879",
+          "name": "Get KYB",
+          "request": {
+            "name": "Get KYB",
+            "description": {
+              "content": "Returns the business's KYB details. Returns 404 if KYB has not been started for the business.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "businesses",
+                ":businessId",
+                "kyb"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "businessId",
+                  "description": "(Required) The unique identifier for the business"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "df0992e5-b47b-44e6-9a16-834c54689df7",
+              "name": "get KYB response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"d4475c70-d759-495e-a052-3e3a1cba1857\",\n  \"tenantKey\": \"cad62002887\",\n  \"entityName\": \"Airtel\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01T00:00:00.000Z\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"email\": \"vTtc5QdaP@KNoZjRqeZhpjXgRxZudXFrTsTtkyyrx.mgc\",\n  \"websiteURL\": \"https://Z.ygfGRYaP5gHePrloKvYVa9zij\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"status\": \"pending-review\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"documents\": {\n    \"articlesOfIncorporation\": [\n      \"string\",\n      \"string\"\n    ],\n    \"bankStatements\": [\n      \"string\",\n      \"string\"\n    ],\n    \"proofOfAddress\": [\n      \"string\",\n      \"string\"\n    ],\n    \"taxDocuments\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"principals\": [\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"rxm@tRW.muya\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": false,\n      \"title\": \"\",\n      \"id\": \"f116c829-3c93-4d24-880d-3a00faf784a2\",\n      \"identifier\": {\n        \"type\": \"string\",\n        \"value\": \"1234567890\"\n      },\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"fKBcZ7Zo@xKKSJJJFoQCPKpgQSTgMKy.rl\",\n        \"websiteURL\": \"https://YpzsvJNRxSsEckjUfyIhkr.wlLL3ym-b\",\n        \"incorporation\": {\n          \"date\": \"1987-06-10\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"proofOfAddressFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"ownershipDocumentFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityBackPageFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"addressFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\",\n            \"id\": \"2a7fb1e0-9c44-4e1b-8f6d-1d2e3f4a5b6c\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityBackPageFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"addressFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\",\n            \"id\": \"2a7fb1e0-9c44-4e1b-8f6d-1d2e3f4a5b6c\"\n          }\n        ]\n      }\n    },\n    {\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"W-CL@QhoSFiKgRYJTorgcbUgfgTDbZrAnbR.gc\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": false,\n      \"title\": \"\",\n      \"id\": \"f116c829-3c93-4d24-880d-3a00faf784a2\",\n      \"identifier\": {\n        \"type\": \"string\",\n        \"value\": \"1234567890\"\n      },\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ZqHpq@mqNEo.nog\",\n        \"websiteURL\": \"http://NZkMPedTdtvzSaoMDKAUQQAgLdY.tctwz1xB73xI83C1cBaCOHuzTjUMqmpFmqhhd.O.sHk\",\n        \"incorporation\": {\n          \"date\": \"2001-10-03\",\n          \"address\": {\n            \"countryCode\": \"US\",\n            \"line1\": \"Street 1\",\n            \"line2\": \"Apt 1\",\n            \"city\": \"Gotham\",\n            \"postalCode\": \"10001\",\n            \"state\": \"NY\"\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"proofOfAddressFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"ownershipDocumentFileURLs\": [\n          \"string\",\n          \"string\"\n        ],\n        \"individuals\": [\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityBackPageFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"addressFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\",\n            \"id\": \"2a7fb1e0-9c44-4e1b-8f6d-1d2e3f4a5b6c\"\n          },\n          {\n            \"firstName\": \"John\",\n            \"lastName\": \"Owner\",\n            \"ownershipPercentage\": 1,\n            \"email\": \"john@acmeholdings.com\",\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": true,\n            \"title\": \"CEO\",\n            \"dateOfBirth\": \"1970-02-20\",\n            \"identifier\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"identityBackPageFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"addressFileId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"isEntity\": false,\n            \"entity\": \"<object>\",\n            \"id\": \"2a7fb1e0-9c44-4e1b-8f6d-1d2e3f4a5b6c\"\n          }\n        ]\n      }\n    }\n  ],\n  \"requirements\": {\n    \"currentlyDue\": [\n      \"principals.0.phoneNumber.countryCode\",\n      \"phoneNumber.countryCode\",\n      \"principals.0.address.state\",\n      \"email\",\n      \"entityName\"\n    ],\n    \"errors\": [\n      {\n        \"field\": \"entityName\",\n        \"reason\": \"Only english letters are allowed\"\n      },\n      {\n        \"field\": \"entityName\",\n        \"reason\": \"Only english letters are allowed\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c217ac34-e746-4f02-a03e-711587a13e10",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc7d8621-265f-4d04-9733-5aaec4547513",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b49b1a6e-fed9-4f65-a82e-e5c176ff6db9",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c32c7634-15cd-4af3-9a1b-5c717541dc2b",
+          "name": "Update KYB",
+          "request": {
+            "name": "Update KYB",
+            "description": {
+              "content": "Update KYB information already provided. Only the fields you include are changed; new principals cannot be added with PATCH — re-POST the full submission instead. Document arrays are appended to, not replaced.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "businesses",
+                ":businessId",
+                "kyb"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "businessId",
+                  "description": "(Required) The unique identifier for the business"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entityName\": \"<string>\",\n  \"entityType\": \"<string>\",\n  \"taxIdentificationNumber\": \"<string>\",\n  \"incorporation\": {\n    \"date\": \"<date>\",\n    \"address\": {\n      \"countryCode\": \"<string>\",\n      \"line1\": \"<string>\",\n      \"line2\": \"<string>\",\n      \"city\": \"<string>\",\n      \"postalCode\": \"<string>\",\n      \"state\": \"<string>\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"<string>\",\n    \"number\": \"<string>\"\n  },\n  \"websiteURL\": \"<uri>\",\n  \"natureOfBusiness\": \"<string>\",\n  \"sizeOfCompany\": \"<string>\",\n  \"sourceOfFunds\": \"<string>\",\n  \"annualRevenue\": {\n    \"currency\": \"<string>\",\n    \"min\": \"<number>\",\n    \"max\": \"<number>\"\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"<string>\",\n    \"min\": \"<number>\",\n    \"max\": \"<number>\"\n  },\n  \"address\": {\n    \"countryCode\": \"<string>\",\n    \"line1\": \"<string>\",\n    \"line2\": \"<string>\",\n    \"city\": \"<string>\",\n    \"postalCode\": \"<string>\",\n    \"state\": \"<string>\"\n  },\n  \"principals\": [\n    {\n      \"id\": \"<uuid>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"ownershipPercentage\": \"<float>\",\n      \"email\": \"<email>\",\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"address\": {\n        \"countryCode\": \"<string>\",\n        \"line1\": \"<string>\",\n        \"line2\": \"<string>\",\n        \"city\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"state\": \"<string>\"\n      },\n      \"isExecutive\": \"<boolean>\",\n      \"title\": \"<string>\",\n      \"dateOfBirth\": \"<date>\",\n      \"isEntity\": \"<boolean>\",\n      \"entity\": {\n        \"companyName\": \"<string>\",\n        \"entityType\": \"<string>\",\n        \"taxIdentificationNumber\": \"<string>\",\n        \"email\": \"<email>\",\n        \"websiteURL\": \"<uri>\",\n        \"incorporation\": {\n          \"date\": \"<date>\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"<string>\",\n          \"line1\": \"<string>\",\n          \"line2\": \"<string>\",\n          \"city\": \"<string>\",\n          \"postalCode\": \"<string>\",\n          \"state\": \"<string>\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"id\": \"<uuid>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"ownershipPercentage\": \"<float>\",\n      \"email\": \"<email>\",\n      \"phoneNumber\": {\n        \"countryCode\": \"<string>\",\n        \"number\": \"<string>\"\n      },\n      \"address\": {\n        \"countryCode\": \"<string>\",\n        \"line1\": \"<string>\",\n        \"line2\": \"<string>\",\n        \"city\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"state\": \"<string>\"\n      },\n      \"isExecutive\": \"<boolean>\",\n      \"title\": \"<string>\",\n      \"dateOfBirth\": \"<date>\",\n      \"isEntity\": \"<boolean>\",\n      \"entity\": {\n        \"companyName\": \"<string>\",\n        \"entityType\": \"<string>\",\n        \"taxIdentificationNumber\": \"<string>\",\n        \"email\": \"<email>\",\n        \"websiteURL\": \"<uri>\",\n        \"incorporation\": {\n          \"date\": \"<date>\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"<string>\",\n          \"line1\": \"<string>\",\n          \"line2\": \"<string>\",\n          \"city\": \"<string>\",\n          \"postalCode\": \"<string>\",\n          \"state\": \"<string>\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f5b3d914-e5b2-4bee-95c4-ebf05fd71d92",
+              "name": "KYB information updated successfully",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ec84ec6b-4f16-4ee6-939a-bb82cb019ebe",
+              "name": "Bad input, an unknown principal `id` (`\"principal not found\"`), or the KYB is not editable. Updates are only allowed while the KYB status is `initialized`, `incomplete`, `awaiting-principal-kyc`, or `needs-additional-info` — a KYB that is `pending-review`, `complete`, or `rejected` cannot be modified.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78edb91e-df24-4a34-b4b5-c26d8ce7ee6d",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2e91f3aa-f03c-42f9-aab8-0fd698d5bf55",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"entityName\": \"Tesla\",\n  \"entityType\": \"corporation\",\n  \"taxIdentificationNumber\": \"NN-528343998\",\n  \"incorporation\": {\n    \"date\": \"2025-01-01\",\n    \"address\": {\n      \"countryCode\": \"US\",\n      \"line1\": \"Street 1\",\n      \"line2\": \"Apt 1\",\n      \"city\": \"Gotham\",\n      \"postalCode\": \"10001\",\n      \"state\": \"NY\"\n    }\n  },\n  \"phoneNumber\": {\n    \"countryCode\": \"1\",\n    \"number\": \"2345678901\"\n  },\n  \"websiteURL\": \"https://www.tesla.com\",\n  \"natureOfBusiness\": \"Software Development\",\n  \"sizeOfCompany\": \"300-400\",\n  \"sourceOfFunds\": \"Personal Savings\",\n  \"annualRevenue\": {\n    \"currency\": \"USD\",\n    \"min\": 100000,\n    \"max\": 1000000\n  },\n  \"expectedMonthlyTransactionVolume\": {\n    \"currency\": \"USD\",\n    \"min\": 50000,\n    \"max\": 80000\n  },\n  \"address\": {\n    \"countryCode\": \"US\",\n    \"line1\": \"Street 1\",\n    \"line2\": \"Apt 1\",\n    \"city\": \"Gotham\",\n    \"postalCode\": \"10001\",\n    \"state\": \"NY\"\n  },\n  \"principals\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    },\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"ownershipPercentage\": 0.5,\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": {\n        \"countryCode\": \"1\",\n        \"number\": \"2345678901\"\n      },\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"line1\": \"Street 1\",\n        \"line2\": \"Apt 1\",\n        \"city\": \"Gotham\",\n        \"postalCode\": \"10001\",\n        \"state\": \"NY\"\n      },\n      \"isExecutive\": true,\n      \"title\": \"CEO\",\n      \"dateOfBirth\": \"1990-01-15\",\n      \"isEntity\": false,\n      \"entity\": {\n        \"companyName\": \"Acme Holdings LLC\",\n        \"entityType\": \"limited liability company\",\n        \"taxIdentificationNumber\": \"98-7654321\",\n        \"email\": \"ops@acmeholdings.com\",\n        \"websiteURL\": \"https://www.acmeholdings.com\",\n        \"incorporation\": {\n          \"date\": \"2015-03-01\",\n          \"address\": {\n            \"countryCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"line2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"city\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"postalCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"state\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"address\": {\n          \"countryCode\": \"US\",\n          \"line1\": \"Street 1\",\n          \"line2\": \"Apt 1\",\n          \"city\": \"Gotham\",\n          \"postalCode\": \"10001\",\n          \"state\": \"NY\"\n        },\n        \"certificateOfIncorporationFileId\": \"<uuid>\",\n        \"proofOfAddressFileId\": \"<uuid>\",\n        \"ownershipDocumentFileId\": \"<uuid>\",\n        \"individuals\": [\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"firstName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"lastName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"ownershipPercentage\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"phoneNumber\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"address\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isExecutive\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"title\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"dateOfBirth\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"isEntity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"entity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"identifier\": {\n        \"type\": \"passport\",\n        \"value\": \"1234567890\",\n        \"identityFileId\": \"<uuid>\",\n        \"identityBackPageFileId\": \"<uuid>\",\n        \"addressFileId\": \"<uuid>\"\n      }\n    }\n  ],\n  \"articlesOfIncorporation\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"bankStatements\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"proofOfAddress\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ],\n  \"taxDocuments\": [\n    \"<uuid>\",\n    \"<uuid>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "75ed8827-97db-4a8b-a88e-5917ff1d444c",
+          "name": "Generate KYB Link",
+          "request": {
+            "name": "Generate KYB Link",
+            "description": {
+              "content": "Get KYB Link",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "businesses",
+                ":businessId",
+                "kyb-link"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "businessId",
+                  "description": "(Required) The unique identifier for the business"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5449f00b-c146-4339-81a0-96496f43546c",
+              "name": "create kyb link response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb-link"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"8ef9a712-cdae-4110-b1ea-9ba95abbee6e\",\n  \"url\": \"string\",\n  \"expiresAt\": 1716796800\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de638684-8e77-4a5b-a1f5-4371b472f973",
+              "name": "Bad input provided by client",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb-link"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_request_body\",\n  \"message\": \"The request body provided is not valid\",\n  \"params\": {\n    \"field\": \"Value is invalid.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aeb4d7e5-6803-4c87-9f1f-312fde469cba",
+              "name": "Requested resource was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb-link"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"Requested resource could not be found.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4b1ef55-ccb7-4764-a535-f5c61b878f6d",
+              "name": "Internal error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "businesses",
+                    ":businessId",
+                    "kyb-link"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "businessId",
+                      "description": "(Required) The unique identifier for the business"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_error\",\n  \"message\": \"An unexpected error occurred. Please try again later.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "08f019e0-5eec-48ef-ab4f-f653a7e2c1eb",
+    "name": "Embedded Consumer Wallets Balances KYB API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}

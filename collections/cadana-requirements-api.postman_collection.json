@@ -1,0 +1,357 @@
+{
+  "item": [
+    {
+      "id": "416398d0-00a2-40cc-b8a3-18d34274f7d9",
+      "name": "Requirements",
+      "description": {
+        "content": "Prerequisites that must be satisfied before filing",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c90760fc-cc30-4b32-81f3-7ac9433fc69c",
+          "name": "List outstanding requirements",
+          "request": {
+            "name": "List outstanding requirements",
+            "description": {
+              "content": "Returns requirements — data inputs, documents, or registrations needed\nbefore filings can proceed.\n\nFilter by `businessId` for a business-wide view (all categories), or\nby `personId` to see what a specific worker is missing. At least one\nof `businessId` or `personId` must be provided, and `countryCode` is\nrequired whenever `personId` is used.\n\nRequirements are generated automatically based on the business's\njurisdictions and workforce composition. They update dynamically as\nworkers are added or laws change.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "requirements"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "businessId",
+                  "value": "<string>",
+                  "description": "Filter by business. Required unless `personId` is provided."
+                },
+                {
+                  "disabled": false,
+                  "key": "personId",
+                  "value": "<string>",
+                  "description": "Filter by person. Returns only `worker_data` requirements where\nthis person appears in `affected_persons`. Useful for building\nper-worker onboarding or compliance views. `countryCode` must be\nprovided alongside this parameter.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "countryCode",
+                  "value": "<string>",
+                  "description": "Filter by jurisdiction (ISO 3166-1 alpha-2). Required when `personId` is provided; the request fails with `400` if omitted."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "af6f7d2f-7827-46a8-ab11-9ea3abba7b38",
+              "name": "List of requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "requirements"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "businessId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "personId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "countryCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"category\": \"business_registration\",\n      \"status\": \"satisfied\",\n      \"name\": \"SAT Employer RFC\",\n      \"description\": \"A valid RFC is required to file ISR returns with the Servicio de Administración Tributaria (SAT)\",\n      \"affectedField\": \"taxId\",\n      \"resourceType\": \"business\",\n      \"resourceId\": \"bus_abc123\",\n      \"resolutionGuide\": \"Submit via PUT /v1/statutory/businesses/{id}/fields/{countryCode}\"\n    },\n    {\n      \"category\": \"worker_data\",\n      \"status\": \"outstanding\",\n      \"name\": \"SAT Employer RFC\",\n      \"description\": \"A valid RFC is required to file ISR returns with the Servicio de Administración Tributaria (SAT)\",\n      \"affectedField\": \"taxId\",\n      \"resourceType\": \"business\",\n      \"resourceId\": \"bus_abc123\",\n      \"resolutionGuide\": \"Submit via PUT /v1/statutory/businesses/{id}/fields/{countryCode}\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c64ae0ed-35d8-454b-9ad5-bb2b93435488",
+          "name": "Get a requirement",
+          "request": {
+            "name": "Get a requirement",
+            "description": {
+              "content": "**Not yet implemented.**\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "statutory",
+                "requirements",
+                ":requirement_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "requirement_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                "key": "X-MultiTenantKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "eae1a56f-baf4-4d3d-b0a4-8509f6929c05",
+              "name": "Requirement details",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "requirements",
+                    ":requirement_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "requirement_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"category\": \"business_document\",\n  \"status\": \"satisfied\",\n  \"name\": \"SAT Employer RFC\",\n  \"description\": \"A valid RFC is required to file ISR returns with the Servicio de Administración Tributaria (SAT)\",\n  \"affectedField\": \"taxId\",\n  \"resourceType\": \"business\",\n  \"resourceId\": \"bus_abc123\",\n  \"resolutionGuide\": \"Submit via PUT /v1/statutory/businesses/{id}/fields/{countryCode}\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1cc48e33-4b28-436f-b534-9542060f1c25",
+              "name": "Resource not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "statutory",
+                    "requirements",
+                    ":requirement_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "requirement_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Required when using a Platform API token. The tenant key identifying which business to operate on.",
+                    "key": "X-MultiTenantKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"countryCode is required\",\n    \"details\": [\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"field\": \"string\",\n        \"message\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cadanapay.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "51089e2b-03ff-46f4-9445-1270219afa9a",
+    "name": "Embedded Consumer Wallets Balances Requirements API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "APIs for interacting with Cadana Embedded Consumer Wallets\n\nContact Support:\n Email: api@cadanapay.com",
+      "type": "text/plain"
+    }
+  }
+}
