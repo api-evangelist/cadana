@@ -177,6 +177,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -197,6 +199,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -438,6 +442,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - Reimbursement
+  tags_raw:
   - Reimbursements
   properties:
   - type: OpenAPI
@@ -578,6 +584,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -618,6 +626,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
