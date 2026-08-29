@@ -4,8 +4,14 @@ info:
   version: 1.0.0
   summary: Onboard a contractor, create a contract, run payroll, and retrieve payslips.
 sourceDescriptions:
-- name: workforce
-  url: ../openapi/cadana-workforce-management-openapi.yaml
+- name: contractsApi
+  url: ../openapi/cadana-contracts-api-openapi.yml
+  type: openapi
+- name: payrollsApi
+  url: ../openapi/cadana-payrolls-api-openapi.yml
+  type: openapi
+- name: personsApi
+  url: ../openapi/cadana-persons-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: payContractorEndToEnd

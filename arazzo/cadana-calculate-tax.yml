@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   summary: Discover supported locations and required fields, then estimate and calculate tax.
 sourceDescriptions:
-- name: tax
-  url: ../openapi/cadana-global-tax-openapi.yaml
+- name: taxCalculatorApi
+  url: ../openapi/cadana-tax-calculator-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: estimateAndCalculateTax
