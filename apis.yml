@@ -111,6 +111,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - Business
+  tags_raw:
   - Businesses
   properties:
   - type: OpenAPI
