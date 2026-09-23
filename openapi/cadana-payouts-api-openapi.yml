@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Global Payments
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Payouts API
+  title: Embedded Payments Payouts API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -51,6 +51,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         5XX:
           $ref: '#/components/responses/InternalError'
+      operationId: postV1Payouts
+      x-operation-id-source: derived
     get:
       summary: List
       description: Retrieve payouts
@@ -127,6 +129,8 @@ paths:
           $ref: '#/components/responses/BadRequestError'
         5XX:
           $ref: '#/components/responses/InternalError'
+      operationId: getV1Payouts
+      x-operation-id-source: derived
   /v1/payouts/{payoutId}:
     get:
       summary: Get
@@ -139,29 +143,10 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/GetPayoutResponse'
+      operationId: getV1PayoutsByPayoutId
+      x-operation-id-source: derived
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     Amount:
       type: object
       required:
@@ -190,40 +175,19 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
-    CreatePayoutRequest:
-      type: object
-      required:
-      - beneficiaryId
-      - quoteId
-      - amount
-      - currency
-      properties:
-        beneficiaryId:
-          type: string
-          format: uuid
-          example: c871b333-e129-409c-aabd-7cfb55a967cc
-        quoteId:
-          type: string
-          format: uuid
-          description: The unique identifier for the fx quote
-          example: d35d2bd6-188b-4e82-9a16-71442dad7375
-        amount:
-          $ref: '#/components/schemas/Amount'
-        reference:
-          type: string
-          description: The client reference for the payout
-          example: '1234567890'
     node:
       type: object
       description: Node pagination
       properties:
         previous:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: null
         next:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: ca_123
     Payout:
       type: object
@@ -281,29 +245,68 @@ components:
           type: integer
           description: Unix timestamp when the payout was last updated
           example: 1748478276
-  responses:
-    CreatePayoutRespone:
-      description: Payout Created Response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
-          examples:
-            payout:
-              summary: Example payout creation response
-              value:
-                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    CreatePayoutRequest:
+      type: object
+      required:
+      - beneficiaryId
+      - quoteId
+      - amount
+      - currency
+      properties:
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          description: The unique identifier for the fx quote
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        amount:
+          $ref: '#/components/schemas/Amount'
+        reference:
+          type: string
+          description: The client reference for the payout
+          example: '1234567890'
     InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+  parameters:
+    payoutId:
+      name: payoutId
+      in: path
+      description: The unique identifier for the payout
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
     GetPayoutResponse:
       description: Get payout response
       content:
@@ -331,12 +334,6 @@ components:
                 status: succeeded
                 createdTimestamp: 1748478276
                 lastUpdatedTimestamp: 1748478276
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     GetPayoutsResponse:
       description: OK
       content:
@@ -350,23 +347,34 @@ components:
                   $ref: '#/components/schemas/Payout'
               node:
                 $ref: '#/components/schemas/node'
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    payoutId:
-      name: payoutId
-      in: path
-      description: The unique identifier for the payout
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    CreatePayoutRespone:
+      description: Payout Created Response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+          examples:
+            payout:
+              summary: Example payout creation response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
   securitySchemes:
     Authorization:
       type: http

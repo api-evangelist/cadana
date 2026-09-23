@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Payroll Platform
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Platform API
+  title: Business Workforce Management Platform API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -208,11 +208,9 @@ paths:
 
         There is no `GET` for a transfer — track it via the
 
-        [platform disbursements endpoint](/api-reference/workforce/platform/list-disbursements)
+        platform disbursements endpoint
 
-        filtered to `type=TRANSFER`, matching the returned `id` or your `reference`.
-
-        '
+        filtered to `type=TRANSFER`, matching the returned `id` or your `reference`.'
       operationId: createPlatformTransfer
       tags:
       - Platform
@@ -261,399 +259,6 @@ paths:
       - $ref: '#/components/parameters/XMultiTenantKey'
 components:
   schemas:
-    PlatformDisbursement:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique transaction identifier
-          example: 87eec1a4-d757-45be-a75e-f3638d044750
-        tenantKey:
-          type: string
-          description: Identifies which business this transaction belongs to
-          example: tbl28153208
-        status:
-          type: string
-          description: Transaction status
-          enum:
-          - SUCCESS
-          - FAILED
-          - INITIATED
-          - PROCESSING
-          - ROUTED
-          example: SUCCESS
-        referenceId:
-          type: string
-          format: uuid
-          description: External reference ID. Payroll transactions from the same run share the same referenceId.
-          example: 9c4829a8-0177-4dad-a0d8-e4f8fc42276a
-        description:
-          type: string
-          description: Human-readable description of the transaction
-          example: January 2026 Payment
-        type:
-          type: string
-          description: 'Transaction type. The possible values depend on the endpoint — see the operation description for the set each endpoint returns. A business disbursement is one of: PAYROLL_TOTAL, PAYROLL, PAYROLL_FEE, PAYROLL_REVERSAL, DEPOSIT, DEPOSIT_REVERSAL, VENDOR, REVENUE_SHARE_PAYOUT, REIMBURSEMENT, SUBSCRIPTION_PAYMENT, STATUTORY_DEPOSIT.
-
-            '
-          enum:
-          - PAYOUT
-          - PAYROLL
-          - PAYROLL_TOTAL
-          - PAYROLL_FEE
-          - PAYROLL_REVERSAL
-          - VENDOR
-          - DEPOSIT
-          - DEPOSIT_REVERSAL
-          - REVENUE_SHARE_PAYOUT
-          - REIMBURSEMENT
-          - SUBSCRIPTION_PAYMENT
-          - STATUTORY_DEPOSIT
-          - CARD_MAINTENANCE_FEE
-          - CARD_CREATION_FEE
-          - STOCK_BUY
-          - STOCK_SELL
-          - INTEREST
-          example: PAYROLL_TOTAL
-        fxRate:
-          type: number
-          nullable: true
-          description: Foreign exchange rate applied. Only present for cross-currency transactions.
-          example: 5.7896
-        paymentMethod:
-          type: string
-          description: How funds were delivered
-          enum:
-          - bank
-          - momo
-          - wallet
-          - ach
-          - card
-          - proxy
-          example: bank
-        paymentDetails:
-          $ref: '#/components/schemas/paymentMethods'
-        userId:
-          type: string
-          format: uuid
-          description: The wallet/user account ID. Present on wallet-based transactions. For payroll, only present when payment is delivered to a wallet.
-          example: 8cb1d569-5dfd-4b33-b25e-4fab0ee14251
-        personId:
-          type: string
-          format: uuid
-          nullable: true
-          description: The employee or contractor ID. Present only on payroll transactions.
-          example: 7fc25070-8037-44f8-8c42-9d05ffc01f0b
-        userName:
-          type: string
-          description: Recipient name
-          example: Paula Torres
-        amount:
-          description: Amount the recipient receives in the destination currency
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        sourceAmount:
-          description: Cost in the source currency before fees
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        feeAmount:
-          description: Fees charged in the source currency
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        totalAmount:
-          description: Total debited from the sender (sourceAmount + feeAmount)
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        fxRevenueShare:
-          nullable: true
-          description: Revenue earned from the FX spread. Only present when applicable.
-          allOf:
-          - $ref: '#/components/schemas/RevenueShare'
-        feeRevenueShare:
-          nullable: true
-          description: Revenue earned from transaction fees. Only present when applicable.
-          allOf:
-          - $ref: '#/components/schemas/RevenueShare'
-        totalRevenueShare:
-          nullable: true
-          description: Combined total revenue share
-          allOf:
-          - $ref: '#/components/schemas/Amount'
-        estimatedDelivery:
-          type: string
-          nullable: true
-          description: Estimated time the funds will be delivered to the recipient
-        externalReference:
-          type: string
-          nullable: true
-          description: External reference associated with the transaction, when available
-        createdTimestamp:
-          type: string
-          description: Timestamp when the transaction was created
-          example: 2026-01-28 14:29:09 +0000 UTC
-        lastUpdatedTimestamp:
-          type: string
-          description: Timestamp when the transaction was last updated
-          example: 2026-01-28 14:29:18 +0000 UTC
-    operation:
-      type: object
-      properties:
-        description:
-          type: string
-          example: Operations related to user management
-          description: Operations tied to the role
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/permission'
-        resource:
-          type: string
-          description: The domain for the operations
-          example: user
-    businessMinimalDetailsEntry:
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Wayne Enterprise
-        shortName:
-          type: string
-          example: W.E.
-        status:
-          type: string
-          description: Business status. `pending_verification` until KYB is approved, then `ACTIVE`.
-          enum:
-          - ACTIVE
-          - pending_verification
-          - CLOSED
-          example: ACTIVE
-        tenantKey:
-          type: string
-          example: abc123
-        country:
-          type: string
-          example: US
-        address:
-          $ref: '#/components/schemas/address'
-        requiresKYB:
-          type: boolean
-          description: Whether the business must complete KYB before processing payments
-          example: true
-        admin:
-          type: object
-          properties:
-            name:
-              type: string
-              example: Jane Founder
-            email:
-              type: string
-              example: jane@example.com
-        createdTimestamp:
-          type: integer
-          description: Unix timestamp when the business was created
-          example: 1765359752
-        idempotencyKey:
-          type: string
-          description: Idempotency key supplied when the business was created
-          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
-    swiftDetails:
-      type: object
-      required:
-      - currency
-      - iban
-      - accountName
-      - accountNumber
-      - bankName
-      - swiftCode
-      - address
-      properties:
-        currency:
-          type: string
-          description: The currency of the bank account
-          example: EUR
-        iban:
-          type: string
-          description: The International Bank Account Number
-          example: DE00000000000000000000
-        accountName:
-          type: string
-          description: The name on the bank account
-          example: John Doe
-        accountNumber:
-          type: string
-          description: The bank account number
-          example: '1234567890'
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        swiftCode:
-          type: string
-          description: The SWIFT/BIC code of the bank
-          example: EXMPDEFF
-        address:
-          $ref: '#/components/schemas/address'
-    permission:
-      type: object
-      properties:
-        action:
-          type: string
-          description: The specific permission for the role
-          example: CAN_VIEW_USER
-        value:
-          type: boolean
-          example: true
-    role:
-      type: object
-      properties:
-        description:
-          type: string
-          description: A custom role that can be attached to a user
-          example: This is the role for a finance manager
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Finance Manager
-        operations:
-          type: array
-          items:
-            $ref: '#/components/schemas/operation'
-        roleType:
-          type: string
-          example: custom
-    CreateTransferRequest:
-      type: object
-      required:
-      - destinationTenantKey
-      - amount
-      - reference
-      properties:
-        sourceTenantKey:
-          type: string
-          description: The business funds move from. Omit to send from your main business, or pass a child business's tenant key.
-          example: blm123456
-        destinationTenantKey:
-          type: string
-          description: The business funds move to — a child business or your main business. Cannot equal the source.
-          example: blm998877
-        amount:
-          type: object
-          required:
-          - amount
-          - currency
-          properties:
-            amount:
-              type: integer
-              description: Value in the lowest denomination of the currency (e.g. cents)
-              example: 500000
-            currency:
-              type: string
-              description: ISO 4217 code. Source and destination must match — cross-currency is not supported.
-              example: USD
-        reference:
-          type: string
-          description: Your client reference for the transfer. Stored on it so you can locate it later.
-          example: transfer-123
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    walletDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of wallet account
-          enum:
-          - user
-          - business
-          example: user
-        identifier:
-          type: string
-          description: The unique identifier for the wallet account
-          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
-        currency:
-          type: string
-          description: The currency of the wallet
-          example: USD
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    CreateBusinessRequest:
-      description: Create business request payload
-      type: object
-      required:
-      - businessName
-      - adminFirstName
-      - adminLastName
-      - address
-      - adminEmail
-      - idempotencyKey
-      - country
-      properties:
-        businessName:
-          type: string
-          description: Business name
-          example: Wayne Enterprise
-        businessShortName:
-          type: string
-          example: W.E.
-          description: Shortname of the business
-        adminFirstName:
-          type: string
-          example: Jane
-          description: First name of the admin of the business
-        adminLastName:
-          type: string
-          example: Founder
-          description: Last name of the admin of the business
-        address:
-          $ref: '#/components/schemas/address'
-        adminEmail:
-          type: string
-          description: Person's email
-          example: admin@example.com
-        suppressWelcomeEmail:
-          type: boolean
-          description: Whether you want to suppress the welcome email
-          default: false
-        registrationId:
-          type: string
-          description: Registration id/number of the business
-          example: '991234567'
-        idempotencyKey:
-          type: string
-          description: Unique string to prevent dedupe
-          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
-        country:
-          type: string
-          example: US
-        adminPhoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -668,85 +273,6 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
-    nodePagination:
-      type: object
-      description: Node pagination
-      properties:
-        next:
-          type: string
-        previous:
-          type: string
-    ForbiddenError:
-      description: Forbidden
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: forbidden
-        message: Transfers are only available to platform businesses.
-    beneficiaryId:
-      type: object
-      description: ID details for the beneficiary
-      properties:
-        type:
-          type: string
-          enum:
-          - NIT
-          - CC
-          - CE
-          - TI
-          - PASS
-          description: Type of beneficiary ID
-          example: NIT
-        value:
-          type: string
-          description: ID number of the beneficiary
-          example: '123456789'
-    Amount:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: The value of the amount
-          example: '10.00'
-        currency:
-          type: string
-          description: The currency of the asset
-          example: USD
-    wireDetails:
-      type: object
-      description: Wire transfer payment details
-      properties:
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        accountName:
-          type: string
-          description: The name on the account
-          example: John Doe
-        routingNumber:
-          type: string
-          description: The routing number
-          example: '000000000'
-        accountNumber:
-          type: string
-          description: The account number
-          example: '123456789'
-        address:
-          $ref: '#/components/schemas/address'
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type: string
-          nullable: true
-        next:
-          type: string
-          nullable: true
     paymentMethods:
       type: object
       required:
@@ -775,6 +301,65 @@ components:
           $ref: '#/components/schemas/walletDetails'
         wire:
           $ref: '#/components/schemas/wireDetails'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    role:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A custom role that can be attached to a user
+          example: This is the role for a finance manager
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Finance Manager
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/operation'
+        roleType:
+          type: string
+          example: custom
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    nodePagination:
+      type: object
+      description: Node pagination
+      properties:
+        next:
+          type: string
+        previous:
+          type: string
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+        next:
+          type:
+          - string
+          - 'null'
+    RevenueShare:
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Amount'
+        rate:
+          type: number
+          description: The revenue share percentage
+          example: 1.0
     bankDetails:
       type: object
       properties:
@@ -836,6 +421,321 @@ components:
           format: email
           description: The email address of the account holder
           example: john.doe@example.com
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    wireDetails:
+      type: object
+      description: Wire transfer payment details
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The routing number
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The account number
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/address'
+    PlatformDisbursement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique transaction identifier
+          example: 87eec1a4-d757-45be-a75e-f3638d044750
+        tenantKey:
+          type: string
+          description: Identifies which business this transaction belongs to
+          example: tbl28153208
+        status:
+          type: string
+          description: Transaction status
+          enum:
+          - SUCCESS
+          - FAILED
+          - INITIATED
+          - PROCESSING
+          - ROUTED
+          example: SUCCESS
+        referenceId:
+          type: string
+          format: uuid
+          description: External reference ID. Payroll transactions from the same run share the same referenceId.
+          example: 9c4829a8-0177-4dad-a0d8-e4f8fc42276a
+        description:
+          type: string
+          description: Human-readable description of the transaction
+          example: January 2026 Payment
+        type:
+          type: string
+          description: 'Transaction type. The possible values depend on the endpoint — see the operation description for the set each endpoint returns. A business disbursement is one of: PAYROLL_TOTAL, PAYROLL, PAYROLL_FEE, PAYROLL_REVERSAL, DEPOSIT, DEPOSIT_REVERSAL, VENDOR, REVENUE_SHARE_PAYOUT, REIMBURSEMENT, SUBSCRIPTION_PAYMENT, STATUTORY_DEPOSIT.
+
+            '
+          enum:
+          - PAYOUT
+          - PAYROLL
+          - PAYROLL_TOTAL
+          - PAYROLL_FEE
+          - PAYROLL_REVERSAL
+          - VENDOR
+          - DEPOSIT
+          - DEPOSIT_REVERSAL
+          - REVENUE_SHARE_PAYOUT
+          - REIMBURSEMENT
+          - SUBSCRIPTION_PAYMENT
+          - STATUTORY_DEPOSIT
+          - CARD_MAINTENANCE_FEE
+          - CARD_CREATION_FEE
+          - STOCK_BUY
+          - STOCK_SELL
+          - INTEREST
+          example: PAYROLL_TOTAL
+        fxRate:
+          type:
+          - number
+          - 'null'
+          description: Foreign exchange rate applied. Only present for cross-currency transactions.
+          example: 5.7896
+        paymentMethod:
+          type: string
+          description: How funds were delivered
+          enum:
+          - bank
+          - momo
+          - wallet
+          - ach
+          - card
+          - proxy
+          example: bank
+        paymentDetails:
+          $ref: '#/components/schemas/paymentMethods'
+        userId:
+          type: string
+          format: uuid
+          description: The wallet/user account ID. Present on wallet-based transactions. For payroll, only present when payment is delivered to a wallet.
+          example: 8cb1d569-5dfd-4b33-b25e-4fab0ee14251
+        personId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: The employee or contractor ID. Present only on payroll transactions.
+          example: 7fc25070-8037-44f8-8c42-9d05ffc01f0b
+        userName:
+          type: string
+          description: Recipient name
+          example: Paula Torres
+        amount:
+          description: Amount the recipient receives in the destination currency
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          description: Cost in the source currency before fees
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        feeAmount:
+          description: Fees charged in the source currency
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        totalAmount:
+          description: Total debited from the sender (sourceAmount + feeAmount)
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        fxRevenueShare:
+          description: Revenue earned from the FX spread. Only present when applicable.
+          allOf:
+          - $ref: '#/components/schemas/RevenueShare'
+        feeRevenueShare:
+          description: Revenue earned from transaction fees. Only present when applicable.
+          allOf:
+          - $ref: '#/components/schemas/RevenueShare'
+        totalRevenueShare:
+          description: Combined total revenue share
+          allOf:
+          - $ref: '#/components/schemas/Amount'
+        estimatedDelivery:
+          type:
+          - string
+          - 'null'
+          description: Estimated time the funds will be delivered to the recipient
+        externalReference:
+          type:
+          - string
+          - 'null'
+          description: External reference associated with the transaction, when available
+        createdTimestamp:
+          type: string
+          description: Timestamp when the transaction was created
+          example: 2026-01-28 14:29:09 +0000 UTC
+        lastUpdatedTimestamp:
+          type: string
+          description: Timestamp when the transaction was last updated
+          example: 2026-01-28 14:29:18 +0000 UTC
+    businessMinimalDetailsEntry:
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Wayne Enterprise
+        shortName:
+          type: string
+          example: W.E.
+        status:
+          type: string
+          description: Business status. `pending_verification` until KYB is approved, then `ACTIVE`.
+          enum:
+          - ACTIVE
+          - pending_verification
+          - CLOSED
+          example: ACTIVE
+        tenantKey:
+          type: string
+          example: abc123
+        country:
+          type: string
+          example: US
+        address:
+          $ref: '#/components/schemas/address'
+        requiresKYB:
+          type: boolean
+          description: Whether the business must complete KYB before processing payments
+          example: true
+        admin:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Jane Founder
+            email:
+              type: string
+              example: jane@example.com
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the business was created
+          example: 1765359752
+        idempotencyKey:
+          type: string
+          description: Idempotency key supplied when the business was created
+          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    ForbiddenError:
+      description: Forbidden
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: forbidden
+        message: Transfers are only available to platform businesses.
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
     momoDetails:
       type: object
       properties:
@@ -857,6 +757,147 @@ components:
           type: string
           description: The currency of the mobile money account
           example: GHS
+    CreateBusinessRequest:
+      description: Create business request payload
+      type: object
+      required:
+      - businessName
+      - adminFirstName
+      - adminLastName
+      - address
+      - adminEmail
+      - idempotencyKey
+      - country
+      properties:
+        businessName:
+          type: string
+          description: Business name
+          example: Wayne Enterprise
+        businessShortName:
+          type: string
+          example: W.E.
+          description: Shortname of the business
+        adminFirstName:
+          type: string
+          example: Jane
+          description: First name of the admin of the business
+        adminLastName:
+          type: string
+          example: Founder
+          description: Last name of the admin of the business
+        address:
+          $ref: '#/components/schemas/address'
+        adminEmail:
+          type: string
+          description: Person's email
+          example: admin@example.com
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email
+          default: false
+        registrationId:
+          type: string
+          description: Registration id/number of the business
+          example: '991234567'
+        idempotencyKey:
+          type: string
+          description: Unique string to prevent dedupe
+          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
+        country:
+          type: string
+          example: US
+        adminPhoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    operation:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Operations related to user management
+          description: Operations tied to the role
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/permission'
+        resource:
+          type: string
+          description: The domain for the operations
+          example: user
+    permission:
+      type: object
+      properties:
+        action:
+          type: string
+          description: The specific permission for the role
+          example: CAN_VIEW_USER
+        value:
+          type: boolean
+          example: true
+    Amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    CreateTransferRequest:
+      type: object
+      required:
+      - destinationTenantKey
+      - amount
+      - reference
+      properties:
+        sourceTenantKey:
+          type: string
+          description: The business funds move from. Omit to send from your main business, or pass a child business's tenant key.
+          example: blm123456
+        destinationTenantKey:
+          type: string
+          description: The business funds move to — a child business or your main business. Cannot equal the source.
+          example: blm998877
+        amount:
+          type: object
+          required:
+          - amount
+          - currency
+          properties:
+            amount:
+              type: integer
+              description: Value in the lowest denomination of the currency (e.g. cents)
+              example: 500000
+            currency:
+              type: string
+              description: ISO 4217 code. Source and destination must match — cross-currency is not supported.
+              example: USD
+        reference:
+          type: string
+          description: Your client reference for the transfer. Stored on it so you can locate it later.
+          example: transfer-123
     achDetails:
       type: object
       properties:
@@ -886,66 +927,39 @@ components:
           example: wise
         address:
           $ref: '#/components/schemas/address'
-    RevenueShare:
-      type: object
-      properties:
-        amount:
-          $ref: '#/components/schemas/Amount'
-        rate:
-          type: number
-          description: The revenue share percentage
-          example: 1.0
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-  responses:
     InternalError:
-      description: Internal error
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+  responses:
+    GetBusinessesResponse:
+      description: get businesses response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalError'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/businessMinimalDetailsEntry'
+              node:
+                $ref: '#/components/schemas/nodePagination'
     NotFoundError:
       description: Requested resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
     GetPermissionRolesResponse:
       description: get permission roles response
       content:
@@ -957,6 +971,45 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/role'
+    CreatePlatformTransferResponse:
+      description: Transfer created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: The transfer id. Track it via the platform disbursements endpoint filtered to `type=TRANSFER`.
+                example: 9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5
+          examples:
+            transfer:
+              summary: Example transfer creation response
+              value:
+                id: 9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5
+    GetPlatformDisbursementsResponse:
+      description: List of disbursements across all platform businesses
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlatformDisbursement'
+              cursor:
+                $ref: '#/components/schemas/node'
+          examples:
+            payrollAndPayout:
+              $ref: '#/components/examples/platformDisbursementsResponse'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
     GetPlatformDisbursementResponse:
       description: Disbursement details
       content:
@@ -975,80 +1028,12 @@ components:
               tenantKey:
                 type: string
                 example: biz123456
-    GetPlatformDisbursementsResponse:
-      description: List of disbursements across all platform businesses
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PlatformDisbursement'
-              cursor:
-                $ref: '#/components/schemas/node'
-          examples:
-            payrollAndPayout:
-              $ref: '#/components/examples/platformDisbursementsResponse'
     ForbiddenError:
       description: The caller is not permitted to perform this action
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ForbiddenError'
-    GetBusinessesResponse:
-      description: get businesses response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/businessMinimalDetailsEntry'
-              node:
-                $ref: '#/components/schemas/nodePagination'
-    CreatePlatformTransferResponse:
-      description: Transfer created response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-                description: The transfer id. Track it via the platform disbursements endpoint filtered to `type=TRANSFER`.
-                example: 9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5
-          examples:
-            transfer:
-              summary: Example transfer creation response
-              value:
-                id: 9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-  parameters:
-    disbursementId:
-      name: disbursementId
-      in: path
-      description: The unique identifier for the disbursement
-      required: true
-      schema:
-        type: string
-        format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   examples:
     platformDisbursementsResponse:
       summary: Platform Disbursements Response
@@ -1130,6 +1115,22 @@ components:
         cursor:
           previous: null
           next: null
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    disbursementId:
+      name: disbursementId
+      in: path
+      description: The unique identifier for the disbursement
+      required: true
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     Authorization:
       type: http

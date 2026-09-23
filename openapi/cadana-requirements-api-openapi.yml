@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
-  version: 1.0.0
-  title: Embedded Consumer Wallets Balances Requirements API
+  title: Statutory Compliance Requirements API
+  version: 0.1.0
+  description: Statutory filing, government remittance, and compliance tracking API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -42,9 +42,7 @@ paths:
 
         jurisdictions and workforce composition. They update dynamically as
 
-        workers are added or laws change.
-
-        '
+        workers are added or laws change.'
       tags:
       - Requirements
       parameters:
@@ -105,9 +103,7 @@ paths:
     get:
       operationId: getRequirement
       summary: Get a requirement
-      description: '**Not yet implemented.**
-
-        '
+      description: '**Not yet implemented.**'
       tags:
       - Requirements
       parameters:
@@ -135,13 +131,6 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Requirement:
       type: object
@@ -202,8 +191,9 @@ components:
               type: string
               example: countryCode is required
             details:
-              type: array
-              nullable: true
+              type:
+              - array
+              - 'null'
               items:
                 type: object
                 properties:
@@ -211,12 +201,15 @@ components:
                     type: string
                   message:
                     type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     Authorization:
       type: http
       scheme: bearer
       bearerFormat: API_SECRET_KEY
-x-readme:
-  explorer-enabled: true
-  proxy-enabled: true
-  samples-enabled: true

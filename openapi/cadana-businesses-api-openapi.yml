@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Payroll Platform
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Businesses API
+  title: Business Workforce Management Businesses API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -150,41 +150,222 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
+  schemas:
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    customField:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Tshirt Size
+        value:
+          type: string
+          example: M
+    UpdateDepartmentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Legal
+    payrollSettings:
+      type: object
+      properties:
+        payrollDay:
+          type: integer
+          example: 28
+        numApproversNeeded:
+          type: integer
+          example: 1
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    business:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        country:
+          type: string
+          example: US
+        tenantKey:
+          type: string
+          example: cad123
+        currency:
+          type: string
+          example: USD
+        name:
+          type: string
+          example: ACME LLC
+        shortName:
+          type: string
+          example: ACME
+        status:
+          type: string
+          example: active
+        address:
+          $ref: '#/components/schemas/address'
+        instantPaySettings:
+          $ref: '#/components/schemas/instantPaySettings'
+        payrollSettings:
+          $ref: '#/components/schemas/payrollSettings'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/department'
+        customFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/customField'
+    department:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Engineering
+    UpdateCustomFieldRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Employee ID
+    AddDepartmentsRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          example:
+          - Engineering
+          - Sales
+    instantPaySettings:
+      type: object
+      properties:
+        accessPercentage:
+          type: integer
+          example: 30
+        numDaysBeforePayroll:
+          type: integer
+          example: 4
+        requiresApproval:
+          type: boolean
+          example: false
+        contractorAccess:
+          type: boolean
+          example: true
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    AddCustomFieldsRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: string
+          example:
+          - T-shirt Size
+          - Desk Number
     InternalError:
-      description: Internal error
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+  responses:
+    GetBusinessResponse:
+      description: get business response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalError'
+            description: Get business response
+            allOf:
+            - $ref: '#/components/schemas/business'
     NotFoundError:
       description: Requested resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
-    CreateCustomFieldsResponse:
-      description: create custom fields response
+    BadRequestError:
+      description: Bad input provided by client
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/customField'
-    CreateDepartmentsResponse:
-      description: create departments response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/department'
+            $ref: '#/components/schemas/BadRequestError'
     GetMeResponse:
       description: get current identity response
       content:
@@ -233,32 +414,46 @@ components:
               tenantKey: acme-us
               name: Acme Inc.
               country: US
-    BadRequestError:
-      description: Bad input provided by client
+    CreateDepartmentsResponse:
+      description: create departments response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BadRequestError'
-    GetBusinessResponse:
-      description: get business response
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/department'
+    InternalError:
+      description: Internal error
       content:
         application/json:
           schema:
-            description: Get business response
-            allOf:
-            - $ref: '#/components/schemas/business'
+            $ref: '#/components/schemas/InternalError'
+    CreateCustomFieldsResponse:
+      description: create custom fields response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/customField'
   parameters:
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
     customFieldId:
       name: customFieldId
       in: path
       description: The unique identifier for the custom field
-      required: true
-      schema:
-        type: string
-    departmentId:
-      name: departmentId
-      in: path
-      description: The unique identifier for the department
       required: true
       schema:
         type: string
@@ -269,208 +464,13 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    businessId:
-      name: businessId
+    departmentId:
+      name: departmentId
       in: path
-      description: The unique identifier for the business
+      description: The unique identifier for the department
       required: true
       schema:
         type: string
-  schemas:
-    instantPaySettings:
-      type: object
-      properties:
-        accessPercentage:
-          type: integer
-          example: 30
-        numDaysBeforePayroll:
-          type: integer
-          example: 4
-        requiresApproval:
-          type: boolean
-          example: false
-        contractorAccess:
-          type: boolean
-          example: true
-    department:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Engineering
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    UpdateDepartmentRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Legal
-    business:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        country:
-          type: string
-          example: US
-        tenantKey:
-          type: string
-          example: cad123
-        currency:
-          type: string
-          example: USD
-        name:
-          type: string
-          example: ACME LLC
-        shortName:
-          type: string
-          example: ACME
-        status:
-          type: string
-          example: active
-        address:
-          $ref: '#/components/schemas/address'
-        instantPaySettings:
-          $ref: '#/components/schemas/instantPaySettings'
-        payrollSettings:
-          $ref: '#/components/schemas/payrollSettings'
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/department'
-        customFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/customField'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    AddDepartmentsRequest:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: string
-          example:
-          - Engineering
-          - Sales
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    payrollSettings:
-      type: object
-      properties:
-        payrollDay:
-          type: integer
-          example: 28
-        numApproversNeeded:
-          type: integer
-          example: 1
-    UpdateCustomFieldRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Employee ID
-    AddCustomFieldsRequest:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: string
-          example:
-          - T-shirt Size
-          - Desk Number
-    customField:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Tshirt Size
-        value:
-          type: string
-          example: M
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
   securitySchemes:
     Authorization:
       type: http

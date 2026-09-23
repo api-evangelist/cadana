@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Global Payments
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Resources API
+  title: Embedded Payments Resources API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -23,9 +23,7 @@ paths:
   /v1/payment-requirements:
     get:
       summary: Payment corridor requirements
-      description: 'Returns a Draft-07 JSON-Schema fragment that specifies every field, enum, regex and conditional rule for the requested `countryCode` + `currency` + `paymentMethod`.
-
-        '
+      description: Returns a Draft-07 JSON-Schema fragment that specifies every field, enum, regex and conditional rule for the requested `countryCode` + `currency` + `paymentMethod`.
       tags:
       - Resources
       operationId: getPaymentRequirements
@@ -83,10 +81,20 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/GetProvidersResponse'
+      operationId: getV1Providers
+      x-operation-id-source: derived
   /v1/providers/resolve:
     get:
       summary: Resolve bank provider
-      description: "Resolves a bank code, SWIFT code, or ACH routing number to the corresponding bank name and details. The behaviour depends on the `paymentMethod` parameter:\n- **swift** — resolves an 8 or 11-character SWIFT/BIC code\n- **ach** — resolves a 9-digit US ACH routing number\n- **bank** — resolves against Cadana's internal bank provider list\n  for the given currency"
+      description: 'Resolves a bank code, SWIFT code, or ACH routing number to the corresponding bank name and details. The behaviour depends on the `paymentMethod` parameter:
+
+        - **swift** — resolves an 8 or 11-character SWIFT/BIC code
+
+        - **ach** — resolves a 9-digit US ACH routing number
+
+        - **bank** — resolves against Cadana''s internal bank provider list
+
+        for the given currency'
       tags:
       - Resources
       parameters:
@@ -121,6 +129,8 @@ paths:
           $ref: '#/components/responses/ResolveCodeResponse'
         '400':
           $ref: '#/components/responses/BadRequestError'
+      operationId: getV1ProvidersResolve
+      x-operation-id-source: derived
   /v1/payment-methods:
     get:
       summary: Get payment methods
@@ -161,138 +171,7 @@ paths:
         5XX:
           $ref: '#/components/responses/InternalError'
 components:
-  responses:
-    GetPaymentMethodsResponse:
-      description: Available payment methods, one entry per country matching the query
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: object
-              required:
-              - country
-              - paymentMethods
-              properties:
-                country:
-                  type: string
-                  description: The country code in ISO 3166-1 alpha-2 format
-                  example: BR
-                countryName:
-                  type: string
-                  description: The country's display name
-                  example: Brazil
-                paymentMethods:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/PaymentMethod'
-          examples:
-            brazilPaymentMethods:
-              $ref: '#/components/examples/brazilPaymentMethods'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    GetProvidersResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Provider'
-    ResolveCodeResponse:
-      description: Resolved bank provider details
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ResolvedProvider'
-          examples:
-            bankCodeLookup:
-              summary: Bank code lookup (BRL)
-              value:
-                bankName: Itaú Unibanco
-                countryCode: BR
-                city: ''
-                routingNumber: ''
-                swiftCode: ITAUBRSP
-            swiftCodeLookup:
-              summary: SWIFT code lookup (MXN)
-              value:
-                bankName: Banco Nacional de Mexico S.A.
-                countryCode: MX
-                city: Mexico City
-                routingNumber: ''
-                swiftCode: BNMXMXMM
-            achLookup:
-              summary: ACH routing number lookup (USD)
-              value:
-                bankName: JPMorgan Chase
-                countryCode: US
-                city: Tampa
-                routingNumber: '021000021'
-                swiftCode: CHASUS33
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
   schemas:
-    Provider:
-      type: object
-      required:
-      - code
-      - name
-      - countryCode
-      - currency
-      - type
-      properties:
-        code:
-          type: string
-          example: BR123
-        name:
-          type: string
-          example: Nubank Brazil
-        countryCode:
-          type: string
-          description: The country code in ISO 3166-1 alpha-2 format
-          example: BR
-        currency:
-          type: string
-          description: The currency in ISO 4217 format
-          example: BRL
-        type:
-          type: string
-          enum:
-          - bank
-          - momo
-          example: bank
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -335,8 +214,13 @@ components:
           - active
           - inactive
           example: active
-    JSONSchemaDraft07:
-      description: "This is a Draft-07 JSON Schema fragment. For the full meta-schema, see https://json-schema.org/draft-07/schema#. \nRely on the provided example for the expected structure.\n"
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     ResolvedProvider:
       type: object
       required:
@@ -377,6 +261,132 @@ components:
         message:
           description: A human readable message describing the error
           type: string
+    Provider:
+      type: object
+      required:
+      - code
+      - name
+      - countryCode
+      - currency
+      - type
+      properties:
+        code:
+          type: string
+          example: BR123
+        name:
+          type: string
+          example: Nubank Brazil
+        countryCode:
+          type: string
+          description: The country code in ISO 3166-1 alpha-2 format
+          example: BR
+        currency:
+          type: string
+          description: The currency in ISO 4217 format
+          example: BRL
+        type:
+          type: string
+          enum:
+          - bank
+          - momo
+          example: bank
+    JSONSchemaDraft07:
+      description: "This is a Draft-07 JSON Schema fragment. For the full meta-schema, see https://json-schema.org/draft-07/schema#. \nRely on the provided example for the expected structure.\n"
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+  responses:
+    GetPaymentMethodsResponse:
+      description: Available payment methods, one entry per country matching the query
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              required:
+              - country
+              - paymentMethods
+              properties:
+                country:
+                  type: string
+                  description: The country code in ISO 3166-1 alpha-2 format
+                  example: BR
+                countryName:
+                  type: string
+                  description: The country's display name
+                  example: Brazil
+                paymentMethods:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PaymentMethod'
+          examples:
+            brazilPaymentMethods:
+              $ref: '#/components/examples/brazilPaymentMethods'
+    GetProvidersResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Provider'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ResolveCodeResponse:
+      description: Resolved bank provider details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResolvedProvider'
+          examples:
+            bankCodeLookup:
+              summary: Bank code lookup (BRL)
+              value:
+                bankName: Itaú Unibanco
+                countryCode: BR
+                city: ''
+                routingNumber: ''
+                swiftCode: ITAUBRSP
+            swiftCodeLookup:
+              summary: SWIFT code lookup (MXN)
+              value:
+                bankName: Banco Nacional de Mexico S.A.
+                countryCode: MX
+                city: Mexico City
+                routingNumber: ''
+                swiftCode: BNMXMXMM
+            achLookup:
+              summary: ACH routing number lookup (USD)
+              value:
+                bankName: JPMorgan Chase
+                countryCode: US
+                city: Tampa
+                routingNumber: '021000021'
+                swiftCode: CHASUS33
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
   examples:
     brazilPaymentMethods:
       summary: Brazil Payment Methods

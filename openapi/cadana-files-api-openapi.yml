@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Payroll Platform
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Files API
+  title: Business Workforce Management Files API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -27,9 +27,7 @@ paths:
 
         After the client uploads the bytes to that URL, it can reference
 
-        `fileId` in later API calls (e.g. Beneficiary creation KYC).
-
-        '
+        `fileId` in later API calls (e.g. Beneficiary creation KYC).'
       tags:
       - Files
       security:
@@ -55,6 +53,8 @@ paths:
           $ref: '#/components/responses/InternalError'
       parameters:
       - $ref: '#/components/parameters/XMultiTenantKey'
+      operationId: postV1FilesUploadUrl
+      x-operation-id-source: derived
   /v1/files/{fileId}:
     get:
       summary: Get file details
@@ -79,80 +79,24 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         5XX:
           $ref: '#/components/responses/InternalError'
+      operationId: getV1FilesByFileId
+      x-operation-id-source: derived
 components:
-  responses:
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    UploadUrlResponse:
-      description: Pre-signed PUT URL and file identifier
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - fileId
-            - putUrl
-            - expiresIn
-            properties:
-              fileId:
-                type: string
-                format: uuid
-                example: 517075a2-17db-469f-9481-eb8347cb920c
-              putUrl:
-                type: string
-                format: uri
-                description: Pre-signed HTTPS URL (single-use)
-              expiresIn:
-                type: integer
-                description: Seconds until the URL expires
-                example: 900
-          examples:
-            success:
-              summary: Successful reservation
-              value:
-                fileId: 517075a2-17db-469f-9481-eb8347cb920c
-                putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
-                expiresIn: 900
+  schemas:
     BadRequestError:
       description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    GetFileDetailsResponse:
-      description: Get file details and download URL
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FileDetails'
-          examples:
-            success:
-              summary: Successful file details fetch
-              value:
-                fileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
-                purpose: kyc-id-front
-                getUrl: https://url
-                expiresIn: 899
-                createdAt: 1748478276
-                tenantKey: abc123
-  schemas:
-    NotFoundError:
-      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     InternalError:
       description: Internal server error
       allOf:
@@ -192,20 +136,6 @@ components:
           type: string
           description: The original name of the file being uploaded (optional). When provided, it is saved and returned when the file is retrieved later, so it can be shown instead of a generated name.
           example: passport-front.jpeg
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     FileDetails:
       type: object
       required:
@@ -268,6 +198,78 @@ components:
         message:
           description: A human readable message describing the error
           type: string
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+  responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    GetFileDetailsResponse:
+      description: Get file details and download URL
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileDetails'
+          examples:
+            success:
+              summary: Successful file details fetch
+              value:
+                fileId: 1d3f870c-bc91-4636-a0d4-8e54bccf7d64
+                purpose: kyc-id-front
+                getUrl: https://url
+                expiresIn: 899
+                createdAt: 1748478276
+                tenantKey: abc123
+    UploadUrlResponse:
+      description: Pre-signed PUT URL and file identifier
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - fileId
+            - putUrl
+            - expiresIn
+            properties:
+              fileId:
+                type: string
+                format: uuid
+                example: 517075a2-17db-469f-9481-eb8347cb920c
+              putUrl:
+                type: string
+                format: uri
+                description: Pre-signed HTTPS URL (single-use)
+              expiresIn:
+                type: integer
+                description: Seconds until the URL expires
+                example: 900
+          examples:
+            success:
+              summary: Successful reservation
+              value:
+                fileId: 517075a2-17db-469f-9481-eb8347cb920c
+                putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
+                expiresIn: 900
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

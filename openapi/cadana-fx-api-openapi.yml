@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Global Payments
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances FX API
+  title: Embedded Payments FX API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -37,7 +37,25 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/CreateFXQuoteResponse'
+      operationId: postV1FxQuotes
+      x-operation-id-source: derived
 components:
+  responses:
+    CreateFXQuoteResponse:
+      description: create an fx quote
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/fxQuote'
+          examples:
+            fxQuote:
+              summary: Example FX Quote
+              value:
+                id: 57c74c5d-38a0-41e7-a19e-161f16dc4898
+                from: USD
+                to: PHP
+                rate: '56.1234'
+                expirationTimestamp: '2025-05-29T21:42:52Z'
   schemas:
     fxQuote:
       type: object
@@ -77,22 +95,6 @@ components:
         to:
           type: string
           example: PHP
-  responses:
-    CreateFXQuoteResponse:
-      description: create an fx quote
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/fxQuote'
-          examples:
-            fxQuote:
-              summary: Example FX Quote
-              value:
-                id: 57c74c5d-38a0-41e7-a19e-161f16dc4898
-                from: USD
-                to: PHP
-                rate: '56.1234'
-                expirationTimestamp: '2025-05-29T21:42:52Z'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

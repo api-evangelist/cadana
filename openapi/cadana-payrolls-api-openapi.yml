@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Payroll Platform
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Payrolls API
+  title: Business Workforce Management Payrolls API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -185,9 +185,7 @@ paths:
         Payslips that are still being generated (or failed to generate) are returned under `notReady` with a `status` of `generating` or `error`. Retry the request after generation completes to receive their links.
 
 
-        In sandbox, a payroll saved with a past `payrollDate` completes immediately on approval — the fastest way to obtain payslips for testing.
-
-        '
+        In sandbox, a payroll saved with a past `payrollDate` completes immediately on approval — the fastest way to obtain payslips for testing.'
       operationId: getPayrollPayslipLinks
       tags:
       - Payrolls
@@ -214,7 +212,405 @@ paths:
       security:
       - Authorization: []
 components:
+  schemas:
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    SavePayroll:
+      required:
+      - payrollDate
+      - payPeriod
+      - entries
+      type: object
+      properties:
+        payrollDate:
+          type: string
+          description: payroll date
+          format: date
+        payPeriod:
+          $ref: '#/components/schemas/payPeriod'
+        fxRateExpiresAt:
+          type: string
+          format: date-time
+          description: 'Maximum time the quoted FX rates are valid (RFC 3339). If omitted, spot rates are used.
+
+            '
+          example: '2025-06-15T23:59:59Z'
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/payrollEntryInput'
+        customFees:
+          type: array
+          description: 'Optional custom fee line items that supplement the standard per-seat subscription fees.
+
+            '
+          items:
+            type: object
+            required:
+            - name
+            - amount
+            properties:
+              name:
+                type: string
+                description: Name of the fee
+                example: Platform Fee
+              amount:
+                $ref: '#/components/schemas/amount'
+              metadata:
+                type: object
+                description: Optional opaque metadata attached to the fee. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
+                additionalProperties:
+                  type: string
+                  maxLength: 200
+                maxProperties: 20
+                example:
+                  team: engineering
+                  region: emea
+        tags:
+          $ref: '#/components/schemas/tags'
+    CreatePayrollRequest:
+      required:
+      - workerType
+      - type
+      type: object
+      properties:
+        workerType:
+          type: string
+          description: worker type
+          example: EMPLOYEE
+          enum:
+          - EMPLOYEE
+          - CONTRACTOR
+        type:
+          type: string
+          description: payroll type
+          example: ONE_OFF
+          enum:
+          - ONE_OFF
+          - REGULAR
+        tags:
+          $ref: '#/components/schemas/tags'
+    payrollStatus:
+      type: string
+      description: 'Current payroll status. See [Payroll Lifecycle](/workforce/payroll-lifecycle) for the meaning of each value and the allowed transitions.
+
+        '
+      example: Completed
+      enum:
+      - Created
+      - Pending Submission
+      - Pending Approval
+      - Awaiting Funds
+      - Scheduled
+      - Processing
+      - Completed
+      - Rejected
+      - Deleted
+    deduction:
+      type: object
+      required:
+      - name
+      - isStatutory
+      - amount
+      properties:
+        name:
+          type: string
+          example: Income Tax
+        isStatutory:
+          type: boolean
+          description: Whether this deduction is mandated by law (e.g., income tax, social security) versus a non-statutory item.
+          example: true
+        amount:
+          $ref: '#/components/schemas/amount'
+    payrollSummary:
+      type: object
+      properties:
+        payrollId:
+          type: string
+          description: created payroll id
+          format: uuid
+        workerType:
+          type: string
+          description: worker type
+          example: EMPLOYEE
+          enum:
+          - EMPLOYEE
+          - CONTRACTOR
+        status:
+          allOf:
+          - $ref: '#/components/schemas/payrollStatus'
+          description: Current payroll status. Values are title-cased (e.g. `Pending Submission`, `Scheduled`, `Completed`).
+        numPeople:
+          type: integer
+          description: number of people in payroll run
+          example: 50
+        type:
+          type: string
+          description: payroll type
+          example: ONE-OFF
+          enum:
+          - ONE-OFF
+          - REGULAR
+        payrollDate:
+          type: string
+          description: payroll date
+          format: date
+        debit:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: 'Total amount deducted from the business balance for this payroll. For direct employment this is net pay plus fees; for EOR workers (`compInfo.employmentModel: "eor"`) it is gross pay plus employer contributions, so statutory amounts are collected.'
+        gross:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Total gross pay across all entries, before deductions.
+        net:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Total net (take-home) pay across all entries.
+        tax:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Total income tax withheld across all entries. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
+        pension:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Combined employee and employer retirement contributions across all entries; the employee and employer portions are also included in `statutoryDeductions` and `employerContributions` respectively. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
+        statutoryDeductions:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Total of all employee-side statutory deductions, including income tax and social security, across all entries. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
+        employerContributions:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Total employer contributions across all entries (e.g., employer-side social security). Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
+        payPeriod:
+          allOf:
+          - $ref: '#/components/schemas/payPeriod'
+          description: The pay period this payroll covers.
+    allowance:
+      type: object
+      required:
+      - name
+      - isTaxable
+      - amount
+      properties:
+        name:
+          type: string
+          example: Housing
+        isTaxable:
+          type: boolean
+          description: Whether this allowance is included in taxable income.
+          example: true
+        amount:
+          $ref: '#/components/schemas/amount'
+    tags:
+      type: object
+      description: Any custom data you want to store
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    payrollEntryInput:
+      required:
+      - salary
+      - personId
+      type: object
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+        salary:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Base rate per the person's compensation frequency. For a salaried-monthly person this is the period amount; for an hourly/daily person this is the rate per hour/day. The frequency itself comes from the person's stored `compInfo.frequency` — never sent on the entry.
+        timeWorked:
+          type: number
+          description: Units of work in the period (e.g. `160` hours, `20` days, or `1` for a salaried-monthly person). The unit is implied by the person's `compInfo.frequency`. When omitted the engine defaults to `1`, which is the correct value for salaried workers paid one period.
+          example: 160
+        overtime:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Overtime rate (when paired with `overtimeWorked`, e.g. $37.50/hr × 10 hours) or a flat overtime amount (when `overtimeWorked` is omitted, e.g. $500 of overtime this period). Sending `overtimeWorked` without `overtime` is rejected.
+        overtimeWorked:
+          type: number
+          description: Overtime units worked in the period (e.g. `10` hours of overtime). Multiplies against `overtime` when both are provided. Must be non-negative. The unit is implied by the person's `compInfo.frequency`.
+          example: 10
+        bonus:
+          $ref: '#/components/schemas/amount'
+        commission:
+          $ref: '#/components/schemas/amount'
+        allowances:
+          type: array
+          description: Non-statutory allowance line items applied to this entry (e.g. housing, transport stipends). Each item carries a `name`, `isTaxable` flag (defaults to false when omitted — pass true explicitly for taxable allowances), and `amount`.
+          items:
+            $ref: '#/components/schemas/allowance'
+        deductions:
+          type: array
+          description: 'Voluntary (non-statutory) deduction line items to apply this period — e.g. voluntary pension top-ups, garnishments, equipment repayments. Items with `isStatutory: true` are silently dropped (statutory items like income tax and social security are computed by the tax engine and would otherwise double-count). This lets you round-trip a payload fetched via `GET` without having to filter engine-computed items first.'
+          items:
+            $ref: '#/components/schemas/deduction'
+        invoiceIds:
+          type: array
+          description: 'IDs of approved contractor invoices to pay through this entry. Only valid on a contractor payroll: each invoice must be a contractor self-submitted invoice in an approved state and belong to this entry''s person. The invoice is marked paid when the payroll completes.'
+          items:
+            $ref: '#/components/schemas/uuid'
+        metadata:
+          type: object
+          description: Optional opaque metadata attached to the entry. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
+          additionalProperties:
+            type: string
+            maxLength: 200
+          maxProperties: 20
+          example:
+            team: engineering
+            region: emea
+    payrollEntry:
+      required:
+      - salary
+      - personId
+      type: object
+      properties:
+        entryId:
+          allOf:
+          - $ref: '#/components/schemas/uuid'
+          description: Stable per-entry identifier. Disambiguates entries when the same `personId` appears more than once in the same payroll (e.g., separate base-salary and bonus entries). Returned on read; not accepted on save.
+        personId:
+          $ref: '#/components/schemas/uuid'
+        transactionIds:
+          type: array
+          description: Disbursement transaction IDs produced when this entry was paid out. Populated once the payroll status reaches `processing`; omitted before disbursements are triggered. A single entry can have multiple transactions when the payment is split across payment methods.
+          items:
+            $ref: '#/components/schemas/uuid'
+        salary:
+          $ref: '#/components/schemas/amount'
+        bonus:
+          $ref: '#/components/schemas/amount'
+        gross:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Entry-level gross compensation. Omitted if the entry has not yet been calculated.
+        net:
+          allOf:
+          - $ref: '#/components/schemas/amount'
+          description: Entry-level net (take-home) compensation. Omitted if the entry has not yet been calculated.
+        allowances:
+          type: array
+          description: Allowance line items applied to this entry (e.g., transport, housing). Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
+          items:
+            $ref: '#/components/schemas/allowance'
+        deductions:
+          type: array
+          description: Deduction line items applied to this entry (e.g., income tax, social security, voluntary deductions). Each item's `isStatutory` flag indicates whether the deduction is legally mandated. Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
+          items:
+            $ref: '#/components/schemas/deduction'
+        employerContributions:
+          type: array
+          description: Employer-side contribution line items for this entry (e.g., employer social security). Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
+          items:
+            $ref: '#/components/schemas/deduction'
+        metadata:
+          type: object
+          description: Optional opaque metadata attached to the entry. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
+          additionalProperties:
+            type: string
+            maxLength: 200
+          maxProperties: 20
+          example:
+            team: engineering
+            region: emea
+    payPeriod:
+      type: object
+      properties:
+        fromDate:
+          type: string
+          description: start date
+          format: date
+        toDate:
+          type: string
+          description: end date
+          format: date
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+  parameters:
+    payrollId:
+      name: payrollId
+      in: path
+      description: The unique identifier for the payroll
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
     GetPayrollsResponse:
       description: get payrolls response
       content:
@@ -226,111 +622,6 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/payrollSummary'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    GetPayslipLinksResponse:
-      description: 'Presigned download links for the payroll''s payslips. Returns per-person links under `links` by default, or a single bundled archive under `zipUrl` when `format=zip` was requested. Payslips still generating (or failed) are listed under `notReady`.
-
-        '
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              payrollId:
-                $ref: '#/components/schemas/uuid'
-              links:
-                type: array
-                description: Per-person presigned download URLs. Returned when `format` is omitted. All links share the same `expiresAt`.
-                items:
-                  type: object
-                  properties:
-                    personId:
-                      $ref: '#/components/schemas/uuid'
-                    personName:
-                      type: string
-                      example: Jane Doe
-                    paystubId:
-                      $ref: '#/components/schemas/uuid'
-                    url:
-                      type: string
-                      format: uri
-                      description: Presigned URL to download this person's payslip PDF.
-                      example: https://example-bucket.s3.amazonaws.com/payslips/8ef9a712.pdf?X-Amz-Signature=...
-                    expiresAt:
-                      type: string
-                      format: date-time
-                      description: ISO-8601 timestamp at which the URL stops working.
-                      example: '2026-05-11T17:00:00Z'
-              zipUrl:
-                type: string
-                format: uri
-                description: Presigned URL pointing to a single archive containing all ready payslips. Returned only when `format=zip` was passed.
-                example: https://example-bucket.s3.amazonaws.com/payslips/zips/7c4f1d36.zip?X-Amz-Signature=...
-              expiresAt:
-                type: string
-                format: date-time
-                description: ISO-8601 expiry of `zipUrl`. Returned only when `format=zip` was passed.
-                example: '2026-05-11T17:00:00Z'
-              notReady:
-                type: array
-                description: Payslips that could not be linked. `not_found` means the payslip does not exist yet (the payroll has not completed); `generating` means the PDF has not finished rendering yet; `error` means generation or link creation failed. Retry the request after the payroll completes and generation finishes.
-                items:
-                  type: object
-                  properties:
-                    personId:
-                      $ref: '#/components/schemas/uuid'
-                    status:
-                      type: string
-                      enum:
-                      - not_found
-                      - generating
-                      - error
-          examples:
-            perPersonLinks:
-              summary: Default response with per-person links
-              value:
-                payrollId: 7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11
-                links:
-                - personId: 04a8977d-5d99-4b28-8de4-8161401ca3fa
-                  personName: Jane Doe
-                  paystubId: 1b2e3f4a-5c6d-7e8f-9012-345678901234
-                  url: https://example-bucket.s3.amazonaws.com/payslips/04a8977d.pdf?X-Amz-Signature=...
-                  expiresAt: '2026-05-11T17:00:00Z'
-                - personId: 11111111-2222-3333-4444-555555555555
-                  personName: John Smith
-                  paystubId: 2c3d4e5f-6a7b-8c9d-0e1f-234567890123
-                  url: https://example-bucket.s3.amazonaws.com/payslips/11111111.pdf?X-Amz-Signature=...
-                  expiresAt: '2026-05-11T17:00:00Z'
-                notReady:
-                - personId: 22222222-3333-4444-5555-666666666666
-                  status: generating
-            zipBundle:
-              summary: Bundled archive response (`format=zip`)
-              value:
-                payrollId: 7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11
-                zipUrl: https://example-bucket.s3.amazonaws.com/payslips/zips/7c4f1d36.zip?X-Amz-Signature=...
-                expiresAt: '2026-05-11T17:00:00Z'
-                notReady: []
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    CreatePayrollResponse:
-      description: create payroll response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              payrollId:
-                $ref: '#/components/schemas/uuid'
     GetPayrollResponse:
       description: 'Payroll details. Employee payrolls include tax, pension, statutory deduction, and employer contribution aggregates plus per-entry allowance, deduction, and employer-contribution line items. Contractor payrolls omit those fields entirely and return only the salary-based shape.
 
@@ -458,398 +749,105 @@ components:
                   net:
                     amount: 100000
                     currency: USD
-    BadRequestError:
-      description: Bad input provided by client
+    GetPayslipLinksResponse:
+      description: 'Presigned download links for the payroll''s payslips. Returns per-person links under `links` by default, or a single bundled archive under `zipUrl` when `format=zip` was requested. Payslips still generating (or failed) are listed under `notReady`.
+
+        '
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BadRequestError'
-  schemas:
-    CreatePayrollRequest:
-      required:
-      - workerType
-      - type
-      type: object
-      properties:
-        workerType:
-          type: string
-          description: worker type
-          example: EMPLOYEE
-          enum:
-          - EMPLOYEE
-          - CONTRACTOR
-        type:
-          type: string
-          description: payroll type
-          example: ONE_OFF
-          enum:
-          - ONE_OFF
-          - REGULAR
-        tags:
-          $ref: '#/components/schemas/tags'
-    deduction:
-      type: object
-      required:
-      - name
-      - isStatutory
-      - amount
-      properties:
-        name:
-          type: string
-          example: Income Tax
-        isStatutory:
-          type: boolean
-          description: Whether this deduction is mandated by law (e.g., income tax, social security) versus a non-statutory item.
-          example: true
-        amount:
-          $ref: '#/components/schemas/amount'
-    allowance:
-      type: object
-      required:
-      - name
-      - isTaxable
-      - amount
-      properties:
-        name:
-          type: string
-          example: Housing
-        isTaxable:
-          type: boolean
-          description: Whether this allowance is included in taxable income.
-          example: true
-        amount:
-          $ref: '#/components/schemas/amount'
-    payrollEntry:
-      required:
-      - salary
-      - personId
-      type: object
-      properties:
-        entryId:
-          allOf:
-          - $ref: '#/components/schemas/uuid'
-          description: Stable per-entry identifier. Disambiguates entries when the same `personId` appears more than once in the same payroll (e.g., separate base-salary and bonus entries). Returned on read; not accepted on save.
-        personId:
-          $ref: '#/components/schemas/uuid'
-        transactionIds:
-          type: array
-          description: Disbursement transaction IDs produced when this entry was paid out. Populated once the payroll status reaches `processing`; omitted before disbursements are triggered. A single entry can have multiple transactions when the payment is split across payment methods.
-          items:
-            $ref: '#/components/schemas/uuid'
-        salary:
-          $ref: '#/components/schemas/amount'
-        bonus:
-          $ref: '#/components/schemas/amount'
-        gross:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Entry-level gross compensation. Omitted if the entry has not yet been calculated.
-        net:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Entry-level net (take-home) compensation. Omitted if the entry has not yet been calculated.
-        allowances:
-          type: array
-          description: Allowance line items applied to this entry (e.g., transport, housing). Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
-          items:
-            $ref: '#/components/schemas/allowance'
-        deductions:
-          type: array
-          description: Deduction line items applied to this entry (e.g., income tax, social security, voluntary deductions). Each item's `isStatutory` flag indicates whether the deduction is legally mandated. Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
-          items:
-            $ref: '#/components/schemas/deduction'
-        employerContributions:
-          type: array
-          description: Employer-side contribution line items for this entry (e.g., employer social security). Returned for `EMPLOYEE` payrolls only; omitted for contractor entries and when there are no items.
-          items:
-            $ref: '#/components/schemas/deduction'
-        metadata:
-          type: object
-          description: Optional opaque metadata attached to the entry. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
-          additionalProperties:
-            type: string
-            maxLength: 200
-          maxProperties: 20
-          example:
-            team: engineering
-            region: emea
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    payrollEntryInput:
-      required:
-      - salary
-      - personId
-      type: object
-      properties:
-        personId:
-          $ref: '#/components/schemas/uuid'
-        salary:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Base rate per the person's compensation frequency. For a salaried-monthly person this is the period amount; for an hourly/daily person this is the rate per hour/day. The frequency itself comes from the person's stored `compInfo.frequency` — never sent on the entry.
-        timeWorked:
-          type: number
-          description: Units of work in the period (e.g. `160` hours, `20` days, or `1` for a salaried-monthly person). The unit is implied by the person's `compInfo.frequency`. When omitted the engine defaults to `1`, which is the correct value for salaried workers paid one period.
-          example: 160
-        overtime:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Overtime rate (when paired with `overtimeWorked`, e.g. $37.50/hr × 10 hours) or a flat overtime amount (when `overtimeWorked` is omitted, e.g. $500 of overtime this period). Sending `overtimeWorked` without `overtime` is rejected.
-        overtimeWorked:
-          type: number
-          description: Overtime units worked in the period (e.g. `10` hours of overtime). Multiplies against `overtime` when both are provided. Must be non-negative. The unit is implied by the person's `compInfo.frequency`.
-          example: 10
-        bonus:
-          $ref: '#/components/schemas/amount'
-        commission:
-          $ref: '#/components/schemas/amount'
-        allowances:
-          type: array
-          description: Non-statutory allowance line items applied to this entry (e.g. housing, transport stipends). Each item carries a `name`, `isTaxable` flag (defaults to false when omitted — pass true explicitly for taxable allowances), and `amount`.
-          items:
-            $ref: '#/components/schemas/allowance'
-        deductions:
-          type: array
-          description: 'Voluntary (non-statutory) deduction line items to apply this period — e.g. voluntary pension top-ups, garnishments, equipment repayments. Items with `isStatutory: true` are silently dropped (statutory items like income tax and social security are computed by the tax engine and would otherwise double-count). This lets you round-trip a payload fetched via `GET` without having to filter engine-computed items first.'
-          items:
-            $ref: '#/components/schemas/deduction'
-        invoiceIds:
-          type: array
-          description: 'IDs of approved contractor invoices to pay through this entry. Only valid on a contractor payroll: each invoice must be a contractor self-submitted invoice in an approved state and belong to this entry''s person. The invoice is marked paid when the payroll completes.'
-          items:
-            $ref: '#/components/schemas/uuid'
-        metadata:
-          type: object
-          description: Optional opaque metadata attached to the entry. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
-          additionalProperties:
-            type: string
-            maxLength: 200
-          maxProperties: 20
-          example:
-            team: engineering
-            region: emea
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
             type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    SavePayroll:
-      required:
-      - payrollDate
-      - payPeriod
-      - entries
-      type: object
-      properties:
-        payrollDate:
-          type: string
-          description: payroll date
-          format: date
-        payPeriod:
-          $ref: '#/components/schemas/payPeriod'
-        fxRateExpiresAt:
-          type: string
-          format: date-time
-          description: 'Maximum time the quoted FX rates are valid (RFC 3339). If omitted, spot rates are used.
-
-            '
-          example: '2025-06-15T23:59:59Z'
-        entries:
-          type: array
-          items:
-            $ref: '#/components/schemas/payrollEntryInput'
-        customFees:
-          type: array
-          description: 'Optional custom fee line items that supplement the standard per-seat subscription fees.
-
-            '
-          items:
-            type: object
-            required:
-            - name
-            - amount
             properties:
-              name:
+              payrollId:
+                $ref: '#/components/schemas/uuid'
+              links:
+                type: array
+                description: Per-person presigned download URLs. Returned when `format` is omitted. All links share the same `expiresAt`.
+                items:
+                  type: object
+                  properties:
+                    personId:
+                      $ref: '#/components/schemas/uuid'
+                    personName:
+                      type: string
+                      example: Jane Doe
+                    paystubId:
+                      $ref: '#/components/schemas/uuid'
+                    url:
+                      type: string
+                      format: uri
+                      description: Presigned URL to download this person's payslip PDF.
+                      example: https://example-bucket.s3.amazonaws.com/payslips/8ef9a712.pdf?X-Amz-Signature=...
+                    expiresAt:
+                      type: string
+                      format: date-time
+                      description: ISO-8601 timestamp at which the URL stops working.
+                      example: '2026-05-11T17:00:00Z'
+              zipUrl:
                 type: string
-                description: Name of the fee
-                example: Platform Fee
-              amount:
-                $ref: '#/components/schemas/amount'
-              metadata:
-                type: object
-                description: Optional opaque metadata attached to the fee. Stored and returned unchanged. Not used in tax calculations or reports. Do not place regulated PII here. Keys must be 1-50 characters.
-                additionalProperties:
-                  type: string
-                  maxLength: 200
-                maxProperties: 20
-                example:
-                  team: engineering
-                  region: emea
-        tags:
-          $ref: '#/components/schemas/tags'
-    payrollStatus:
-      type: string
-      description: 'Current payroll status. See [Payroll Lifecycle](/workforce/payroll-lifecycle) for the meaning of each value and the allowed transitions.
-
-        '
-      example: Completed
-      enum:
-      - Created
-      - Pending Submission
-      - Pending Approval
-      - Awaiting Funds
-      - Scheduled
-      - Processing
-      - Completed
-      - Rejected
-      - Deleted
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    payPeriod:
-      type: object
-      properties:
-        fromDate:
-          type: string
-          description: start date
-          format: date
-        toDate:
-          type: string
-          description: end date
-          format: date
-    payrollSummary:
-      type: object
-      properties:
-        payrollId:
-          type: string
-          description: created payroll id
-          format: uuid
-        workerType:
-          type: string
-          description: worker type
-          example: EMPLOYEE
-          enum:
-          - EMPLOYEE
-          - CONTRACTOR
-        status:
-          allOf:
-          - $ref: '#/components/schemas/payrollStatus'
-          description: Current payroll status. Values are title-cased (e.g. `Pending Submission`, `Scheduled`, `Completed`).
-        numPeople:
-          type: integer
-          description: number of people in payroll run
-          example: 50
-        type:
-          type: string
-          description: payroll type
-          example: ONE-OFF
-          enum:
-          - ONE-OFF
-          - REGULAR
-        payrollDate:
-          type: string
-          description: payroll date
-          format: date
-        debit:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: 'Total amount deducted from the business balance for this payroll. For direct employment this is net pay plus fees; for EOR workers (`compInfo.employmentModel: "eor"`) it is gross pay plus employer contributions, so statutory amounts are collected.'
-        gross:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Total gross pay across all entries, before deductions.
-        net:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Total net (take-home) pay across all entries.
-        tax:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Total income tax withheld across all entries. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
-        pension:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Combined employee and employer retirement contributions across all entries; the employee and employer portions are also included in `statutoryDeductions` and `employerContributions` respectively. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
-        statutoryDeductions:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Total of all employee-side statutory deductions, including income tax and social security, across all entries. Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
-        employerContributions:
-          allOf:
-          - $ref: '#/components/schemas/amount'
-          description: Total employer contributions across all entries (e.g., employer-side social security). Returned for `EMPLOYEE` payrolls only; omitted for contractor payrolls.
-        payPeriod:
-          allOf:
-          - $ref: '#/components/schemas/payPeriod'
-          description: The pay period this payroll covers.
-    tags:
-      type: object
-      description: Any custom data you want to store
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    payrollId:
-      name: payrollId
-      in: path
-      description: The unique identifier for the payroll
-      required: true
-      schema:
-        type: string
-        format: uuid
+                format: uri
+                description: Presigned URL pointing to a single archive containing all ready payslips. Returned only when `format=zip` was passed.
+                example: https://example-bucket.s3.amazonaws.com/payslips/zips/7c4f1d36.zip?X-Amz-Signature=...
+              expiresAt:
+                type: string
+                format: date-time
+                description: ISO-8601 expiry of `zipUrl`. Returned only when `format=zip` was passed.
+                example: '2026-05-11T17:00:00Z'
+              notReady:
+                type: array
+                description: Payslips that could not be linked. `not_found` means the payslip does not exist yet (the payroll has not completed); `generating` means the PDF has not finished rendering yet; `error` means generation or link creation failed. Retry the request after the payroll completes and generation finishes.
+                items:
+                  type: object
+                  properties:
+                    personId:
+                      $ref: '#/components/schemas/uuid'
+                    status:
+                      type: string
+                      enum:
+                      - not_found
+                      - generating
+                      - error
+          examples:
+            perPersonLinks:
+              summary: Default response with per-person links
+              value:
+                payrollId: 7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11
+                links:
+                - personId: 04a8977d-5d99-4b28-8de4-8161401ca3fa
+                  personName: Jane Doe
+                  paystubId: 1b2e3f4a-5c6d-7e8f-9012-345678901234
+                  url: https://example-bucket.s3.amazonaws.com/payslips/04a8977d.pdf?X-Amz-Signature=...
+                  expiresAt: '2026-05-11T17:00:00Z'
+                - personId: 11111111-2222-3333-4444-555555555555
+                  personName: John Smith
+                  paystubId: 2c3d4e5f-6a7b-8c9d-0e1f-234567890123
+                  url: https://example-bucket.s3.amazonaws.com/payslips/11111111.pdf?X-Amz-Signature=...
+                  expiresAt: '2026-05-11T17:00:00Z'
+                notReady:
+                - personId: 22222222-3333-4444-5555-666666666666
+                  status: generating
+            zipBundle:
+              summary: Bundled archive response (`format=zip`)
+              value:
+                payrollId: 7c4f1d36-2b9a-4bca-91e7-2b1f1e6e7c11
+                zipUrl: https://example-bucket.s3.amazonaws.com/payslips/zips/7c4f1d36.zip?X-Amz-Signature=...
+                expiresAt: '2026-05-11T17:00:00Z'
+                notReady: []
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    CreatePayrollResponse:
+      description: create payroll response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              payrollId:
+                $ref: '#/components/schemas/uuid'
   securitySchemes:
     Authorization:
       type: http

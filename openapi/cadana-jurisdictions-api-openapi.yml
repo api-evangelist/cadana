@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
-  version: 1.0.0
-  title: Embedded Consumer Wallets Balances Jurisdictions API
+  title: Statutory Compliance Jurisdictions API
+  version: 0.1.0
+  description: Statutory filing, government remittance, and compliance tracking API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -26,9 +26,7 @@ paths:
       summary: List supported jurisdictions
       description: 'Returns all countries and regions where Cadana supports statutory filing.
 
-        Each jurisdiction includes a summary of filing types, payroll frequency, and currency.
-
-        '
+        Each jurisdiction includes a summary of filing types, payroll frequency, and currency.'
       tags:
       - Jurisdictions
       parameters:
@@ -62,9 +60,7 @@ paths:
 
         calculation-scope fields — use
 
-        `GET /v1/statutory/jurisdictions/{country_code}/required-fields`.
-
-        '
+        `GET /v1/statutory/jurisdictions/{country_code}/required-fields`.'
       tags:
       - Jurisdictions
       parameters:
@@ -85,9 +81,7 @@ paths:
       summary: List filing types for a jurisdiction
       description: 'Returns every type of statutory return that must be filed in this jurisdiction.
 
-        Each filing type includes the government authority, frequency, and required data.
-
-        '
+        Each filing type includes the government authority, frequency, and required data.'
       tags:
       - Jurisdictions
       parameters:
@@ -109,7 +103,60 @@ paths:
     get:
       operationId: getRequiredFields
       summary: Get required fields for tax calculation and statutory filing
-      description: "Returns all fields required for tax calculation and/or statutory filing\nin this jurisdiction. This is a **discovery endpoint** — it tells you\nwhat data needs to be collected for both persons (workers) and businesses\n(employers).\n\nEach field includes:\n- **`entity`** — Who the field belongs to: `person` (worker data) or\n  `business` (employer data)\n- **`scope`** — Whether the field is needed for `calculation` (tax engine input),\n  `filing` (statutory return), or both\n- **`condition`** — When present, the field only applies if another field\n  matches a specific value (e.g. pension PIN only when `is_pensionable` is true)\n\nUse this to:\n- Render onboarding forms with the right fields for each country\n- Split fields into separate person vs. business forms using each\n  field's `entity` value in the response (there is no `entity` query\n  parameter — use the `scope` and `worker_type` parameters to narrow\n  the results server-side)\n- Validate that existing records have complete data\n- Understand what `worker_data` requirements will surface if fields are missing\n\n**How to submit fields by scope:**\n- `scope: [\"filing\"]` fields → Submit via\n  `PUT /v1/statutory/persons/{id}/fields/{countryCode}` (person entity) or\n  `PUT /v1/statutory/businesses/{id}/fields/{countryCode}` (business entity)\n- `scope: [\"calculation\"]` fields → Submit via\n  `PUT /v1/persons/{id}/taxProfile`\n- `scope: [\"filing\", \"calculation\"]` fields → Submit to both endpoints\n"
+      description: 'Returns all fields required for tax calculation and/or statutory filing
+
+        in this jurisdiction. This is a **discovery endpoint** — it tells you
+
+        what data needs to be collected for both persons (workers) and businesses
+
+        (employers).
+
+
+        Each field includes:
+
+        - **`entity`** — Who the field belongs to: `person` (worker data) or
+
+        `business` (employer data)
+
+        - **`scope`** — Whether the field is needed for `calculation` (tax engine input),
+
+        `filing` (statutory return), or both
+
+        - **`condition`** — When present, the field only applies if another field
+
+        matches a specific value (e.g. pension PIN only when `is_pensionable` is true)
+
+
+        Use this to:
+
+        - Render onboarding forms with the right fields for each country
+
+        - Split fields into separate person vs. business forms using each
+
+        field''s `entity` value in the response (there is no `entity` query
+
+        parameter — use the `scope` and `worker_type` parameters to narrow
+
+        the results server-side)
+
+        - Validate that existing records have complete data
+
+        - Understand what `worker_data` requirements will surface if fields are missing
+
+
+        **How to submit fields by scope:**
+
+        - `scope: ["filing"]` fields → Submit via
+
+        `PUT /v1/statutory/persons/{id}/fields/{countryCode}` (person entity) or
+
+        `PUT /v1/statutory/businesses/{id}/fields/{countryCode}` (business entity)
+
+        - `scope: ["calculation"]` fields → Submit via
+
+        `PUT /v1/persons/{id}/taxProfile`
+
+        - `scope: ["filing", "calculation"]` fields → Submit to both endpoints'
       tags:
       - Jurisdictions
       parameters:
@@ -139,66 +186,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RequiredFieldsResponse'
 components:
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    FieldCondition:
-      type: object
-      description: 'Conditional applicability — this field is only required when another
-
-        field or person attribute matches a specific value. For example,
-
-        a pension PIN is only required when the worker''s `is_pensionable`
-
-        flag is true.
-
-        '
-      properties:
-        field:
-          type: string
-          description: The key of another field or person attribute to check
-          example: is_pensionable
-        equals:
-          description: The value that triggers this field's requirement
-          example: true
-      required:
-      - field
-      - equals
-    ComplianceInfo:
-      type: object
-      properties:
-        workingHoursPerWeek:
-          type: integer
-          example: 48
-        annualLeave:
-          type: string
-          example: 12 working days after 1 year, increasing with seniority
-        sickLeave:
-          type: string
-          example: Up to 52 weeks (60% pay via IMSS after 3-day waiting period)
-        publicHolidays:
-          type: string
-          example: Paid, nationally observed (approx 7 mandatory rest days)
-        probationPeriod:
-          type: string
-          example: 30 days (up to 180 days for managerial/technical roles)
-        onboardingTimeline:
-          type: string
-          example: 5-10 business days
-        payrollCutoffs:
-          type: object
-          properties:
-            inputs:
-              type: string
-              example: 5 business days before pay date
-            approval:
-              type: string
-              example: 3 business days before pay date
     JurisdictionSummary:
       type: object
       description: 'Summary of a supported jurisdiction. Use `GET /jurisdictions` to retrieve the current list.
@@ -233,124 +221,6 @@ components:
           - coming_soon
           description: Whether Cadana actively files in this jurisdiction
           example: live
-    Jurisdiction:
-      type: object
-      properties:
-        countryCode:
-          type: string
-          example: MX
-        countryName:
-          type: string
-          example: Mexico
-        currency:
-          type: string
-          example: MXN
-        status:
-          type: string
-          enum:
-          - live
-          - coming_soon
-        payrollFrequency:
-          type: string
-          enum:
-          - MONTHLY
-          - BIWEEKLY
-          - SEMI_MONTHLY
-          - WEEKLY
-        employeeFields:
-          $ref: '#/components/schemas/RequiredFieldsResponse'
-        employerFields:
-          $ref: '#/components/schemas/RequiredFieldsResponse'
-        filingTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/FilingType'
-        statutoryBenefits:
-          type: array
-          items:
-            $ref: '#/components/schemas/StatutoryBenefit'
-        compliance:
-          $ref: '#/components/schemas/ComplianceInfo'
-        termination:
-          $ref: '#/components/schemas/TerminationInfo'
-    RequiredFieldsResponse:
-      type: object
-      description: 'Flat list of fields required for tax calculation and/or statutory filing
-
-        in a jurisdiction. Each field includes its entity (person or business),
-
-        scope (calculation, filing, or both), and validation rules.
-
-
-        Fields with `entity: "person"` are worker-level data. Fields with
-
-        `entity: "business"` are employer-level data. Use the `entity` field
-
-        to build separate onboarding forms for workers and employers.
-
-        '
-      properties:
-        countryCode:
-          type: string
-          example: MX
-        workerType:
-          type: string
-          enum:
-          - employee
-          - contractor
-          example: employee
-        version:
-          type: integer
-          description: 'Schema version number, per jurisdiction. Increments when fields are
-
-            added, removed, or changed for this country. Use this to detect
-
-            when your cached field list is stale.
-
-            '
-          example: 3
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/RequiredField'
-      required:
-      - countryCode
-      - version
-      - fields
-    Pagination:
-      type: object
-      properties:
-        nextCursor:
-          type: string
-          nullable: true
-          description: Pass as `cursor` parameter to get the next page
-        hasMore:
-          type: boolean
-    StatutoryBenefit:
-      type: object
-      properties:
-        name:
-          type: string
-          example: IMSS Employer-Employee Contributions
-        description:
-          type: string
-          example: Mandatory social security contribution under the Ley del Seguro Social (LSS)
-        employerRate:
-          type: number
-          format: decimal
-          example: 0.1
-          description: Employer contribution rate (as decimal)
-        employeeRate:
-          type: number
-          format: decimal
-          example: 0.08
-          description: Employee contribution rate (as decimal)
-        authority:
-          type: string
-          example: IMSS
-        legislativeReference:
-          type: string
-          example: Ley del Seguro Social (LSS), Artículo 39
     RequiredField:
       type: object
       description: A single field required for tax calculation and/or statutory filing.
@@ -499,6 +369,31 @@ components:
           type: array
           items:
             type: string
+    StatutoryBenefit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: IMSS Employer-Employee Contributions
+        description:
+          type: string
+          example: Mandatory social security contribution under the Ley del Seguro Social (LSS)
+        employerRate:
+          type: number
+          format: decimal
+          example: 0.1
+          description: Employer contribution rate (as decimal)
+        employeeRate:
+          type: number
+          format: decimal
+          example: 0.08
+          description: Employee contribution rate (as decimal)
+        authority:
+          type: string
+          example: IMSS
+        legislativeReference:
+          type: string
+          example: Ley del Seguro Social (LSS), Artículo 39
     Error:
       type: object
       properties:
@@ -512,8 +407,9 @@ components:
               type: string
               example: countryCode is required
             details:
-              type: array
-              nullable: true
+              type:
+              - array
+              - 'null'
               items:
                 type: object
                 properties:
@@ -521,6 +417,159 @@ components:
                     type: string
                   message:
                     type: string
+    Pagination:
+      type: object
+      properties:
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          description: Pass as `cursor` parameter to get the next page
+        hasMore:
+          type: boolean
+    FieldCondition:
+      type: object
+      description: 'Conditional applicability — this field is only required when another
+
+        field or person attribute matches a specific value. For example,
+
+        a pension PIN is only required when the worker''s `is_pensionable`
+
+        flag is true.
+
+        '
+      properties:
+        field:
+          type: string
+          description: The key of another field or person attribute to check
+          example: is_pensionable
+        equals:
+          description: The value that triggers this field's requirement
+          example: true
+      required:
+      - field
+      - equals
+    Jurisdiction:
+      type: object
+      properties:
+        countryCode:
+          type: string
+          example: MX
+        countryName:
+          type: string
+          example: Mexico
+        currency:
+          type: string
+          example: MXN
+        status:
+          type: string
+          enum:
+          - live
+          - coming_soon
+        payrollFrequency:
+          type: string
+          enum:
+          - MONTHLY
+          - BIWEEKLY
+          - SEMI_MONTHLY
+          - WEEKLY
+        employeeFields:
+          $ref: '#/components/schemas/RequiredFieldsResponse'
+        employerFields:
+          $ref: '#/components/schemas/RequiredFieldsResponse'
+        filingTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilingType'
+        statutoryBenefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatutoryBenefit'
+        compliance:
+          $ref: '#/components/schemas/ComplianceInfo'
+        termination:
+          $ref: '#/components/schemas/TerminationInfo'
+    ComplianceInfo:
+      type: object
+      properties:
+        workingHoursPerWeek:
+          type: integer
+          example: 48
+        annualLeave:
+          type: string
+          example: 12 working days after 1 year, increasing with seniority
+        sickLeave:
+          type: string
+          example: Up to 52 weeks (60% pay via IMSS after 3-day waiting period)
+        publicHolidays:
+          type: string
+          example: Paid, nationally observed (approx 7 mandatory rest days)
+        probationPeriod:
+          type: string
+          example: 30 days (up to 180 days for managerial/technical roles)
+        onboardingTimeline:
+          type: string
+          example: 5-10 business days
+        payrollCutoffs:
+          type: object
+          properties:
+            inputs:
+              type: string
+              example: 5 business days before pay date
+            approval:
+              type: string
+              example: 3 business days before pay date
+    RequiredFieldsResponse:
+      type: object
+      description: 'Flat list of fields required for tax calculation and/or statutory filing
+
+        in a jurisdiction. Each field includes its entity (person or business),
+
+        scope (calculation, filing, or both), and validation rules.
+
+
+        Fields with `entity: "person"` are worker-level data. Fields with
+
+        `entity: "business"` are employer-level data. Use the `entity` field
+
+        to build separate onboarding forms for workers and employers.
+
+        '
+      properties:
+        countryCode:
+          type: string
+          example: MX
+        workerType:
+          type: string
+          enum:
+          - employee
+          - contractor
+          example: employee
+        version:
+          type: integer
+          description: 'Schema version number, per jurisdiction. Increments when fields are
+
+            added, removed, or changed for this country. Use this to detect
+
+            when your cached field list is stale.
+
+            '
+          example: 3
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequiredField'
+      required:
+      - countryCode
+      - version
+      - fields
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey
@@ -543,7 +592,3 @@ components:
       type: http
       scheme: bearer
       bearerFormat: API_SECRET_KEY
-x-readme:
-  explorer-enabled: true
-  proxy-enabled: true
-  samples-enabled: true

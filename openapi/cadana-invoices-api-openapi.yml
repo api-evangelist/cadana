@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  description: APIs for interacting with Cadana Embedded Consumer Wallets
+  description: APIs for interacting with Cadana Payroll Platform
   version: 1.0.0
-  title: Embedded Consumer Wallets Balances Invoices API
+  title: Business Workforce Management Invoices API
   termsOfService: https://cadanapay.com/terms-and-conditions
   contact:
     email: api@cadanapay.com
@@ -185,12 +185,14 @@ paths:
                     description: Pagination cursors
                     properties:
                       previous:
-                        type: string
-                        nullable: true
+                        type:
+                        - string
+                        - 'null'
                         description: Cursor this page started from; null on the first page
                       next:
-                        type: string
-                        nullable: true
+                        type:
+                        - string
+                        - 'null'
                         description: Cursor for the next page; null when there are no more results
               example:
                 data:
@@ -331,83 +333,7 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    GetInvoiceUrlResponse:
-      description: get invoice url response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              fileUrl:
-                type: string
-                format: uri
-                description: Short-lived URL for the invoice PDF
-                example: https://cadana.com/file/124
-              expiresAt:
-                type: integer
-                format: int64
-                description: Unix timestamp when the URL expires
-                example: 1710590400
-          examples:
-            invoiceUrlResponse:
-              $ref: '#/components/examples/invoiceUrlResponse'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetInvoiceResponse:
-      description: get invoice response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/invoice'
-          examples:
-            invoiceResponse:
-              $ref: '#/components/examples/invoiceResponse'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
   schemas:
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -422,20 +348,6 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
     invoiceParty:
       type: object
       description: Details of a party on an invoice (issuer or recipient)
@@ -452,6 +364,34 @@ components:
           example: billing@example.com
         phoneNumber:
           $ref: '#/components/schemas/phoneNumber'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     invoiceLineItem:
       type: object
       description: A line item on an invoice
@@ -490,6 +430,20 @@ components:
         total:
           $ref: '#/components/schemas/amount'
           description: Total amount in base currency
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
     invoice:
       type: object
       description: An invoice document
@@ -578,20 +532,20 @@ components:
           format: int64
           example: 1764339673
           description: Unix timestamp when invoice was last updated
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
   examples:
     invoiceUrlResponse:
       summary: Invoice URL Response Example
@@ -677,6 +631,54 @@ components:
         notes: Payment for services rendered in March 2024
         createdTimestamp: 1710504000
         lastUpdatedTimestamp: 1710590400
+  responses:
+    GetInvoiceUrlResponse:
+      description: get invoice url response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fileUrl:
+                type: string
+                format: uri
+                description: Short-lived URL for the invoice PDF
+                example: https://cadana.com/file/124
+              expiresAt:
+                type: integer
+                format: int64
+                description: Unix timestamp when the URL expires
+                example: 1710590400
+          examples:
+            invoiceUrlResponse:
+              $ref: '#/components/examples/invoiceUrlResponse'
+    GetInvoiceResponse:
+      description: get invoice response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/invoice'
+          examples:
+            invoiceResponse:
+              $ref: '#/components/examples/invoiceResponse'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey
