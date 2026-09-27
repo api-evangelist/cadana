@@ -172,95 +172,6 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    PaymentMethod:
-      type: object
-      required:
-      - type
-      - currency
-      - status
-      properties:
-        type:
-          type: string
-          description: The type of payment method
-          enum:
-          - bank
-          - swift
-          - proxy
-          - momo
-          - ach
-          example: bank
-        currency:
-          type: string
-          description: The currency in ISO 4217 format
-          example: KES
-        status:
-          type: string
-          description: The status of the payment method
-          enum:
-          - active
-          - inactive
-          example: active
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    ResolvedProvider:
-      type: object
-      required:
-      - bankName
-      - countryCode
-      properties:
-        bankName:
-          type: string
-          description: The name of the resolved bank or financial institution
-          example: Itaú Unibanco
-        countryCode:
-          type: string
-          description: The country code in ISO 3166-1 alpha-2 format
-          example: BR
-        city:
-          type: string
-          description: City of the bank branch (populated for SWIFT and ACH lookups)
-          example: ''
-        routingNumber:
-          type: string
-          description: ACH routing number (populated for ACH lookups)
-          example: ''
-        swiftCode:
-          type: string
-          description: SWIFT/BIC code (populated when available)
-          example: ITAUBRSP
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
     Provider:
       type: object
       required:
@@ -290,8 +201,32 @@ components:
           - bank
           - momo
           example: bank
-    JSONSchemaDraft07:
-      description: "This is a Draft-07 JSON Schema fragment. For the full meta-schema, see https://json-schema.org/draft-07/schema#. \nRely on the provided example for the expected structure.\n"
+    ResolvedProvider:
+      type: object
+      required:
+      - bankName
+      - countryCode
+      properties:
+        bankName:
+          type: string
+          description: The name of the resolved bank or financial institution
+          example: Itaú Unibanco
+        countryCode:
+          type: string
+          description: The country code in ISO 3166-1 alpha-2 format
+          example: BR
+        city:
+          type: string
+          description: City of the bank branch (populated for SWIFT and ACH lookups)
+          example: ''
+        routingNumber:
+          type: string
+          description: ACH routing number (populated for ACH lookups)
+          example: ''
+        swiftCode:
+          type: string
+          description: SWIFT/BIC code (populated when available)
+          example: ITAUBRSP
     NotFoundError:
       description: Not Found
       allOf:
@@ -299,6 +234,71 @@ components:
       example:
         code: resource_not_found
         message: Requested resource could not be found.
+    PaymentMethod:
+      type: object
+      required:
+      - type
+      - currency
+      - status
+      properties:
+        type:
+          type: string
+          description: The type of payment method
+          enum:
+          - bank
+          - swift
+          - proxy
+          - momo
+          - ach
+          example: bank
+        currency:
+          type: string
+          description: The currency in ISO 4217 format
+          example: KES
+        status:
+          type: string
+          description: The status of the payment method
+          enum:
+          - active
+          - inactive
+          example: active
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    JSONSchemaDraft07:
+      description: "This is a Draft-07 JSON Schema fragment. For the full meta-schema, see https://json-schema.org/draft-07/schema#. \nRely on the provided example for the expected structure.\n"
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
   responses:
     GetPaymentMethodsResponse:
       description: Available payment methods, one entry per country matching the query
@@ -327,23 +327,6 @@ components:
           examples:
             brazilPaymentMethods:
               $ref: '#/components/examples/brazilPaymentMethods'
-    GetProvidersResponse:
-      description: OK
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Provider'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     ResolveCodeResponse:
       description: Resolved bank provider details
       content:
@@ -375,18 +358,35 @@ components:
                 city: Tampa
                 routingNumber: '021000021'
                 swiftCode: CHASUS33
-    InternalError:
-      description: Internal error
+    BadRequestError:
+      description: Bad input provided by client
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalError'
+            $ref: '#/components/schemas/BadRequestError'
     NotFoundError:
       description: Requested resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
+    GetProvidersResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Provider'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   examples:
     brazilPaymentMethods:
       summary: Brazil Payment Methods

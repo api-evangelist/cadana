@@ -259,214 +259,86 @@ paths:
       - $ref: '#/components/parameters/XMultiTenantKey'
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    paymentMethods:
+    CreateBusinessRequest:
+      description: Create business request payload
       type: object
       required:
-      - preferredMethod
+      - businessName
+      - adminFirstName
+      - adminLastName
+      - address
+      - adminEmail
+      - idempotencyKey
+      - country
       properties:
-        preferredMethod:
+        businessName:
           type: string
-          enum:
-          - momo
-          - bank
-          - swift
-          - ach
-          - wallet
-          - wire
-          description: The preferred payment method type
-          example: bank
-        momo:
-          $ref: '#/components/schemas/momoDetails'
-        bank:
-          $ref: '#/components/schemas/bankDetails'
-        swift:
-          $ref: '#/components/schemas/swiftDetails'
-        ach:
-          $ref: '#/components/schemas/achDetails'
-        wallet:
-          $ref: '#/components/schemas/walletDetails'
-        wire:
-          $ref: '#/components/schemas/wireDetails'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    role:
+          description: Business name
+          example: Wayne Enterprise
+        businessShortName:
+          type: string
+          example: W.E.
+          description: Shortname of the business
+        adminFirstName:
+          type: string
+          example: Jane
+          description: First name of the admin of the business
+        adminLastName:
+          type: string
+          example: Founder
+          description: Last name of the admin of the business
+        address:
+          $ref: '#/components/schemas/address'
+        adminEmail:
+          type: string
+          description: Person's email
+          example: admin@example.com
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email
+          default: false
+        registrationId:
+          type: string
+          description: Registration id/number of the business
+          example: '991234567'
+        idempotencyKey:
+          type: string
+          description: Unique string to prevent dedupe
+          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
+        country:
+          type: string
+          example: US
+        adminPhoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+    operation:
       type: object
       properties:
         description:
           type: string
-          description: A custom role that can be attached to a user
-          example: This is the role for a finance manager
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Finance Manager
-        operations:
+          example: Operations related to user management
+          description: Operations tied to the role
+        permissions:
           type: array
           items:
-            $ref: '#/components/schemas/operation'
-        roleType:
+            $ref: '#/components/schemas/permission'
+        resource:
           type: string
-          example: custom
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    nodePagination:
-      type: object
-      description: Node pagination
-      properties:
-        next:
-          type: string
-        previous:
-          type: string
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-        next:
-          type:
-          - string
-          - 'null'
-    RevenueShare:
+          description: The domain for the operations
+          example: user
+    Error:
       type: object
       properties:
-        amount:
-          $ref: '#/components/schemas/Amount'
-        rate:
-          type: number
-          description: The revenue share percentage
-          example: 1.0
-    bankDetails:
-      type: object
-      properties:
-        accountName:
+        code:
+          description: A machine parsable error code
           type: string
-          description: The name on the bank account
-          example: John Doe
-        accountNumber:
-          type: string
-          description: The bank account number
-          example: '1234567890'
-        accountType:
-          type: string
-          description: The type of bank account (e.g., Checking, Savings)
-          example: Checking
-        ownerType:
-          type: string
-          description: The type of account owner
           enum:
-          - Individual
-          - Business
-          example: Individual
-        bankCode:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
           type: string
-          description: The bank identification code
-          example: EXMPJPJT
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Gotham City Bank
-        branchName:
-          type: string
-          description: The name of the bank branch
-          example: Downtown Branch
-        sortCode:
-          type: string
-          description: The bank sort code (UK); carries the IFSC for India
-          example: '401234'
-        iban:
-          type: string
-          description: The International Bank Account Number
-          example: GB00000000000000000000
-        provider:
-          type: string
-          description: The platform providing this account (e.g., wise)
-          example: wise
-        currency:
-          type: string
-          description: The currency of the bank account
-          example: USD
-        beneficiaryId:
-          $ref: '#/components/schemas/beneficiaryId'
-        address:
-          $ref: '#/components/schemas/address'
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        email:
-          type: string
-          format: email
-          description: The email address of the account holder
-          example: john.doe@example.com
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    wireDetails:
-      type: object
-      description: Wire transfer payment details
-      properties:
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        accountName:
-          type: string
-          description: The name on the account
-          example: John Doe
-        routingNumber:
-          type: string
-          description: The routing number
-          example: '000000000'
-        accountNumber:
-          type: string
-          description: The account number
-          example: '123456789'
-        address:
-          $ref: '#/components/schemas/address'
     PlatformDisbursement:
       type: object
       properties:
@@ -603,6 +475,70 @@ components:
           type: string
           description: Timestamp when the transaction was last updated
           example: 2026-01-28 14:29:18 +0000 UTC
+    RevenueShare:
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/Amount'
+        rate:
+          type: number
+          description: The revenue share percentage
+          example: 1.0
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
+          type: string
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
+        address:
+          $ref: '#/components/schemas/address'
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
+          type: string
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
     businessMinimalDetailsEntry:
       properties:
         id:
@@ -650,197 +586,6 @@ components:
           type: string
           description: Idempotency key supplied when the business was created
           example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    swiftDetails:
-      type: object
-      required:
-      - currency
-      - iban
-      - accountName
-      - accountNumber
-      - bankName
-      - swiftCode
-      - address
-      properties:
-        currency:
-          type: string
-          description: The currency of the bank account
-          example: EUR
-        iban:
-          type: string
-          description: The International Bank Account Number
-          example: DE00000000000000000000
-        accountName:
-          type: string
-          description: The name on the bank account
-          example: John Doe
-        accountNumber:
-          type: string
-          description: The bank account number
-          example: '1234567890'
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        swiftCode:
-          type: string
-          description: The SWIFT/BIC code of the bank
-          example: EXMPDEFF
-        address:
-          $ref: '#/components/schemas/address'
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    ForbiddenError:
-      description: Forbidden
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: forbidden
-        message: Transfers are only available to platform businesses.
-    beneficiaryId:
-      type: object
-      description: ID details for the beneficiary
-      properties:
-        type:
-          type: string
-          enum:
-          - NIT
-          - CC
-          - CE
-          - TI
-          - PASS
-          description: Type of beneficiary ID
-          example: NIT
-        value:
-          type: string
-          description: ID number of the beneficiary
-          example: '123456789'
-    momoDetails:
-      type: object
-      properties:
-        accountName:
-          type: string
-          description: The name associated with the mobile money account
-          example: John Doe
-        provider:
-          type: string
-          description: The name of the mobile money provider
-          example: MTN
-        providerCode:
-          type: string
-          description: The code identifying the mobile money provider
-          example: MTN
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        currency:
-          type: string
-          description: The currency of the mobile money account
-          example: GHS
-    CreateBusinessRequest:
-      description: Create business request payload
-      type: object
-      required:
-      - businessName
-      - adminFirstName
-      - adminLastName
-      - address
-      - adminEmail
-      - idempotencyKey
-      - country
-      properties:
-        businessName:
-          type: string
-          description: Business name
-          example: Wayne Enterprise
-        businessShortName:
-          type: string
-          example: W.E.
-          description: Shortname of the business
-        adminFirstName:
-          type: string
-          example: Jane
-          description: First name of the admin of the business
-        adminLastName:
-          type: string
-          example: Founder
-          description: Last name of the admin of the business
-        address:
-          $ref: '#/components/schemas/address'
-        adminEmail:
-          type: string
-          description: Person's email
-          example: admin@example.com
-        suppressWelcomeEmail:
-          type: boolean
-          description: Whether you want to suppress the welcome email
-          default: false
-        registrationId:
-          type: string
-          description: Registration id/number of the business
-          example: '991234567'
-        idempotencyKey:
-          type: string
-          description: Unique string to prevent dedupe
-          example: b6ae5da9-6342-4a58-bd50-8564d68d3f7e
-        country:
-          type: string
-          example: US
-        adminPhoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-    walletDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of wallet account
-          enum:
-          - user
-          - business
-          example: user
-        identifier:
-          type: string
-          description: The unique identifier for the wallet account
-          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
-        currency:
-          type: string
-          description: The currency of the wallet
-          example: USD
-    operation:
-      type: object
-      properties:
-        description:
-          type: string
-          example: Operations related to user management
-          description: Operations tied to the role
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/permission'
-        resource:
-          type: string
-          description: The domain for the operations
-          example: user
     permission:
       type: object
       properties:
@@ -898,6 +643,75 @@ components:
           type: string
           description: Your client reference for the transfer. Stored on it so you can locate it later.
           example: transfer-123
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    wireDetails:
+      type: object
+      description: Wire transfer payment details
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The routing number
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The account number
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/address'
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+        next:
+          type:
+          - string
+          - 'null'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     achDetails:
       type: object
       properties:
@@ -927,16 +741,202 @@ components:
           example: wise
         address:
           $ref: '#/components/schemas/address'
-    InternalError:
-      description: Internal server error
+    role:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A custom role that can be attached to a user
+          example: This is the role for a finance manager
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Finance Manager
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/operation'
+        roleType:
+          type: string
+          example: custom
+    ForbiddenError:
+      description: Forbidden
       allOf:
       - $ref: '#/components/schemas/Error'
       example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
+        code: forbidden
+        message: Transfers are only available to platform businesses.
+    nodePagination:
+      type: object
+      description: Node pagination
+      properties:
+        next:
+          type: string
+        previous:
+          type: string
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (e.g., Checking, Savings)
+          example: Checking
+        ownerType:
+          type: string
+          description: The type of account owner
+          enum:
+          - Individual
+          - Business
+          example: Individual
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: EXMPJPJT
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Gotham City Bank
+        branchName:
+          type: string
+          description: The name of the bank branch
+          example: Downtown Branch
+        sortCode:
+          type: string
+          description: The bank sort code (UK); carries the IFSC for India
+          example: '401234'
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: USD
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+          description: The email address of the account holder
+          example: john.doe@example.com
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    paymentMethods:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          - swift
+          - ach
+          - wallet
+          - wire
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        wire:
+          $ref: '#/components/schemas/wireDetails'
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
   responses:
-    GetBusinessesResponse:
-      description: get businesses response
+    GetPlatformDisbursementsResponse:
+      description: List of disbursements across all platform businesses
       content:
         application/json:
           schema:
@@ -945,32 +945,18 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/businessMinimalDetailsEntry'
-              node:
-                $ref: '#/components/schemas/nodePagination'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
+                  $ref: '#/components/schemas/PlatformDisbursement'
+              cursor:
+                $ref: '#/components/schemas/node'
+          examples:
+            payrollAndPayout:
+              $ref: '#/components/examples/platformDisbursementsResponse'
     BadRequestError:
       description: Bad input provided by client
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
-    GetPermissionRolesResponse:
-      description: get permission roles response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/role'
     CreatePlatformTransferResponse:
       description: Transfer created response
       content:
@@ -988,8 +974,26 @@ components:
               summary: Example transfer creation response
               value:
                 id: 9b2c1f47-8a0d-4e21-bf3c-2d6f1a9e74c5
-    GetPlatformDisbursementsResponse:
-      description: List of disbursements across all platform businesses
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetPlatformDisbursementResponse:
+      description: Disbursement details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PlatformDisbursement'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetBusinessesResponse:
+      description: get businesses response
       content:
         application/json:
           schema:
@@ -998,24 +1002,26 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PlatformDisbursement'
-              cursor:
-                $ref: '#/components/schemas/node'
-          examples:
-            payrollAndPayout:
-              $ref: '#/components/examples/platformDisbursementsResponse'
-    InternalError:
-      description: Internal error
+                  $ref: '#/components/schemas/businessMinimalDetailsEntry'
+              node:
+                $ref: '#/components/schemas/nodePagination'
+    ForbiddenError:
+      description: The caller is not permitted to perform this action
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalError'
-    GetPlatformDisbursementResponse:
-      description: Disbursement details
+            $ref: '#/components/schemas/ForbiddenError'
+    GetPermissionRolesResponse:
+      description: get permission roles response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PlatformDisbursement'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/role'
     CreateBusinessResponse:
       description: get user kyc response
       content:
@@ -1028,12 +1034,6 @@ components:
               tenantKey:
                 type: string
                 example: biz123456
-    ForbiddenError:
-      description: The caller is not permitted to perform this action
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ForbiddenError'
   examples:
     platformDisbursementsResponse:
       summary: Platform Disbursements Response

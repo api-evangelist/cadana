@@ -194,6 +194,115 @@ paths:
           description: Receipt not yet available
 components:
   schemas:
+    address:
+      type: object
+      required:
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Av. Paseo de la Reforma 10
+        line2:
+          type: string
+          example: Piso 30
+        city:
+          type: string
+          example: Ciudad de México
+        postalCode:
+          type: string
+          example: '06600'
+        state:
+          type: string
+          example: CDMX
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+    RemittanceSummary:
+      type: object
+      description: Status counts for the filtered set of remittances.
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        processing:
+          type: integer
+        completed:
+          type: integer
+        failed:
+          type: integer
+    bankDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          example: SAT — ISR Federal Treasury
+        accountNumber:
+          type: string
+          description: 'Bank account number. For Mexico this is the 18-digit CLABE.
+
+            For other countries, the local account number.
+
+            '
+          example: 012345678901234567
+        accountType:
+          type: string
+          description: e.g., Checking, Savings
+          example: Checking
+        ownerType:
+          type: string
+          description: e.g., individual, business
+          example: business
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: '012'
+        bankName:
+          type: string
+          example: BBVA México
+        branchName:
+          type: string
+          example: Sucursal Reforma
+        sortCode:
+          type: string
+          description: Bank sort code (used in some countries like UK)
+          example: '401234'
+        iban:
+          type: string
+          description: International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          example: wise
+        currency:
+          type: string
+          example: MXN
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+    phoneNumber:
+      type: object
+      required:
+      - countryCode
+      - number
+      properties:
+        countryCode:
+          type: string
+          example: '52'
+        number:
+          type: string
+          example: '5512345678'
     momoDetails:
       type: object
       properties:
@@ -211,34 +320,6 @@ components:
         currency:
           type: string
           example: GHS
-    paymentMethods:
-      type: object
-      required:
-      - preferredMethod
-      properties:
-        preferredMethod:
-          type: string
-          enum:
-          - momo
-          - bank
-          description: The preferred payment method type
-          example: bank
-        momo:
-          $ref: '#/components/schemas/momoDetails'
-        bank:
-          $ref: '#/components/schemas/bankDetails'
-    phoneNumber:
-      type: object
-      required:
-      - countryCode
-      - number
-      properties:
-        countryCode:
-          type: string
-          example: '52'
-        number:
-          type: string
-          example: '5512345678'
     Remittance:
       type: object
       description: 'Full remittance detail returned by `GET /v1/statutory/remittances/{id}`.
@@ -334,6 +415,39 @@ components:
           format: epoch
           description: Unix epoch timestamp
           example: 1709280000
+    StatusHistoryEntry:
+      type: object
+      description: Records a single status transition on a filing or remittance.
+      properties:
+        from:
+          type: string
+          description: Previous status
+          example: pending
+        to:
+          type: string
+          description: New status
+          example: in_review
+        timestamp:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp of the transition
+          example: 1709654400
+    paymentMethods:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
     Error:
       type: object
       properties:
@@ -357,6 +471,44 @@ components:
                     type: string
                   message:
                     type: string
+    RemittanceListItem:
+      type: object
+      description: 'Reduced remittance entry returned in list responses. Use
+
+        `GET /v1/statutory/remittances/{id}` for full details.
+
+        '
+      properties:
+        id:
+          type: string
+          example: rem_01HQ3K4N7XYZABC
+        businessId:
+          type: string
+        countryCode:
+          type: string
+          example: MX
+        authorityName:
+          type: string
+          example: SAT
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+        amount:
+          type: number
+          format: decimal
+          example: 45000
+        createdAt:
+          type: number
+          format: epoch
+          example: 1709280000
+        updatedAt:
+          type: number
+          format: epoch
+          example: 1709280000
     CreateRemittanceRequest:
       type: object
       required:
@@ -414,113 +566,13 @@ components:
 
             '
           example: 0123456ABCD7890EF
-    RemittanceSummary:
+    IDResponse:
       type: object
-      description: Status counts for the filtered set of remittances.
-      properties:
-        total:
-          type: integer
-        pending:
-          type: integer
-        processing:
-          type: integer
-        completed:
-          type: integer
-        failed:
-          type: integer
-    bankDetails:
-      type: object
-      properties:
-        accountName:
-          type: string
-          example: SAT — ISR Federal Treasury
-        accountNumber:
-          type: string
-          description: 'Bank account number. For Mexico this is the 18-digit CLABE.
-
-            For other countries, the local account number.
-
-            '
-          example: 012345678901234567
-        accountType:
-          type: string
-          description: e.g., Checking, Savings
-          example: Checking
-        ownerType:
-          type: string
-          description: e.g., individual, business
-          example: business
-        bankCode:
-          type: string
-          description: The bank identification code
-          example: '012'
-        bankName:
-          type: string
-          example: BBVA México
-        branchName:
-          type: string
-          example: Sucursal Reforma
-        sortCode:
-          type: string
-          description: Bank sort code (used in some countries like UK)
-          example: '401234'
-        iban:
-          type: string
-          description: International Bank Account Number
-          example: GB00000000000000000000
-        provider:
-          type: string
-          example: wise
-        currency:
-          type: string
-          example: MXN
-        beneficiaryId:
-          $ref: '#/components/schemas/beneficiaryId'
-        address:
-          $ref: '#/components/schemas/address'
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        email:
-          type: string
-          format: email
-    RemittanceListItem:
-      type: object
-      description: 'Reduced remittance entry returned in list responses. Use
-
-        `GET /v1/statutory/remittances/{id}` for full details.
-
-        '
+      description: Response containing the ID of a newly created resource.
       properties:
         id:
           type: string
-          example: rem_01HQ3K4N7XYZABC
-        businessId:
-          type: string
-        countryCode:
-          type: string
-          example: MX
-        authorityName:
-          type: string
-          example: SAT
-        status:
-          type: string
-          enum:
-          - pending
-          - processing
-          - completed
-          - failed
-        amount:
-          type: number
-          format: decimal
-          example: 45000
-        createdAt:
-          type: number
-          format: epoch
-          example: 1709280000
-        updatedAt:
-          type: number
-          format: epoch
-          example: 1709280000
+          example: fil_01HQ3K4N7XYZABC
     beneficiaryId:
       type: object
       description: ID details for the beneficiary
@@ -537,72 +589,27 @@ components:
         value:
           type: string
           example: '123456789'
-    StatusHistoryEntry:
-      type: object
-      description: Records a single status transition on a filing or remittance.
-      properties:
-        from:
-          type: string
-          description: Previous status
-          example: pending
-        to:
-          type: string
-          description: New status
-          example: in_review
-        timestamp:
-          type: number
-          format: epoch
-          description: Unix epoch timestamp of the transition
-          example: 1709654400
-    address:
-      type: object
-      required:
-      - line1
-      - city
-      - postalCode
-      - state
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Av. Paseo de la Reforma 10
-        line2:
-          type: string
-          example: Piso 30
-        city:
-          type: string
-          example: Ciudad de México
-        postalCode:
-          type: string
-          example: '06600'
-        state:
-          type: string
-          example: CDMX
-        countryCode:
-          type: string
-          description: ISO 3166-1 alpha-2 country code
-          example: MX
-    IDResponse:
-      type: object
-      description: Response containing the ID of a newly created resource.
-      properties:
-        id:
-          type: string
-          example: fil_01HQ3K4N7XYZABC
   responses:
-    BadRequest:
-      description: Invalid request parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     RemittanceId:
       name: remittance_id
       in: path
@@ -611,13 +618,6 @@ components:
         type: string
       description: Remittance identifier
       example: rem_01HQ3K4N7XYZABC
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

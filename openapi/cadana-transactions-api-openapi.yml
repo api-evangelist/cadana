@@ -204,20 +204,6 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     FeeTableEntry:
       type: object
       description: A single corridor entry in the payout catalog
@@ -296,20 +282,6 @@ components:
               type: boolean
               description: When `true`, weekends are excluded from `minDays` and `maxDays`.
               example: true
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-          example: null
-        next:
-          type:
-          - string
-          - 'null'
-          example: ca_123
     Error:
       type: object
       properties:
@@ -324,65 +296,6 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-    CreateTransactionRequest:
-      type: object
-      required:
-      - type
-      - beneficiaryId
-      - quoteId
-      - reference
-      properties:
-        type:
-          type: string
-          enum:
-          - payout
-          - savings_funding
-          description: The type of transaction
-          example: payout
-        beneficiaryId:
-          type: string
-          format: uuid
-          example: c871b333-e129-409c-aabd-7cfb55a967cc
-        quoteId:
-          type: string
-          format: uuid
-          description: The unique identifier for the fx quote
-          example: d35d2bd6-188b-4e82-9a16-71442dad7375
-        amount:
-          $ref: '#/components/schemas/Amount'
-          description: The destination amount (required if sourceAmount is not provided). When using this field, sourceCurrency is also required.
-        sourceAmount:
-          $ref: '#/components/schemas/Amount'
-          description: The source amount (required if amount is not provided). The currency in this amount object represents the source currency.
-        sourceCurrency:
-          type: string
-          description: The source currency code. Required when using the amount field (destination amount).
-          example: USD
-        reference:
-          type: string
-          format: uuid
-          description: The client reference for the transaction
-          example: c06f3427-3bbe-4d70-9a54-28acda267e48
-      oneOf:
-      - required:
-        - amount
-        - sourceCurrency
-      - required:
-        - sourceAmount
-    Amount:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: The value of the amount
-          example: '10.00'
-        currency:
-          type: string
-          description: The currency of the asset
-          example: USD
     FeeEstimate:
       type: object
       description: Per-transaction quote for a specific corridor + payment method. Only returned when `paymentMethod` and `destinationCurrency` are supplied.
@@ -468,6 +381,34 @@ components:
               type: string
               description: Currency the limits are denominated in — matches `destinationCurrency`.
               example: AUD
+    Amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+          example: null
+        next:
+          type:
+          - string
+          - 'null'
+          example: ca_123
     Transaction:
       type: object
       required:
@@ -543,13 +484,6 @@ components:
               type: integer
               description: Unix timestamp when the presigned URL expires
               example: 1748481876
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
     InternalError:
       description: Internal server error
       allOf:
@@ -557,35 +491,95 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    CreateTransactionRequest:
+      type: object
+      required:
+      - type
+      - beneficiaryId
+      - quoteId
+      - reference
+      properties:
+        type:
+          type: string
+          enum:
+          - payout
+          - savings_funding
+          description: The type of transaction
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          description: The unique identifier for the fx quote
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        amount:
+          $ref: '#/components/schemas/Amount'
+          description: The destination amount (required if sourceAmount is not provided). When using this field, sourceCurrency is also required.
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+          description: The source amount (required if amount is not provided). The currency in this amount object represents the source currency.
+        sourceCurrency:
+          type: string
+          description: The source currency code. Required when using the amount field (destination amount).
+          example: USD
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+      oneOf:
+      - required:
+        - amount
+        - sourceCurrency
+      - required:
+        - sourceAmount
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
   responses:
-    GetTransactionResponse:
-      description: Get transaction response
+    CreateTransactionResponse:
+      description: Transaction created response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Transaction'
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
           examples:
             transaction:
-              summary: Example transaction response
+              summary: Example transaction creation response
               value:
                 id: d0137ede-7df1-4a54-8206-b3ab7b03876f
-                type: payout
-                beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
-                quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
-                amount:
-                  value: '500.00'
-                  currency: PHP
-                sourceAmount:
-                  value: '9.00'
-                  currency: USD
-                feeAmount:
-                  value: '0.10'
-                  currency: USD
-                fxRate: '56.1234'
-                reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
-                status: success
-                createdTimestamp: 1748478276
-                lastUpdatedTimestamp: 1748478276
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
     GetFeesResponse:
       description: Payout catalog and (optional) corridor estimate
       content:
@@ -683,28 +677,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    CreateTransactionResponse:
-      description: Transaction created response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
-          examples:
-            transaction:
-              summary: Example transaction creation response
-              value:
-                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
     InternalError:
       description: Internal error
       content:
@@ -750,6 +722,34 @@ components:
                 node:
                   previous: null
                   next: null
+    GetTransactionResponse:
+      description: Get transaction response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Transaction'
+          examples:
+            transaction:
+              summary: Example transaction response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                type: payout
+                beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                amount:
+                  value: '500.00'
+                  currency: PHP
+                sourceAmount:
+                  value: '9.00'
+                  currency: USD
+                feeAmount:
+                  value: '0.10'
+                  currency: USD
+                fxRate: '56.1234'
+                reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                status: success
+                createdTimestamp: 1748478276
+                lastUpdatedTimestamp: 1748478276
   parameters:
     userId:
       name: userId

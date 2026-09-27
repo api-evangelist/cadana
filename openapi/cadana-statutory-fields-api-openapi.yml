@@ -174,6 +174,22 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
+    CountryCode:
+      name: country_code
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^[A-Z]{2}$
+      description: ISO 3166-1 alpha-2 country code
+      example: MX
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     BusinessIdPath:
       name: business_id
       in: path
@@ -190,22 +206,19 @@ components:
         type: string
       description: Person identifier
       example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    CountryCode:
-      name: country_code
-      in: path
-      required: true
-      schema:
-        type: string
-        pattern: ^[A-Z]{2}$
-      description: ISO 3166-1 alpha-2 country code
-      example: MX
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -230,50 +243,6 @@ components:
                     type: string
                   message:
                     type: string
-    StatutoryFieldsResponse:
-      type: object
-      description: 'Merged view of statutory filing data for an entity. Combines fields
-
-        explicitly submitted via PUT with defaults read from the upstream
-
-        service (person service or business service).
-
-        '
-      properties:
-        entityType:
-          type: string
-          enum:
-          - person
-          - business
-          description: Type of entity this data belongs to
-          example: person
-        entityId:
-          type: string
-          description: ID of the person or business
-          example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
-        countryCode:
-          type: string
-          example: DE
-        fields:
-          type: object
-          additionalProperties:
-            oneOf:
-            - type: string
-            - $ref: '#/components/schemas/DocumentFieldValue'
-          description: 'Merged field data. `document`-typed fields are returned as an
-
-            object with a short-lived download link (see `DocumentFieldValue`).
-
-            '
-          example:
-            steuerID: '97148835200'
-            sozialversicherungsnummer: 54211075L005
-            firstName: Max
-            lastName: Mustermann
-            idCard:
-              fileId: f1e2d3c4-b5a6-4789-9abc-def012345678
-              url: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
-              fileUploaded: true
     DocumentFieldValue:
       type: object
       description: 'Value of a `document`-typed statutory field in GET responses.
@@ -340,19 +309,50 @@ components:
             steuerID: '97148835200'
             personengruppenschluessel: '101'
             idCard: f1e2d3c4-b5a6-4789-9abc-def012345678
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    StatutoryFieldsResponse:
+      type: object
+      description: 'Merged view of statutory filing data for an entity. Combines fields
+
+        explicitly submitted via PUT with defaults read from the upstream
+
+        service (person service or business service).
+
+        '
+      properties:
+        entityType:
+          type: string
+          enum:
+          - person
+          - business
+          description: Type of entity this data belongs to
+          example: person
+        entityId:
+          type: string
+          description: ID of the person or business
+          example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+        countryCode:
+          type: string
+          example: DE
+        fields:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - $ref: '#/components/schemas/DocumentFieldValue'
+          description: 'Merged field data. `document`-typed fields are returned as an
+
+            object with a short-lived download link (see `DocumentFieldValue`).
+
+            '
+          example:
+            steuerID: '97148835200'
+            sozialversicherungsnummer: 54211075L005
+            firstName: Max
+            lastName: Mustermann
+            idCard:
+              fileId: f1e2d3c4-b5a6-4789-9abc-def012345678
+              url: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
+              fileUploaded: true
   securitySchemes:
     Authorization:
       type: http

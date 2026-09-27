@@ -88,7 +88,100 @@ paths:
       security:
       - Authorization: []
 components:
+  responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetPersonInstantPaysResponse:
+      description: get person instant pay transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/instantPay'
+    GetPersonIPSettingResponse:
+      description: get person instant pay setting response
+      content:
+        application/json:
+          schema:
+            description: Get person instant pay setting
+            allOf:
+            - $ref: '#/components/schemas/instantPaySetting'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   schemas:
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    instantPay:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        amount:
+          $ref: '#/components/schemas/amount'
+        status:
+          type: string
+          description: instant pay status
+          example: completed
+          enum:
+          - completed
+          - processing
+          - failed
+        createdTimestamp:
+          type: integer
+          format: int64
+          example: 1693782273
+          description: The Unix timestamp indicating when the transaction was initiated
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     instantPaySetting:
       type: object
       description: Person's instant pay setting
@@ -96,6 +189,10 @@ components:
         accessPercentage:
           type: number
           example: 50
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -122,103 +219,6 @@ components:
       type: object
       allOf:
       - $ref: '#/components/schemas/instantPaySetting'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    instantPay:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        amount:
-          $ref: '#/components/schemas/amount'
-        status:
-          type: string
-          description: instant pay status
-          example: completed
-          enum:
-          - completed
-          - processing
-          - failed
-        createdTimestamp:
-          type: integer
-          format: int64
-          example: 1693782273
-          description: The Unix timestamp indicating when the transaction was initiated
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    GetPersonInstantPaysResponse:
-      description: get person instant pay transactions
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/instantPay'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    GetPersonIPSettingResponse:
-      description: get person instant pay setting response
-      content:
-        application/json:
-          schema:
-            description: Get person instant pay setting
-            allOf:
-            - $ref: '#/components/schemas/instantPaySetting'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

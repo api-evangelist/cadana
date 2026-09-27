@@ -310,21 +310,49 @@ paths:
       security:
       - Authorization: []
 components:
-  schemas:
+  responses:
     BadRequestError:
       description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+  parameters:
+    reimbursementId:
+      name: reimbursementId
+      in: path
+      description: The unique identifier for the reimbursement
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  schemas:
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+        code: resource_not_found
+        message: Requested resource could not be found.
     Error:
       type: object
       properties:
@@ -339,49 +367,20 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-    CreateReimbursementRequest:
-      description: Create reimbursement request payload. Identify the worker with exactly one of `userId` or `personId`.
-      type: object
-      required:
-      - title
-      - currency
-      - destinationCurrency
-      - entries
-      properties:
-        userId:
-          type: string
-          format: uuid
-          description: The worker the reimbursement is for. Provide either `userId` or `personId`.
-          example: a3b4c5d6-e7f8-9012-abcd-ef3456789012
-        personId:
-          type: string
-          format: uuid
-          description: The worker the reimbursement is for, identified by their personId within the tenant. Provide either `userId` or `personId`.
-          example: c5d6e7f8-9012-3456-cdef-789012345678
-        title:
-          type: string
-          description: A short title describing the reimbursement.
-          example: Client dinner
-        currency:
-          type: string
-          description: The currency the entry amounts are denominated in.
-          example: USD
-        destinationCurrency:
-          type: string
-          description: The currency the worker is reimbursed in.
-          example: USD
-        entries:
-          type: array
-          description: The individual line items that make up the reimbursement.
-          items:
-            $ref: '#/components/schemas/ReimbursementEntryRequest'
-    NotFoundError:
-      description: Not Found
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     ReimbursementEntryRequest:
       description: A single reimbursement line item
       type: object
@@ -422,41 +421,42 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
-  parameters:
-    reimbursementId:
-      name: reimbursementId
-      in: path
-      description: The unique identifier for the reimbursement
-      required: true
-      schema:
-        type: string
-        format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
+    CreateReimbursementRequest:
+      description: Create reimbursement request payload. Identify the worker with exactly one of `userId` or `personId`.
+      type: object
+      required:
+      - title
+      - currency
+      - destinationCurrency
+      - entries
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: The worker the reimbursement is for. Provide either `userId` or `personId`.
+          example: a3b4c5d6-e7f8-9012-abcd-ef3456789012
+        personId:
+          type: string
+          format: uuid
+          description: The worker the reimbursement is for, identified by their personId within the tenant. Provide either `userId` or `personId`.
+          example: c5d6e7f8-9012-3456-cdef-789012345678
+        title:
+          type: string
+          description: A short title describing the reimbursement.
+          example: Client dinner
+        currency:
+          type: string
+          description: The currency the entry amounts are denominated in.
+          example: USD
+        destinationCurrency:
+          type: string
+          description: The currency the worker is reimbursed in.
+          example: USD
+        entries:
+          type: array
+          description: The individual line items that make up the reimbursement.
+          items:
+            $ref: '#/components/schemas/ReimbursementEntryRequest'
   securitySchemes:
     Authorization:
       type: http
