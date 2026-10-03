@@ -79,6 +79,14 @@ components:
         to:
           type: string
           example: PHP
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
     CreateFXQuoteResponse:
       description: create an fx quote
@@ -95,14 +103,6 @@ components:
                 to: PHP
                 rate: '56.1234'
                 expirationTimestamp: '2025-05-29T21:42:52Z'
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

@@ -429,99 +429,196 @@ paths:
                 $ref: '#/components/schemas/ComplianceSummary'
 components:
   schemas:
-    CreateFilingRequest:
+    IDResponse:
+      type: object
+      description: Response containing the ID of a newly created resource.
+      properties:
+        id:
+          type: string
+          example: fil_01HQ3K4N7XYZABC
+    StatusHistoryEntry:
+      type: object
+      description: Records a single status transition on a filing or remittance.
+      properties:
+        from:
+          type: string
+          description: Previous status
+          example: pending
+        to:
+          type: string
+          description: New status
+          example: in_review
+        timestamp:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp of the transition
+          example: 1709654400
+    FilingSummary:
+      type: object
+      description: 'Status counts for the filtered set of filings. Use this to power
+
+        compliance health dashboards.
+
+        '
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        inReview:
+          type: integer
+        approved:
+          type: integer
+        submitted:
+          type: integer
+        accepted:
+          type: integer
+        blocked:
+          type: integer
+        cancelled:
+          type: integer
+        rejected:
+          type: integer
+    FilingAmounts:
+      type: object
+      description: 'Derived totals for the filing. **Read-only on responses** — Cadana
+
+        computes these values from the `breakdown` lines. You do not pass
+
+        `amounts` when creating a filing; provide the `breakdown` array and
+
+        the total falls out automatically.
+
+        '
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code. Set on the filing at creation time.
+          example: MXN
+        total:
+          type: number
+          format: decimal
+          description: Sum of `amount` across every line in the filing's breakdown.
+          example: 82345
+    CreateFilingsBatchRequest:
       type: object
       required:
       - businessId
-      - countryCode
-      - filingTypeId
       - periodStart
       - periodEnd
-      - currency
-      description: "Create a filing. Every filing is described by a `breakdown` array of\ncontribution lines that sum to the filing total — the breakdown is the\ncanonical input. The `source` field selects who's filing with the\nauthority:\n\n**`source: cadana`** (default) — Cadana prepares and submits the return\nto the authority. Each `breakdown` line must reference a `personId`.\nYou can either:\n- Provide `payrollRunIds` and Cadana auto-populates the breakdown from\n  the tax engine, or\n- Provide the `breakdown` array yourself if you computed the amounts\n  outside Cadana but want Cadana to file.\n\n**`source: external`** — You have already filed the return with the\nauthority yourself; you're sending Cadana the breakdown plus the\n`filingReference` (e.g., the Línea de Captura from SAT) so a remittance\ncan be created against it. Breakdown lines may use `personId`,\n`externalEmployeeId`, or neither (for business-level taxes like\nMexico's ISN). The filing is created directly in `accepted`.\n"
+      description: "Batch create filings for a business and period in one call. Pick one\ninput shape:\n\n- **`payrollRunIds`** — Cadana derives the filing types and breakdowns\n  from the linked Cadana payroll runs. Each filing is created as\n  `source: cadana` and runs the full lifecycle.\n- **`filings`** — Provide an explicit array, each entry with its own\n  `filingTypeId`, `currency`, and `breakdown`. Each entry can be\n  `source: cadana` (Cadana files for you) or `source: external` (you\n  already filed and supply a `filingReference`). Use this when amounts\n  were computed outside Cadana.\n\nExactly one of `payrollRunIds` or `filings` must be provided.\n"
       properties:
         businessId:
           type: string
-        countryCode:
-          type: string
-          description: ISO 3166-1 alpha-2 country code
-          example: MX
-        source:
-          type: string
-          enum:
-          - cadana
-          - external
-          default: cadana
-          description: 'Who''s responsible for submitting the return to the authority.
-
-            `cadana` (default) means Cadana submits; `external` means you
-
-            already submitted it and are providing the resulting data so
-
-            Cadana can remit.
-
-            '
-          example: external
-        filingTypeId:
-          type: string
-          description: The type of filing (from jurisdiction filing types)
-          example: ft_mx_isr_monthly
         periodStart:
           type: string
           format: date
+          example: '2026-02-01'
         periodEnd:
           type: string
           format: date
-        currency:
-          type: string
-          description: 'ISO 4217 currency code that applies to every `amount` in the
-
-            breakdown. Must match the filing-type''s jurisdiction currency.
-
-            '
-          example: MXN
-        filingReference:
-          type: string
-          description: 'Government-issued reference for this filing. **Required when
-
-            `source: external`** — this is the value the receiving bank or
-
-            authority uses to attribute your remittance payment. Country-specific
-
-            naming: Línea de Captura (MX), challan number (IN), BRN (NG).
-
-            Ignored when `source: cadana`; Cadana populates it once the
-
-            authority confirms receipt.
-
-            '
-          example: 0123456ABCD7890EF
-        breakdown:
-          type: array
-          description: 'Contribution lines that sum to the filing total. **Required**, with
-
-            one exception: omit when `source: cadana` and `payrollRunIds` is
-
-            provided — Cadana auto-populates the breakdown from the tax engine
-
-            in that case.
-
-            '
-          items:
-            $ref: '#/components/schemas/FilingBreakdownEntry'
+          example: '2026-02-28'
         payrollRunIds:
           type: array
           items:
             type: string
-          description: '`source: cadana` shortcut. Link to Cadana payroll runs whose tax
+          description: 'Link to Cadana payroll runs. Cadana auto-determines filing types
 
-            calculations feed this filing — Cadana auto-populates the
+            and populates amounts from the tax engine.
 
-            `breakdown` from the tax engine results. Ignored when
-
-            `source: external`.
+            Mutually exclusive with `filings`.
 
             '
+        filings:
+          type: array
+          description: 'Explicit per-filing data. Use this when you computed the amounts
+
+            outside Cadana — works for both `source: cadana` (Cadana still
+
+            files) and `source: external` (you already filed). Mutually
+
+            exclusive with `payrollRunIds`.
+
+            '
+          items:
+            type: object
+            required:
+            - filingTypeId
+            - currency
+            - breakdown
+            properties:
+              filingTypeId:
+                type: string
+                example: ft_mx_isr_monthly
+              source:
+                type: string
+                enum:
+                - cadana
+                - external
+                default: cadana
+              currency:
+                type: string
+                description: ISO 4217 currency code applied to every breakdown line.
+                example: MXN
+              filingReference:
+                type: string
+                description: Required when this entry's `source` is `external`.
+                example: 0123456ABCD7890EF
+              breakdown:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FilingBreakdownEntry'
+        countryCode:
+          type: string
+          description: 'Limit to a specific jurisdiction. If omitted, creates filings
+
+            for all jurisdictions where the business has active workers.
+
+            '
+        filingTypeIds:
+          type: array
+          items:
+            type: string
+          description: 'Limit to specific filing types (only applies when using
+
+            `payrollRunIds` mode). If omitted, creates all applicable
+
+            filing types based on worker flags.
+
+            '
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type:
+              - array
+              - 'null'
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+    AmendFilingRequest:
+      type: object
+      required:
+      - reason
+      properties:
+        reason:
+          type: string
+          description: Reason for the amendment
+        correctedAmounts:
+          $ref: '#/components/schemas/FilingAmounts'
     Filing:
       type: object
       description: 'Full filing detail returned by `GET /v1/statutory/filings/{id}`.
@@ -745,163 +842,6 @@ components:
           type: number
           format: epoch
           example: 1709280000
-    CreateFilingsBatchRequest:
-      type: object
-      required:
-      - businessId
-      - periodStart
-      - periodEnd
-      description: "Batch create filings for a business and period in one call. Pick one\ninput shape:\n\n- **`payrollRunIds`** — Cadana derives the filing types and breakdowns\n  from the linked Cadana payroll runs. Each filing is created as\n  `source: cadana` and runs the full lifecycle.\n- **`filings`** — Provide an explicit array, each entry with its own\n  `filingTypeId`, `currency`, and `breakdown`. Each entry can be\n  `source: cadana` (Cadana files for you) or `source: external` (you\n  already filed and supply a `filingReference`). Use this when amounts\n  were computed outside Cadana.\n\nExactly one of `payrollRunIds` or `filings` must be provided.\n"
-      properties:
-        businessId:
-          type: string
-        periodStart:
-          type: string
-          format: date
-          example: '2026-02-01'
-        periodEnd:
-          type: string
-          format: date
-          example: '2026-02-28'
-        payrollRunIds:
-          type: array
-          items:
-            type: string
-          description: 'Link to Cadana payroll runs. Cadana auto-determines filing types
-
-            and populates amounts from the tax engine.
-
-            Mutually exclusive with `filings`.
-
-            '
-        filings:
-          type: array
-          description: 'Explicit per-filing data. Use this when you computed the amounts
-
-            outside Cadana — works for both `source: cadana` (Cadana still
-
-            files) and `source: external` (you already filed). Mutually
-
-            exclusive with `payrollRunIds`.
-
-            '
-          items:
-            type: object
-            required:
-            - filingTypeId
-            - currency
-            - breakdown
-            properties:
-              filingTypeId:
-                type: string
-                example: ft_mx_isr_monthly
-              source:
-                type: string
-                enum:
-                - cadana
-                - external
-                default: cadana
-              currency:
-                type: string
-                description: ISO 4217 currency code applied to every breakdown line.
-                example: MXN
-              filingReference:
-                type: string
-                description: Required when this entry's `source` is `external`.
-                example: 0123456ABCD7890EF
-              breakdown:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FilingBreakdownEntry'
-        countryCode:
-          type: string
-          description: 'Limit to a specific jurisdiction. If omitted, creates filings
-
-            for all jurisdictions where the business has active workers.
-
-            '
-        filingTypeIds:
-          type: array
-          items:
-            type: string
-          description: 'Limit to specific filing types (only applies when using
-
-            `payrollRunIds` mode). If omitted, creates all applicable
-
-            filing types based on worker flags.
-
-            '
-    StatusHistoryEntry:
-      type: object
-      description: Records a single status transition on a filing or remittance.
-      properties:
-        from:
-          type: string
-          description: Previous status
-          example: pending
-        to:
-          type: string
-          description: New status
-          example: in_review
-        timestamp:
-          type: number
-          format: epoch
-          description: Unix epoch timestamp of the transition
-          example: 1709654400
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: invalid_request
-            message:
-              type: string
-              example: countryCode is required
-            details:
-              type:
-              - array
-              - 'null'
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                  message:
-                    type: string
-    FilingAmounts:
-      type: object
-      description: 'Derived totals for the filing. **Read-only on responses** — Cadana
-
-        computes these values from the `breakdown` lines. You do not pass
-
-        `amounts` when creating a filing; provide the `breakdown` array and
-
-        the total falls out automatically.
-
-        '
-      properties:
-        currency:
-          type: string
-          description: ISO 4217 currency code. Set on the filing at creation time.
-          example: MXN
-        total:
-          type: number
-          format: decimal
-          description: Sum of `amount` across every line in the filing's breakdown.
-          example: 82345
-    AmendFilingRequest:
-      type: object
-      required:
-      - reason
-      properties:
-        reason:
-          type: string
-          description: Reason for the amendment
-        correctedAmounts:
-          $ref: '#/components/schemas/FilingAmounts'
     FilingBreakdownEntry:
       type: object
       description: "One contribution line that rolls up into a filing's total. The breakdown\narray as a whole is the canonical description of the filing — its sum is\nthe filing total.\n\n**Identifying the worker:**\n- For `source: cadana` filings, each line must reference a `personId`\n  (Cadana needs the worker record to populate filing fields).\n- For `source: external` filings, lines may use `personId` (when the\n  worker is onboarded), `externalEmployeeId` (when not), or neither\n  (for business-level taxes computed on aggregate payroll, like\n  Mexico's ISN, where there's no per-worker allocation).\n"
@@ -1028,64 +968,108 @@ components:
                 type: integer
               requirementsOutstanding:
                 type: integer
-    IDResponse:
+    CreateFilingRequest:
       type: object
-      description: Response containing the ID of a newly created resource.
+      required:
+      - businessId
+      - countryCode
+      - filingTypeId
+      - periodStart
+      - periodEnd
+      - currency
+      description: "Create a filing. Every filing is described by a `breakdown` array of\ncontribution lines that sum to the filing total — the breakdown is the\ncanonical input. The `source` field selects who's filing with the\nauthority:\n\n**`source: cadana`** (default) — Cadana prepares and submits the return\nto the authority. Each `breakdown` line must reference a `personId`.\nYou can either:\n- Provide `payrollRunIds` and Cadana auto-populates the breakdown from\n  the tax engine, or\n- Provide the `breakdown` array yourself if you computed the amounts\n  outside Cadana but want Cadana to file.\n\n**`source: external`** — You have already filed the return with the\nauthority yourself; you're sending Cadana the breakdown plus the\n`filingReference` (e.g., the Línea de Captura from SAT) so a remittance\ncan be created against it. Breakdown lines may use `personId`,\n`externalEmployeeId`, or neither (for business-level taxes like\nMexico's ISN). The filing is created directly in `accepted`.\n"
       properties:
-        id:
+        businessId:
           type: string
-          example: fil_01HQ3K4N7XYZABC
-    FilingSummary:
-      type: object
-      description: 'Status counts for the filtered set of filings. Use this to power
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+        source:
+          type: string
+          enum:
+          - cadana
+          - external
+          default: cadana
+          description: 'Who''s responsible for submitting the return to the authority.
 
-        compliance health dashboards.
+            `cadana` (default) means Cadana submits; `external` means you
 
-        '
-      properties:
-        total:
-          type: integer
-        pending:
-          type: integer
-        inReview:
-          type: integer
-        approved:
-          type: integer
-        submitted:
-          type: integer
-        accepted:
-          type: integer
-        blocked:
-          type: integer
-        cancelled:
-          type: integer
-        rejected:
-          type: integer
-  parameters:
-    FilingId:
-      name: filing_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Filing identifier
-      example: fil_01HQ3K4N7XYZABC
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+            already submitted it and are providing the resulting data so
+
+            Cadana can remit.
+
+            '
+          example: external
+        filingTypeId:
+          type: string
+          description: The type of filing (from jurisdiction filing types)
+          example: ft_mx_isr_monthly
+        periodStart:
+          type: string
+          format: date
+        periodEnd:
+          type: string
+          format: date
+        currency:
+          type: string
+          description: 'ISO 4217 currency code that applies to every `amount` in the
+
+            breakdown. Must match the filing-type''s jurisdiction currency.
+
+            '
+          example: MXN
+        filingReference:
+          type: string
+          description: 'Government-issued reference for this filing. **Required when
+
+            `source: external`** — this is the value the receiving bank or
+
+            authority uses to attribute your remittance payment. Country-specific
+
+            naming: Línea de Captura (MX), challan number (IN), BRN (NG).
+
+            Ignored when `source: cadana`; Cadana populates it once the
+
+            authority confirms receipt.
+
+            '
+          example: 0123456ABCD7890EF
+        breakdown:
+          type: array
+          description: 'Contribution lines that sum to the filing total. **Required**, with
+
+            one exception: omit when `source: cadana` and `payrollRunIds` is
+
+            provided — Cadana auto-populates the breakdown from the tax engine
+
+            in that case.
+
+            '
+          items:
+            $ref: '#/components/schemas/FilingBreakdownEntry'
+        payrollRunIds:
+          type: array
+          items:
+            type: string
+          description: '`source: cadana` shortcut. Link to Cadana payroll runs whose tax
+
+            calculations feed this filing — Cadana auto-populates the
+
+            `breakdown` from the tax engine results. Ignored when
+
+            `source: external`.
+
+            '
   responses:
-    NotFound:
-      description: Resource not found
+    BadRequest:
+      description: Invalid request parameters
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request parameters
+    NotFound:
+      description: Resource not found
       content:
         application/json:
           schema:
@@ -1096,6 +1080,22 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    FilingId:
+      name: filing_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Filing identifier
+      example: fil_01HQ3K4N7XYZABC
   securitySchemes:
     Authorization:
       type: http

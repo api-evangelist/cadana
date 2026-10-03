@@ -120,6 +120,70 @@ paths:
       - Authorization: []
 components:
   schemas:
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    GetEntitiesResponse:
+      description: Entity summary for list responses
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+        legalName:
+          type: string
+          example: Acme Corp Ghana
+        country:
+          type: string
+          example: GH
+        currency:
+          type: string
+          example: GHS
+        entityType:
+          type: string
+          enum:
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          example: corporation
+        status:
+          type: string
+          example: ACTIVE
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was created
+          example: 1609459200
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was last updated
+          example: 1609459200
     GetEntityResponse:
       description: Full entity details
       type: object
@@ -178,124 +242,6 @@ components:
           type: integer
           description: Unix timestamp when the entity was last updated
           example: 1609459200
-    GetEntitiesResponse:
-      description: Entity summary for list responses
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
-        legalName:
-          type: string
-          example: Acme Corp Ghana
-        country:
-          type: string
-          example: GH
-        currency:
-          type: string
-          example: GHS
-        entityType:
-          type: string
-          enum:
-          - corporation
-          - c-corporation
-          - s-corporation
-          - partnership
-          - sole proprietorship
-          - limited liability company
-          - non profit
-          - other
-          example: corporation
-        status:
-          type: string
-          example: ACTIVE
-        createdTimestamp:
-          type: integer
-          description: Unix timestamp when the entity was created
-          example: 1609459200
-        lastUpdatedTimestamp:
-          type: integer
-          description: Unix timestamp when the entity was last updated
-          example: 1609459200
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    CreateEntityResponse:
-      description: Create entity response
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique identifier of the created entity
-          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     UpdateEntityRequest:
       description: Update entity request payload (partial update)
       type: object
@@ -340,6 +286,60 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    CreateEntityResponse:
+      description: Create entity response
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the created entity
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
     CreateEntityRequest:
       description: Create entity request payload
       type: object
@@ -389,7 +389,29 @@ components:
           type: string
           description: Date of incorporation (YYYY-MM-DD)
           example: '2020-01-15'
+  parameters:
+    entityId:
+      name: entityId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: The unique identifier of the entity
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
     BadRequestError:
       description: Bad input provided by client
       content:
@@ -402,28 +424,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    entityId:
-      name: entityId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: The unique identifier of the entity
   securitySchemes:
     Authorization:
       type: http

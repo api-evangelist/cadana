@@ -187,110 +187,16 @@ paths:
                 $ref: '#/components/schemas/RequiredFieldsResponse'
 components:
   schemas:
-    RequiredField:
+    Pagination:
       type: object
-      description: A single field required for tax calculation and/or statutory filing.
       properties:
-        key:
-          type: string
-          description: Machine-readable field identifier, unique within a jurisdiction
-          example: taxId
-        name:
-          type: string
-          description: Human-readable field label, suitable for form rendering
-          example: RFC (Registro Federal de Contribuyentes)
-        description:
-          type: string
-          description: What this field is used for, with legislative context where relevant
-          example: SAT-issued RFC, required on all ISR withholding returns
-        type:
-          type: string
-          enum:
+        nextCursor:
+          type:
           - string
-          - number
-          - boolean
-          - date
-          - document
-          description: 'Data type of the field value. For `document` fields the value is a
-
-            `fileId`: request an upload URL with `POST /v1/files/upload-url`
-
-            (Workforce Management API, purpose `statutory-document`), HTTP PUT
-
-            the file bytes to the returned `putUrl`, then submit the `fileId`
-
-            as the field value. GET responses return document fields as an
-
-            object with a presigned download `url`.
-
-            '
-          example: string
-        required:
+          - 'null'
+          description: Pass as `cursor` parameter to get the next page
+        hasMore:
           type: boolean
-          description: Whether the field is mandatory. Conditional fields may be required only when their condition is met.
-          example: true
-        entity:
-          type: string
-          enum:
-          - person
-          - business
-          description: "Who this field belongs to:\n- `person` — Worker-level data. Submit filing-scoped fields via\n  `PUT /v1/statutory/persons/{id}/fields/{countryCode}`.\n- `business` — Employer-level data. Submit filing-scoped fields via\n  `PUT /v1/statutory/businesses/{id}/fields/{countryCode}`.\n"
-          example: person
-        scope:
-          type: array
-          items:
-            type: string
-            enum:
-            - calculation
-            - filing
-          description: "What this field is used for:\n- `calculation` — Required by the tax engine for gross-to-net computation.\n  Submit via `PUT /v1/persons/{id}/taxProfile`.\n- `filing` — Required on the statutory return submitted to the authority.\n  Submit via the statutory fields endpoints.\nA field can appear in both scopes — submit to both endpoints.\n"
-          example:
-          - calculation
-          - filing
-        enum:
-          type: array
-          items:
-            type: string
-          description: Allowed values, when the field accepts a fixed set of options
-        pattern:
-          type: string
-          description: Regex pattern for string validation
-          example: ^[A-Z&Ñ]{4}\d{6}[A-Z0-9]{3}$
-        condition:
-          $ref: '#/components/schemas/FieldCondition'
-      required:
-      - key
-      - name
-      - description
-      - type
-      - required
-      - entity
-      - scope
-    StatutoryBenefit:
-      type: object
-      properties:
-        name:
-          type: string
-          example: IMSS Employer-Employee Contributions
-        description:
-          type: string
-          example: Mandatory social security contribution under the Ley del Seguro Social (LSS)
-        employerRate:
-          type: number
-          format: decimal
-          example: 0.1
-          description: Employer contribution rate (as decimal)
-        employeeRate:
-          type: number
-          format: decimal
-          example: 0.08
-          description: Employee contribution rate (as decimal)
-        authority:
-          type: string
-          example: IMSS
-        legislativeReference:
-          type: string
-          example: Ley del Seguro Social (LSS), Artículo 39
     Jurisdiction:
       type: object
       properties:
@@ -353,29 +259,6 @@ components:
       required:
       - field
       - equals
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: invalid_request
-            message:
-              type: string
-              example: countryCode is required
-            details:
-              type:
-              - array
-              - 'null'
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                  message:
-                    type: string
     ComplianceInfo:
       type: object
       properties:
@@ -406,17 +289,6 @@ components:
             approval:
               type: string
               example: 3 business days before pay date
-    TerminationInfo:
-      type: object
-      properties:
-        noticeRequired:
-          type: boolean
-        description:
-          type: string
-        finalPayIncludes:
-          type: array
-          items:
-            type: string
     JurisdictionSummary:
       type: object
       description: 'Summary of a supported jurisdiction. Use `GET /jurisdictions` to retrieve the current list.
@@ -451,16 +323,6 @@ components:
           - coming_soon
           description: Whether Cadana actively files in this jurisdiction
           example: live
-    Pagination:
-      type: object
-      properties:
-        nextCursor:
-          type:
-          - string
-          - 'null'
-          description: Pass as `cursor` parameter to get the next page
-        hasMore:
-          type: boolean
     RequiredFieldsResponse:
       type: object
       description: 'Flat list of fields required for tax calculation and/or statutory filing
@@ -563,6 +425,144 @@ components:
           type: string
           description: Citation to the law requiring this filing
           example: Ley del Impuesto Sobre la Renta (LISR), Artículo 96
+    TerminationInfo:
+      type: object
+      properties:
+        noticeRequired:
+          type: boolean
+        description:
+          type: string
+        finalPayIncludes:
+          type: array
+          items:
+            type: string
+    StatutoryBenefit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: IMSS Employer-Employee Contributions
+        description:
+          type: string
+          example: Mandatory social security contribution under the Ley del Seguro Social (LSS)
+        employerRate:
+          type: number
+          format: decimal
+          example: 0.1
+          description: Employer contribution rate (as decimal)
+        employeeRate:
+          type: number
+          format: decimal
+          example: 0.08
+          description: Employee contribution rate (as decimal)
+        authority:
+          type: string
+          example: IMSS
+        legislativeReference:
+          type: string
+          example: Ley del Seguro Social (LSS), Artículo 39
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type:
+              - array
+              - 'null'
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+    RequiredField:
+      type: object
+      description: A single field required for tax calculation and/or statutory filing.
+      properties:
+        key:
+          type: string
+          description: Machine-readable field identifier, unique within a jurisdiction
+          example: taxId
+        name:
+          type: string
+          description: Human-readable field label, suitable for form rendering
+          example: RFC (Registro Federal de Contribuyentes)
+        description:
+          type: string
+          description: What this field is used for, with legislative context where relevant
+          example: SAT-issued RFC, required on all ISR withholding returns
+        type:
+          type: string
+          enum:
+          - string
+          - number
+          - boolean
+          - date
+          - document
+          description: 'Data type of the field value. For `document` fields the value is a
+
+            `fileId`: request an upload URL with `POST /v1/files/upload-url`
+
+            (Workforce Management API, purpose `statutory-document`), HTTP PUT
+
+            the file bytes to the returned `putUrl`, then submit the `fileId`
+
+            as the field value. GET responses return document fields as an
+
+            object with a presigned download `url`.
+
+            '
+          example: string
+        required:
+          type: boolean
+          description: Whether the field is mandatory. Conditional fields may be required only when their condition is met.
+          example: true
+        entity:
+          type: string
+          enum:
+          - person
+          - business
+          description: "Who this field belongs to:\n- `person` — Worker-level data. Submit filing-scoped fields via\n  `PUT /v1/statutory/persons/{id}/fields/{countryCode}`.\n- `business` — Employer-level data. Submit filing-scoped fields via\n  `PUT /v1/statutory/businesses/{id}/fields/{countryCode}`.\n"
+          example: person
+        scope:
+          type: array
+          items:
+            type: string
+            enum:
+            - calculation
+            - filing
+          description: "What this field is used for:\n- `calculation` — Required by the tax engine for gross-to-net computation.\n  Submit via `PUT /v1/persons/{id}/taxProfile`.\n- `filing` — Required on the statutory return submitted to the authority.\n  Submit via the statutory fields endpoints.\nA field can appear in both scopes — submit to both endpoints.\n"
+          example:
+          - calculation
+          - filing
+        enum:
+          type: array
+          items:
+            type: string
+          description: Allowed values, when the field accepts a fixed set of options
+        pattern:
+          type: string
+          description: Regex pattern for string validation
+          example: ^[A-Z&Ñ]{4}\d{6}[A-Z0-9]{3}$
+        condition:
+          $ref: '#/components/schemas/FieldCondition'
+      required:
+      - key
+      - name
+      - description
+      - type
+      - required
+      - entity
+      - scope
   parameters:
     CountryCode:
       name: country_code

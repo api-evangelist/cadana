@@ -163,149 +163,7 @@ paths:
     - url: https://dev-api.cadanapay.com
       description: Dev Server
 components:
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    GetBalancesResponse:
-      description: Get user account balances
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/balance'
-              node:
-                $ref: '#/components/schemas/node'
-          examples:
-            balances:
-              summary: Example user balances
-              value:
-                data:
-                - id: 517075a2-17db-469f-9481-eb8347cb920c
-                  currency: USD
-                  balance: 703448
-                  available: 703448
-                  processing: 0
-                - id: 6a8f81b3-28ec-470c-a592-fc9458dc031d
-                  currency: EUR
-                  balance: 248912
-                  available: 248912
-                  processing: 0
-                node:
-                  previous: null
-                  next: null
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetBalancesResponse_2:
-      description: get wallet balances
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/balance_2'
-    GetFundingDetailsResponse:
-      description: Funding details for the account
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/FundingDetails'
-          examples:
-            us_ach:
-              summary: US ACH funding details
-              value:
-                type: us_ach
-                currency: USD
-                details:
-                  accountName: Acme Corp
-                  accountNumber: '123456789'
-                  routingNumber: '000000000'
-                  bankName: Example Bank
-                  accountType: Checking
-            iban:
-              summary: IBAN funding details
-              value:
-                type: iban
-                currency: EUR
-                details:
-                  accountName: Acme Corp
-                  iban: DE00000000000000000000
-                  swiftCode: EXMPDEFF
-                  bankName: Example Bank
-                  country: DE
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    userId:
-      name: userId
-      in: path
-      description: The unique identifier for the user
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: c06f3427-3bbe-4d70-9a54-28acda267e48
-    businessId:
-      name: businessId
-      in: path
-      description: The unique identifier for the business
-      required: true
-      schema:
-        type: string
   schemas:
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-          example: null
-        next:
-          type:
-          - string
-          - 'null'
-          example: ca_123
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -343,6 +201,20 @@ components:
           type: integer
           description: Processing balance in the lowest denomination of the currency.
           example: 0
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+          example: null
+        next:
+          type:
+          - string
+          - 'null'
+          example: ca_123
     InternalError:
       description: Internal server error
       allOf:
@@ -350,6 +222,42 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    balance_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: value in lowest denomination
+          example: 703448
+        available:
+          type: integer
+          description: value in lowest denomination
+          example: 703448
+        processing:
+          type: integer
+          description: value in lowest denomination
+          example: 0
     NotFoundError:
       description: Not Found
       allOf:
@@ -425,28 +333,120 @@ components:
           type: string
           description: Memo or reference (for crypto type)
           example: '123456'
-    balance_2:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 517075a2-17db-469f-9481-eb8347cb920c
-        currency:
-          type: string
-          example: USD
-        balance:
-          type: integer
-          description: value in lowest denomination
-          example: 703448
-        available:
-          type: integer
-          description: value in lowest denomination
-          example: 703448
-        processing:
-          type: integer
-          description: value in lowest denomination
-          example: 0
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+  responses:
+    GetBalancesResponse:
+      description: Get user account balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/balance'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            balances:
+              summary: Example user balances
+              value:
+                data:
+                - id: 517075a2-17db-469f-9481-eb8347cb920c
+                  currency: USD
+                  balance: 703448
+                  available: 703448
+                  processing: 0
+                - id: 6a8f81b3-28ec-470c-a592-fc9458dc031d
+                  currency: EUR
+                  balance: 248912
+                  available: 248912
+                  processing: 0
+                node:
+                  previous: null
+                  next: null
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetBalancesResponse_2:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/balance_2'
+    GetFundingDetailsResponse:
+      description: Funding details for the account
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FundingDetails'
+          examples:
+            us_ach:
+              summary: US ACH funding details
+              value:
+                type: us_ach
+                currency: USD
+                details:
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+            iban:
+              summary: IBAN funding details
+              value:
+                type: iban
+                currency: EUR
+                details:
+                  accountName: Acme Corp
+                  iban: DE00000000000000000000
+                  swiftCode: EXMPDEFF
+                  bankName: Example Bank
+                  country: DE
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
   securitySchemes:
     Authorization:
       type: http

@@ -88,59 +88,25 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
+  schemas:
     BadRequestError:
       description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetPersonInstantPaysResponse:
-      description: get person instant pay transactions
-      content:
-        application/json:
-          schema:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
             type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/instantPay'
-    GetPersonIPSettingResponse:
-      description: get person instant pay setting response
-      content:
-        application/json:
-          schema:
-            description: Get person instant pay setting
-            allOf:
-            - $ref: '#/components/schemas/instantPaySetting'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-  schemas:
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     instantPay:
       type: object
       properties:
@@ -161,6 +127,39 @@ components:
           format: int64
           example: 1693782273
           description: The Unix timestamp indicating when the transaction was initiated
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    UpdatePersonIPSettingRequest:
+      description: Update person instant pay settings payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/instantPaySetting'
+    instantPaySetting:
+      type: object
+      description: Person's instant pay setting
+      properties:
+        accessPercentage:
+          type: number
+          example: 50
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
     NotFoundError:
       description: Not Found
       allOf:
@@ -182,51 +181,45 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-    instantPaySetting:
-      type: object
-      description: Person's instant pay setting
-      properties:
-        accessPercentage:
-          type: number
-          example: 50
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+  responses:
+    GetPersonIPSettingResponse:
+      description: get person instant pay setting response
+      content:
+        application/json:
+          schema:
+            description: Get person instant pay setting
+            allOf:
+            - $ref: '#/components/schemas/instantPaySetting'
+    GetPersonInstantPaysResponse:
+      description: get person instant pay transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/instantPay'
     BadRequestError:
       description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
     InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    UpdatePersonIPSettingRequest:
-      description: Update person instant pay settings payload
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/instantPaySetting'
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     personId:
       name: personId
       in: path
@@ -235,6 +228,13 @@ components:
       schema:
         type: string
         format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

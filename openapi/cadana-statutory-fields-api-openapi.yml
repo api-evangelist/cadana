@@ -173,7 +173,28 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    PersonId:
+      name: person_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Person identifier
+      example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
     CountryCode:
       name: country_code
       in: path
@@ -183,13 +204,6 @@ components:
         pattern: ^[A-Z]{2}$
       description: ISO 3166-1 alpha-2 country code
       example: MX
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     BusinessIdPath:
       name: business_id
       in: path
@@ -198,117 +212,14 @@ components:
         type: string
       description: Business identifier
       example: 4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8
-    PersonId:
-      name: person_id
-      in: path
-      required: true
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
       schema:
         type: string
-      description: Person identifier
-      example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: invalid_request
-            message:
-              type: string
-              example: countryCode is required
-            details:
-              type:
-              - array
-              - 'null'
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                  message:
-                    type: string
-    DocumentFieldValue:
-      type: object
-      description: 'Value of a `document`-typed statutory field in GET responses.
-
-        The download URL is presigned and expires after ~15 minutes — fetch a
-
-        fresh one when needed rather than storing it.
-
-        '
-      properties:
-        fileId:
-          type: string
-          format: uuid
-          description: The file ID submitted for this field
-          example: f1e2d3c4-b5a6-4789-9abc-def012345678
-        url:
-          type: string
-          description: Short-lived presigned download URL for the document
-          example: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
-        fileUploaded:
-          type: boolean
-          description: Whether the file content exists in storage
-          example: true
-      required:
-      - fileId
-      - url
-    PutStatutoryFieldsRequest:
-      type: object
-      required:
-      - fields
-      description: Request body for submitting statutory filing fields.
-      properties:
-        fields:
-          type: object
-          additionalProperties:
-            oneOf:
-            - type: string
-            - type: object
-              properties:
-                fileId:
-                  type: string
-                  format: uuid
-              required:
-              - fileId
-          description: 'Key-value pairs of field data. Keys must match the `key` values
-
-            from the jurisdiction''s required-fields response.
-
-
-            For `document`-typed fields, the value is the `fileId` returned by
-
-            `POST /v1/files/upload-url` (purpose `statutory-document`) after the
-
-            file has been uploaded — either as a bare string or as an object
-
-            `{"fileId": "..."}`. The request is rejected with `400` if the
-
-            fileId is unknown, the file has not been uploaded yet, or it was
-
-            uploaded with a different purpose.
-
-            '
-          example:
-            steuerID: '97148835200'
-            personengruppenschluessel: '101'
-            idCard: f1e2d3c4-b5a6-4789-9abc-def012345678
     StatutoryFieldsResponse:
       type: object
       description: 'Merged view of statutory filing data for an entity. Combines fields
@@ -353,6 +264,95 @@ components:
               fileId: f1e2d3c4-b5a6-4789-9abc-def012345678
               url: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
               fileUploaded: true
+    PutStatutoryFieldsRequest:
+      type: object
+      required:
+      - fields
+      description: Request body for submitting statutory filing fields.
+      properties:
+        fields:
+          type: object
+          additionalProperties:
+            oneOf:
+            - type: string
+            - type: object
+              properties:
+                fileId:
+                  type: string
+                  format: uuid
+              required:
+              - fileId
+          description: 'Key-value pairs of field data. Keys must match the `key` values
+
+            from the jurisdiction''s required-fields response.
+
+
+            For `document`-typed fields, the value is the `fileId` returned by
+
+            `POST /v1/files/upload-url` (purpose `statutory-document`) after the
+
+            file has been uploaded — either as a bare string or as an object
+
+            `{"fileId": "..."}`. The request is rejected with `400` if the
+
+            fileId is unknown, the file has not been uploaded yet, or it was
+
+            uploaded with a different purpose.
+
+            '
+          example:
+            steuerID: '97148835200'
+            personengruppenschluessel: '101'
+            idCard: f1e2d3c4-b5a6-4789-9abc-def012345678
+    DocumentFieldValue:
+      type: object
+      description: 'Value of a `document`-typed statutory field in GET responses.
+
+        The download URL is presigned and expires after ~15 minutes — fetch a
+
+        fresh one when needed rather than storing it.
+
+        '
+      properties:
+        fileId:
+          type: string
+          format: uuid
+          description: The file ID submitted for this field
+          example: f1e2d3c4-b5a6-4789-9abc-def012345678
+        url:
+          type: string
+          description: Short-lived presigned download URL for the document
+          example: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
+        fileUploaded:
+          type: boolean
+          description: Whether the file content exists in storage
+          example: true
+      required:
+      - fileId
+      - url
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type:
+              - array
+              - 'null'
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
   securitySchemes:
     Authorization:
       type: http

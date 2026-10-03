@@ -310,63 +310,7 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-  parameters:
-    reimbursementId:
-      name: reimbursementId
-      in: path
-      description: The unique identifier for the reimbursement
-      required: true
-      schema:
-        type: string
-        format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   schemas:
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -421,6 +365,27 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     CreateReimbursementRequest:
       description: Create reimbursement request payload. Identify the worker with exactly one of `userId` or `personId`.
       type: object
@@ -457,6 +422,41 @@ components:
           description: The individual line items that make up the reimbursement.
           items:
             $ref: '#/components/schemas/ReimbursementEntryRequest'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    reimbursementId:
+      name: reimbursementId
+      in: path
+      description: The unique identifier for the reimbursement
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   securitySchemes:
     Authorization:
       type: http

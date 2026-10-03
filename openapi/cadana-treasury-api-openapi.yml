@@ -385,341 +385,21 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
-    ReserveResponse:
-      description: reserve action response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              disbursementId:
-                type: string
-                format: uuid
-                description: The ID of the created disbursement
-                example: 550e8400-e29b-41d4-a716-446655440001
+  schemas:
     BadRequestError:
       description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    GetFundingDetailsResponse:
-      description: Funding details for the account
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FundingDetails'
-          examples:
-            multiple_funding_accounts:
-              summary: Multiple funding accounts in different currencies
-              value:
-                data:
-                - type: ach
-                  currency: USD
-                  accountName: Acme Corp
-                  accountNumber: '123456789'
-                  routingNumber: '000000000'
-                  bankName: Example Bank
-                  accountType: Checking
-                - type: iban
-                  currency: EUR
-                  accountName: Acme Corp
-                  accountNumber: DE00000000000000000000
-                  swiftCode: EXMPDEFF
-                  bankName: Example Bank
-                  country: DE
-            single_funding_account:
-              summary: Single funding account
-              value:
-                data:
-                - type: ach
-                  currency: USD
-                  accountName: Acme Corp
-                  accountNumber: '123456789'
-                  routingNumber: '000000000'
-                  bankName: Example Bank
-                  accountType: Checking
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    CreateBusinessDepositResponse:
-      description: create business deposit response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                $ref: '#/components/schemas/uuid'
-    GetBalancesResponse:
-      description: get wallet balances
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/userBalance'
-    GenerateLinkForExternalAccountResponse:
-      $ref: '#/components/responses/HostedLinkResponse'
-    HostedLinkResponse:
-      description: Common response body for endpoints that return a hosted (link-out) URL.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              url:
-                type: string
-                description: Fully-qualified hosted URL valid until the embedded token expires.
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    GetExternalAccountsResponse:
-      description: List of external accounts linked to a business
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ExternalAccount'
-          example:
-          - id: d43eaff3-bc75-44f6-ac37-3a305192ead6
-            last4: '0000'
-            bankName: Example Bank
-            status: ACTIVE
-            provider: PLAID
-    GetBusinessTransactionsResponse:
-      description: List of business transactions
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BusinessTransaction'
-              node:
-                $ref: '#/components/schemas/node'
-  schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    HostedLinkRequest:
-      type: object
-      description: Common request body for endpoints that generate hosted (link-out) URLs.
-      properties:
-        refreshURL:
-          type: string
-          description: The URL the user will be redirected to if the link is expired
-        returnURL:
-          type: string
-          description: The URL that the user will be redirected to upon leaving or completing the linked flow.
-    swiftDetails:
-      type: object
-      required:
-      - currency
-      - iban
-      - accountName
-      - accountNumber
-      - bankName
-      - swiftCode
-      - address
-      properties:
-        currency:
-          type: string
-          description: The currency of the bank account
-          example: EUR
-        iban:
-          type: string
-          description: The International Bank Account Number
-          example: DE00000000000000000000
-        accountName:
-          type: string
-          description: The name on the bank account
-          example: John Doe
-        accountNumber:
-          type: string
-          description: The bank account number
-          example: '1234567890'
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        swiftCode:
-          type: string
-          description: The SWIFT/BIC code of the bank
-          example: EXMPDEFF
-        address:
-          $ref: '#/components/schemas/address'
-    beneficiaryId:
-      type: object
-      description: ID details for the beneficiary
-      properties:
-        type:
-          type: string
-          enum:
-          - NIT
-          - CC
-          - CE
-          - TI
-          - PASS
-          description: Type of beneficiary ID
-          example: NIT
-        value:
-          type: string
-          description: ID number of the beneficiary
-          example: '123456789'
-    GenerateExternalAccountLinkRequest:
       allOf:
-      - $ref: '#/components/schemas/HostedLinkRequest'
+      - $ref: '#/components/schemas/Error'
       - type: object
         properties:
-          mode:
-            type: string
-            enum:
-            - standard
-            - setup
-            default: standard
-            description: Controls the account linking behavior. "standard" shows the entry page with "Add payment method" button. "setup" skips the entry page and goes directly to bank selection flow.
-    Amount:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: The value of the amount
-          example: '10.00'
-        currency:
-          type: string
-          description: The currency of the asset
-          example: USD
-    ExternalAccount:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the external account
-          example: d43eaff3-bc75-44f6-ac37-3a305192ead6
-        last4:
-          type: string
-          description: Last 4 digits of the account number
-          example: '0000'
-        bankName:
-          type: string
-          description: Name of the bank
-          example: Example Bank
-        status:
-          type: string
-          description: Status of the external account
-          example: ACTIVE
-        hostedVerificationUrl:
-          type: string
-          description: URL for hosted verification if required
-        provider:
-          type: string
-          description: Provider of the external account link
-          example: PLAID
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    wireDetails:
-      type: object
-      description: Wire transfer payment details
-      properties:
-        bankName:
-          type: string
-          description: The name of the bank
-          example: Example Bank
-        accountName:
-          type: string
-          description: The name on the account
-          example: John Doe
-        routingNumber:
-          type: string
-          description: The routing number
-          example: '000000000'
-        accountNumber:
-          type: string
-          description: The account number
-          example: '123456789'
-        address:
-          $ref: '#/components/schemas/address'
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-        next:
-          type:
-          - string
-          - 'null'
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     BusinessTransaction:
       type: object
       description: A business ledger transaction
@@ -784,46 +464,172 @@ components:
           type: string
           format: date
           description: Date of the transaction
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    achDetails:
+    beneficiaryId:
       type: object
+      description: ID details for the beneficiary
       properties:
-        bankName:
+        type:
           type: string
-          description: The name of the bank
-          example: Example Bank
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          description: Type of beneficiary ID
+          example: NIT
+        value:
+          type: string
+          description: ID number of the beneficiary
+          example: '123456789'
+    HostedLinkRequest:
+      type: object
+      description: Common request body for endpoints that generate hosted (link-out) URLs.
+      properties:
+        refreshURL:
+          type: string
+          description: The URL the user will be redirected to if the link is expired
+        returnURL:
+          type: string
+          description: The URL that the user will be redirected to upon leaving or completing the linked flow.
+    swiftDetails:
+      type: object
+      required:
+      - currency
+      - iban
+      - accountName
+      - accountNumber
+      - bankName
+      - swiftCode
+      - address
+      properties:
+        currency:
+          type: string
+          description: The currency of the bank account
+          example: EUR
+        iban:
+          type: string
+          description: The International Bank Account Number
+          example: DE00000000000000000000
         accountName:
           type: string
           description: The name on the bank account
           example: John Doe
-        routingNumber:
-          type: string
-          description: The ACH routing number of the bank
-          example: '000000000'
         accountNumber:
           type: string
           description: The bank account number
           example: '1234567890'
-        accountType:
+        bankName:
           type: string
-          description: The type of bank account (Checking or Savings)
-          example: Checking
-        provider:
+          description: The name of the bank
+          example: Example Bank
+        swiftCode:
           type: string
-          description: The platform providing this account (e.g., wise)
-          example: wise
+          description: The SWIFT/BIC code of the bank
+          example: EXMPDEFF
         address:
           $ref: '#/components/schemas/address'
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          description: The name associated with the mobile money account
+          example: John Doe
+        provider:
+          type: string
+          description: The name of the mobile money provider
+          example: MTN
+        providerCode:
+          type: string
+          description: The code identifying the mobile money provider
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          description: The currency of the mobile money account
+          example: GHS
+    walletDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of wallet account
+          enum:
+          - user
+          - business
+          example: user
+        identifier:
+          type: string
+          description: The unique identifier for the wallet account
+          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
+        currency:
+          type: string
+          description: The currency of the wallet
+          example: USD
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    ReserveRequest:
+      type: object
+      required:
+      - action
+      - type
+      - personId
+      - amount
+      - idempotencyKey
+      - description
+      properties:
+        action:
+          type: string
+          enum:
+          - LOCK
+          - RELEASE
+          description: The reserve action to perform
+          example: LOCK
+        type:
+          type: string
+          enum:
+          - SECURITY_DEPOSIT
+          - SEVERANCE
+          - NOTICE_PERIOD
+          description: The type of reserve
+          example: SECURITY_DEPOSIT
+        personId:
+          type: string
+          format: uuid
+          description: The person this reserve is for
+          example: 550e8400-e29b-41d4-a716-446655440000
+        amount:
+          $ref: '#/components/schemas/Amount'
+        idempotencyKey:
+          type: string
+          format: uuid
+          description: Idempotency key for the request
+          example: 550e8400-e29b-41d4-a716-446655440002
+        description:
+          type: string
+          description: Description of the reserve action
+          example: Security deposit for new employee
     bankDetails:
       type: object
       properties:
@@ -885,37 +691,20 @@ components:
           format: email
           description: The email address of the account holder
           example: john.doe@example.com
-    phoneNumber:
+    Amount:
       type: object
-      description: Person's phone number
+      required:
+      - value
+      - currency
       properties:
-        countryCode:
+        value:
           type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    momoDetails:
-      type: object
-      properties:
-        accountName:
-          type: string
-          description: The name associated with the mobile money account
-          example: John Doe
-        provider:
-          type: string
-          description: The name of the mobile money provider
-          example: MTN
-        providerCode:
-          type: string
-          description: The code identifying the mobile money provider
-          example: MTN
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
+          description: The value of the amount
+          example: '10.00'
         currency:
           type: string
-          description: The currency of the mobile money account
-          example: GHS
+          description: The currency of the asset
+          example: USD
     CreateBusinessDepositRequest:
       description: Create a deposit to add funds to a business account
       type: object
@@ -950,13 +739,233 @@ components:
           type: boolean
           description: Whether to suppress email notifications (optional, defaults to false)
           default: false
-    NotFoundError:
-      description: Not Found
+    wireDetails:
+      type: object
+      description: Wire transfer payment details
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The routing number
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The account number
+          example: '123456789'
+        address:
+          $ref: '#/components/schemas/address'
+    businessTransactionPaymentDetails:
+      type: object
+      description: 'Payment details for a business ledger transaction. Unlike a beneficiary''s payment method, the `preferredMethod` here is a hybrid descriptor: it is either the underlying payment rail used, or a transaction-category label derived from the ledger entry type (for fees, payroll, statutory deposits, interest, etc.).'
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - bank
+          - momo
+          - swift
+          - ach
+          - wire
+          - crypto
+          - card
+          - proxy
+          - Transfer
+          - Payment Fee
+          - Payroll
+          - Payroll Reversal
+          - Subscription Fees
+          - Statutory Deposit
+          - Payroll Fees
+          - Interest
+          description: 'The payment rail or transaction category for this transaction. Wallet-to-wallet movements (including deposits and internal transfers) are always reported as `Transfer` rather than `wallet`. Ledger entries without an underlying payment rail use a category label: `Payment Fee`, `Payroll`, `Payroll Reversal`, `Subscription Fees`, `Statutory Deposit`, `Payroll Fees`, or `Interest`.'
+          example: Payroll
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
+        swift:
+          $ref: '#/components/schemas/swiftDetails'
+        ach:
+          $ref: '#/components/schemas/achDetails'
+        wallet:
+          $ref: '#/components/schemas/walletDetails'
+        wire:
+          $ref: '#/components/schemas/wireDetails'
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+        next:
+          type:
+          - string
+          - 'null'
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    GenerateExternalAccountLinkRequest:
+      allOf:
+      - $ref: '#/components/schemas/HostedLinkRequest'
+      - type: object
+        properties:
+          mode:
+            type: string
+            enum:
+            - standard
+            - setup
+            default: standard
+            description: Controls the account linking behavior. "standard" shows the entry page with "Add payment method" button. "setup" skips the entry page and goes directly to bank selection flow.
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    InternalError:
+      description: Internal server error
       allOf:
       - $ref: '#/components/schemas/Error'
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    userBalance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
+          example: 703448
+        available:
+          type: integer
+          description: Available balance as an integer scaled by 100
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance as an integer scaled by 100
+          example: 0
+        reserves:
+          type:
+          - integer
+          - 'null'
+          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
+          example: 0
+    ExternalAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the external account
+          example: d43eaff3-bc75-44f6-ac37-3a305192ead6
+        last4:
+          type: string
+          description: Last 4 digits of the account number
+          example: '0000'
+        bankName:
+          type: string
+          description: Name of the bank
+          example: Example Bank
+        status:
+          type: string
+          description: Status of the external account
+          example: ACTIVE
+        hostedVerificationUrl:
+          type: string
+          description: URL for hosted verification if required
+        provider:
+          type: string
+          description: Provider of the external account link
+          example: PLAID
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    achDetails:
+      type: object
+      properties:
+        bankName:
+          type: string
+          description: The name of the bank
+          example: Example Bank
+        accountName:
+          type: string
+          description: The name on the bank account
+          example: John Doe
+        routingNumber:
+          type: string
+          description: The ACH routing number of the bank
+          example: '000000000'
+        accountNumber:
+          type: string
+          description: The bank account number
+          example: '1234567890'
+        accountType:
+          type: string
+          description: The type of bank account (Checking or Savings)
+          example: Checking
+        provider:
+          type: string
+          description: The platform providing this account (e.g., wise)
+          example: wise
+        address:
+          $ref: '#/components/schemas/address'
     FundingDetails:
       type: object
       required:
@@ -1025,154 +1034,138 @@ components:
           type: string
           description: Memo or reference (for crypto type)
           example: '123456'
-    userBalance:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 517075a2-17db-469f-9481-eb8347cb920c
-        currency:
-          type: string
-          example: USD
-        balance:
-          type: integer
-          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
-          example: 703448
-        available:
-          type: integer
-          description: Available balance as an integer scaled by 100
-          example: 703448
-        processing:
-          type: integer
-          description: Processing balance as an integer scaled by 100
-          example: 0
-        reserves:
-          type:
-          - integer
-          - 'null'
-          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
-          example: 0
-    walletDetails:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of wallet account
-          enum:
-          - user
-          - business
-          example: user
-        identifier:
-          type: string
-          description: The unique identifier for the wallet account
-          example: 69a2a928-ed49-4e53-92ec-a72b4ee7eacc
-        currency:
-          type: string
-          description: The currency of the wallet
-          example: USD
-    ReserveRequest:
-      type: object
-      required:
-      - action
-      - type
-      - personId
-      - amount
-      - idempotencyKey
-      - description
-      properties:
-        action:
-          type: string
-          enum:
-          - LOCK
-          - RELEASE
-          description: The reserve action to perform
-          example: LOCK
-        type:
-          type: string
-          enum:
-          - SECURITY_DEPOSIT
-          - SEVERANCE
-          - NOTICE_PERIOD
-          description: The type of reserve
-          example: SECURITY_DEPOSIT
-        personId:
-          type: string
-          format: uuid
-          description: The person this reserve is for
-          example: 550e8400-e29b-41d4-a716-446655440000
-        amount:
-          $ref: '#/components/schemas/Amount'
-        idempotencyKey:
-          type: string
-          format: uuid
-          description: Idempotency key for the request
-          example: 550e8400-e29b-41d4-a716-446655440002
-        description:
-          type: string
-          description: Description of the reserve action
-          example: Security deposit for new employee
+  responses:
+    GetBalancesResponse:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userBalance'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    ReserveResponse:
+      description: reserve action response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              disbursementId:
+                type: string
+                format: uuid
+                description: The ID of the created disbursement
+                example: 550e8400-e29b-41d4-a716-446655440001
+    GetFundingDetailsResponse:
+      description: Funding details for the account
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FundingDetails'
+          examples:
+            multiple_funding_accounts:
+              summary: Multiple funding accounts in different currencies
+              value:
+                data:
+                - type: ach
+                  currency: USD
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+                - type: iban
+                  currency: EUR
+                  accountName: Acme Corp
+                  accountNumber: DE00000000000000000000
+                  swiftCode: EXMPDEFF
+                  bankName: Example Bank
+                  country: DE
+            single_funding_account:
+              summary: Single funding account
+              value:
+                data:
+                - type: ach
+                  currency: USD
+                  accountName: Acme Corp
+                  accountNumber: '123456789'
+                  routingNumber: '000000000'
+                  bankName: Example Bank
+                  accountType: Checking
+    GenerateLinkForExternalAccountResponse:
+      $ref: '#/components/responses/HostedLinkResponse'
     BadRequestError:
       description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    HostedLinkResponse:
+      description: Common response body for endpoints that return a hosted (link-out) URL.
+      content:
+        application/json:
+          schema:
             type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    businessTransactionPaymentDetails:
-      type: object
-      description: 'Payment details for a business ledger transaction. Unlike a beneficiary''s payment method, the `preferredMethod` here is a hybrid descriptor: it is either the underlying payment rail used, or a transaction-category label derived from the ledger entry type (for fees, payroll, statutory deposits, interest, etc.).'
-      required:
-      - preferredMethod
-      properties:
-        preferredMethod:
-          type: string
-          enum:
-          - bank
-          - momo
-          - swift
-          - ach
-          - wire
-          - crypto
-          - card
-          - proxy
-          - Transfer
-          - Payment Fee
-          - Payroll
-          - Payroll Reversal
-          - Subscription Fees
-          - Statutory Deposit
-          - Payroll Fees
-          - Interest
-          description: 'The payment rail or transaction category for this transaction. Wallet-to-wallet movements (including deposits and internal transfers) are always reported as `Transfer` rather than `wallet`. Ledger entries without an underlying payment rail use a category label: `Payment Fee`, `Payroll`, `Payroll Reversal`, `Subscription Fees`, `Statutory Deposit`, `Payroll Fees`, or `Interest`.'
-          example: Payroll
-        momo:
-          $ref: '#/components/schemas/momoDetails'
-        bank:
-          $ref: '#/components/schemas/bankDetails'
-        swift:
-          $ref: '#/components/schemas/swiftDetails'
-        ach:
-          $ref: '#/components/schemas/achDetails'
-        wallet:
-          $ref: '#/components/schemas/walletDetails'
-        wire:
-          $ref: '#/components/schemas/wireDetails'
+            properties:
+              url:
+                type: string
+                description: Fully-qualified hosted URL valid until the embedded token expires.
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    CreateBusinessDepositResponse:
+      description: create business deposit response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    GetBusinessTransactionsResponse:
+      description: List of business transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BusinessTransaction'
+              node:
+                $ref: '#/components/schemas/node'
+    GetExternalAccountsResponse:
+      description: List of external accounts linked to a business
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ExternalAccount'
+          example:
+          - id: d43eaff3-bc75-44f6-ac37-3a305192ead6
+            last4: '0000'
+            bankName: Example Bank
+            status: ACTIVE
+            provider: PLAID
   parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     businessId:
       name: businessId
       in: path
@@ -1180,6 +1173,13 @@ components:
       required: true
       schema:
         type: string
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     externalAccountId:
       name: externalAccountId
       in: path

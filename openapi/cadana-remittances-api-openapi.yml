@@ -194,103 +194,6 @@ paths:
           description: Receipt not yet available
 components:
   schemas:
-    address:
-      type: object
-      required:
-      - line1
-      - city
-      - postalCode
-      - state
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Av. Paseo de la Reforma 10
-        line2:
-          type: string
-          example: Piso 30
-        city:
-          type: string
-          example: Ciudad de México
-        postalCode:
-          type: string
-          example: '06600'
-        state:
-          type: string
-          example: CDMX
-        countryCode:
-          type: string
-          description: ISO 3166-1 alpha-2 country code
-          example: MX
-    RemittanceSummary:
-      type: object
-      description: Status counts for the filtered set of remittances.
-      properties:
-        total:
-          type: integer
-        pending:
-          type: integer
-        processing:
-          type: integer
-        completed:
-          type: integer
-        failed:
-          type: integer
-    bankDetails:
-      type: object
-      properties:
-        accountName:
-          type: string
-          example: SAT — ISR Federal Treasury
-        accountNumber:
-          type: string
-          description: 'Bank account number. For Mexico this is the 18-digit CLABE.
-
-            For other countries, the local account number.
-
-            '
-          example: 012345678901234567
-        accountType:
-          type: string
-          description: e.g., Checking, Savings
-          example: Checking
-        ownerType:
-          type: string
-          description: e.g., individual, business
-          example: business
-        bankCode:
-          type: string
-          description: The bank identification code
-          example: '012'
-        bankName:
-          type: string
-          example: BBVA México
-        branchName:
-          type: string
-          example: Sucursal Reforma
-        sortCode:
-          type: string
-          description: Bank sort code (used in some countries like UK)
-          example: '401234'
-        iban:
-          type: string
-          description: International Bank Account Number
-          example: GB00000000000000000000
-        provider:
-          type: string
-          example: wise
-        currency:
-          type: string
-          example: MXN
-        beneficiaryId:
-          $ref: '#/components/schemas/beneficiaryId'
-        address:
-          $ref: '#/components/schemas/address'
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        email:
-          type: string
-          format: email
     phoneNumber:
       type: object
       required:
@@ -303,23 +206,119 @@ components:
         number:
           type: string
           example: '5512345678'
-    momoDetails:
+    IDResponse:
       type: object
+      description: Response containing the ID of a newly created resource.
       properties:
-        accountName:
+        id:
           type: string
-          example: John Doe
-        provider:
+          example: fil_01HQ3K4N7XYZABC
+    StatusHistoryEntry:
+      type: object
+      description: Records a single status transition on a filing or remittance.
+      properties:
+        from:
           type: string
-          example: MTN
-        providerCode:
+          description: Previous status
+          example: pending
+        to:
           type: string
-          example: MTN
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        currency:
+          description: New status
+          example: in_review
+        timestamp:
+          type: number
+          format: epoch
+          description: Unix epoch timestamp of the transition
+          example: 1709654400
+    beneficiaryId:
+      type: object
+      description: ID details for the beneficiary
+      properties:
+        type:
           type: string
-          example: GHS
+          enum:
+          - NIT
+          - CC
+          - CE
+          - TI
+          - PASS
+          example: NIT
+        value:
+          type: string
+          example: '123456789'
+    CreateRemittanceRequest:
+      type: object
+      required:
+      - businessId
+      - countryCode
+      - filingIds
+      - fundFromCurrency
+      properties:
+        businessId:
+          type: string
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+        filingIds:
+          type: array
+          items:
+            type: string
+          description: 'Filings to remit for. Multiple filings to the same authority
+
+            can be batched into a single remittance.
+
+            '
+        fundFromCurrency:
+          type: string
+          description: Currency to debit from the business balance (auto-converted if needed)
+          example: USD
+        paymentDetails:
+          allOf:
+          - $ref: '#/components/schemas/paymentMethods'
+          description: 'Where Cadana sends the payment. **Optional.** Omit to use Cadana''s
+
+            internal default routing for the authority (recommended when you
+
+            trust Cadana to know the right government account). Provide to
+
+            specify the routing yourself — for example, a Mexican CLABE under
+
+            `bank.accountNumber`. This is the same `paymentMethods` object
+
+            used elsewhere in the API for beneficiaries and vendor payments.
+
+            '
+        paymentReference:
+          type: string
+          description: 'Reference the receiving bank or authority uses to attribute the
+
+            payment to your filing. If omitted, Cadana uses the linked filing''s
+
+            `filingReference` (e.g., the Línea de Captura in Mexico). Provide
+
+            explicitly when the bank reference differs from the filing
+
+            reference.
+
+            '
+          example: 0123456ABCD7890EF
+    paymentMethods:
+      type: object
+      required:
+      - preferredMethod
+      properties:
+        preferredMethod:
+          type: string
+          enum:
+          - momo
+          - bank
+          description: The preferred payment method type
+          example: bank
+        momo:
+          $ref: '#/components/schemas/momoDetails'
+        bank:
+          $ref: '#/components/schemas/bankDetails'
     Remittance:
       type: object
       description: 'Full remittance detail returned by `GET /v1/statutory/remittances/{id}`.
@@ -415,39 +414,120 @@ components:
           format: epoch
           description: Unix epoch timestamp
           example: 1709280000
-    StatusHistoryEntry:
+    RemittanceSummary:
       type: object
-      description: Records a single status transition on a filing or remittance.
+      description: Status counts for the filtered set of remittances.
       properties:
-        from:
+        total:
+          type: integer
+        pending:
+          type: integer
+        processing:
+          type: integer
+        completed:
+          type: integer
+        failed:
+          type: integer
+    bankDetails:
+      type: object
+      properties:
+        accountName:
           type: string
-          description: Previous status
-          example: pending
-        to:
+          example: SAT — ISR Federal Treasury
+        accountNumber:
           type: string
-          description: New status
-          example: in_review
-        timestamp:
-          type: number
-          format: epoch
-          description: Unix epoch timestamp of the transition
-          example: 1709654400
-    paymentMethods:
+          description: 'Bank account number. For Mexico this is the 18-digit CLABE.
+
+            For other countries, the local account number.
+
+            '
+          example: 012345678901234567
+        accountType:
+          type: string
+          description: e.g., Checking, Savings
+          example: Checking
+        ownerType:
+          type: string
+          description: e.g., individual, business
+          example: business
+        bankCode:
+          type: string
+          description: The bank identification code
+          example: '012'
+        bankName:
+          type: string
+          example: BBVA México
+        branchName:
+          type: string
+          example: Sucursal Reforma
+        sortCode:
+          type: string
+          description: Bank sort code (used in some countries like UK)
+          example: '401234'
+        iban:
+          type: string
+          description: International Bank Account Number
+          example: GB00000000000000000000
+        provider:
+          type: string
+          example: wise
+        currency:
+          type: string
+          example: MXN
+        beneficiaryId:
+          $ref: '#/components/schemas/beneficiaryId'
+        address:
+          $ref: '#/components/schemas/address'
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        email:
+          type: string
+          format: email
+    address:
       type: object
       required:
-      - preferredMethod
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
       properties:
-        preferredMethod:
+        line1:
           type: string
-          enum:
-          - momo
-          - bank
-          description: The preferred payment method type
-          example: bank
-        momo:
-          $ref: '#/components/schemas/momoDetails'
-        bank:
-          $ref: '#/components/schemas/bankDetails'
+          example: Av. Paseo de la Reforma 10
+        line2:
+          type: string
+          example: Piso 30
+        city:
+          type: string
+          example: Ciudad de México
+        postalCode:
+          type: string
+          example: '06600'
+        state:
+          type: string
+          example: CDMX
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: MX
+    momoDetails:
+      type: object
+      properties:
+        accountName:
+          type: string
+          example: John Doe
+        provider:
+          type: string
+          example: MTN
+        providerCode:
+          type: string
+          example: MTN
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        currency:
+          type: string
+          example: GHS
     Error:
       type: object
       properties:
@@ -509,95 +589,15 @@ components:
           type: number
           format: epoch
           example: 1709280000
-    CreateRemittanceRequest:
-      type: object
-      required:
-      - businessId
-      - countryCode
-      - filingIds
-      - fundFromCurrency
-      properties:
-        businessId:
-          type: string
-        countryCode:
-          type: string
-          description: ISO 3166-1 alpha-2 country code
-          example: MX
-        filingIds:
-          type: array
-          items:
-            type: string
-          description: 'Filings to remit for. Multiple filings to the same authority
-
-            can be batched into a single remittance.
-
-            '
-        fundFromCurrency:
-          type: string
-          description: Currency to debit from the business balance (auto-converted if needed)
-          example: USD
-        paymentDetails:
-          allOf:
-          - $ref: '#/components/schemas/paymentMethods'
-          description: 'Where Cadana sends the payment. **Optional.** Omit to use Cadana''s
-
-            internal default routing for the authority (recommended when you
-
-            trust Cadana to know the right government account). Provide to
-
-            specify the routing yourself — for example, a Mexican CLABE under
-
-            `bank.accountNumber`. This is the same `paymentMethods` object
-
-            used elsewhere in the API for beneficiaries and vendor payments.
-
-            '
-        paymentReference:
-          type: string
-          description: 'Reference the receiving bank or authority uses to attribute the
-
-            payment to your filing. If omitted, Cadana uses the linked filing''s
-
-            `filingReference` (e.g., the Línea de Captura in Mexico). Provide
-
-            explicitly when the bank reference differs from the filing
-
-            reference.
-
-            '
-          example: 0123456ABCD7890EF
-    IDResponse:
-      type: object
-      description: Response containing the ID of a newly created resource.
-      properties:
-        id:
-          type: string
-          example: fil_01HQ3K4N7XYZABC
-    beneficiaryId:
-      type: object
-      description: ID details for the beneficiary
-      properties:
-        type:
-          type: string
-          enum:
-          - NIT
-          - CC
-          - CE
-          - TI
-          - PASS
-          example: NIT
-        value:
-          type: string
-          example: '123456789'
   responses:
-    NotFound:
-      description: Resource not found
+    BadRequest:
+      description: Invalid request parameters
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid request parameters
+    NotFound:
+      description: Resource not found
       content:
         application/json:
           schema:

@@ -63,61 +63,7 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
   schemas:
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -139,6 +85,27 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
     SandboxDepositRequest:
       description: Deposit funds to a business in sandbox
       type: object
@@ -151,14 +118,21 @@ components:
           example: Payroll 10/10
         value:
           $ref: '#/components/schemas/amount'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
   parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     userId:
       name: userId
       in: path
@@ -167,6 +141,32 @@ components:
       schema:
         type: string
         format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   securitySchemes:
     Authorization:
       type: http

@@ -168,6 +168,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
     GetMilestonesResponse:
       description: list of a contractor's milestones
       content:
@@ -176,27 +182,25 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Milestone'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
   schemas:
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     UpdateMilestoneRequest:
       type: object
       required:
@@ -218,69 +222,6 @@ components:
           description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); replace the milestone's documents
           items:
             $ref: '#/components/schemas/uuid'
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    AddMilestoneRequest:
-      type: object
-      required:
-      - title
-      - amount
-      properties:
-        title:
-          type: string
-          description: Milestone title; also used as the invoice line-item description on completion
-          example: Design phase
-        description:
-          type: string
-          description: Optional milestone description; used as the invoice note on completion
-        amount:
-          $ref: '#/components/schemas/amount'
-        dueDate:
-          type: string
-          description: Optional due date (YYYY-MM-DD)
-          example: '2026-09-30'
-        documentIds:
-          type: array
-          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); resolved to stored documents
-          items:
-            $ref: '#/components/schemas/uuid'
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     InternalError:
       description: Internal server error
       allOf:
@@ -288,6 +229,20 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
     Milestone:
       type: object
       properties:
@@ -337,14 +292,52 @@ components:
         updatedTimestamp:
           type: integer
           format: int64
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    AddMilestoneRequest:
+      type: object
+      required:
+      - title
+      - amount
+      properties:
+        title:
+          type: string
+          description: Milestone title; also used as the invoice line-item description on completion
+          example: Design phase
+        description:
+          type: string
+          description: Optional milestone description; used as the invoice note on completion
+        amount:
+          $ref: '#/components/schemas/amount'
+        dueDate:
+          type: string
+          description: Optional due date (YYYY-MM-DD)
+          example: '2026-09-30'
+        documentIds:
+          type: array
+          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); resolved to stored documents
+          items:
+            $ref: '#/components/schemas/uuid'
   parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     personId:
       name: personId
       in: path
@@ -353,6 +346,13 @@ components:
       schema:
         type: string
         format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     milestoneId:
       name: milestoneId
       in: path

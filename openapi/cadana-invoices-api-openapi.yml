@@ -333,123 +333,32 @@ paths:
       security:
       - Authorization: []
 components:
-  responses:
-    GetInvoiceUrlResponse:
-      description: get invoice url response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              fileUrl:
-                type: string
-                format: uri
-                description: Short-lived URL for the invoice PDF
-                example: https://cadana.com/file/124
-              expiresAt:
-                type: integer
-                format: int64
-                description: Unix timestamp when the URL expires
-                example: 1710590400
-          examples:
-            invoiceUrlResponse:
-              $ref: '#/components/examples/invoiceUrlResponse'
+  schemas:
     BadRequestError:
       description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetInvoiceResponse:
-      description: get invoice response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/invoice'
-          examples:
-            invoiceResponse:
-              $ref: '#/components/examples/invoiceResponse'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-  parameters:
-    invoiceId:
-      name: invoiceId
-      in: path
-      description: The unique identifier for the invoice
-      required: true
-      schema:
-        type: string
-        format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-  schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    invoiceLineItem:
-      type: object
-      description: A line item on an invoice
-      properties:
-        personId:
-          $ref: '#/components/schemas/uuid'
-          description: Person ID (for payroll items)
-        description:
-          type: string
-          example: John Doe
-        category:
-          type: string
-          description: Line-item category. Direct-employment payrolls produce `NET_PAYROLL` plus fee items; EOR payrolls produce `GROSS_PAYROLL` and `EMPLOYER_CONTRIBUTION`.
-          enum:
-          - NET_PAYROLL
-          - GROSS_PAYROLL
-          - EMPLOYER_CONTRIBUTION
-          - PAYMENT_PROCESSING_FEE
-          - CONTRACTOR_FEE
-          - EMPLOYEE_FEE
-          example: NET_PAYROLL
-        amount:
-          $ref: '#/components/schemas/amount'
-          description: Unit amount in base currency
-        originalAmount:
-          $ref: '#/components/schemas/amount'
-          description: Amount in original currency (if different from base)
-        fxRate:
-          type: number
-          format: float
-          description: Exchange rate applied (if currency conversion occurred)
-          example: 58.21
-        quantity:
-          type: integer
-          example: 1
-        total:
-          $ref: '#/components/schemas/amount'
-          description: Total amount in base currency
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     amount:
       type: object
       required:
@@ -464,17 +373,6 @@ components:
           type: string
           description: currency
           example: USD
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     invoice:
       type: object
       description: An invoice document
@@ -563,6 +461,44 @@ components:
           format: int64
           example: 1764339673
           description: Unix timestamp when invoice was last updated
+    invoiceLineItem:
+      type: object
+      description: A line item on an invoice
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+          description: Person ID (for payroll items)
+        description:
+          type: string
+          example: John Doe
+        category:
+          type: string
+          description: Line-item category. Direct-employment payrolls produce `NET_PAYROLL` plus fee items; EOR payrolls produce `GROSS_PAYROLL` and `EMPLOYER_CONTRIBUTION`.
+          enum:
+          - NET_PAYROLL
+          - GROSS_PAYROLL
+          - EMPLOYER_CONTRIBUTION
+          - PAYMENT_PROCESSING_FEE
+          - CONTRACTOR_FEE
+          - EMPLOYEE_FEE
+          example: NET_PAYROLL
+        amount:
+          $ref: '#/components/schemas/amount'
+          description: Unit amount in base currency
+        originalAmount:
+          $ref: '#/components/schemas/amount'
+          description: Amount in original currency (if different from base)
+        fxRate:
+          type: number
+          format: float
+          description: Exchange rate applied (if currency conversion occurred)
+          example: 58.21
+        quantity:
+          type: integer
+          example: 1
+        total:
+          $ref: '#/components/schemas/amount'
+          description: Total amount in base currency
     phoneNumber:
       type: object
       description: Person's phone number
@@ -573,27 +509,13 @@ components:
         number:
           type: string
           example: '2345678901'
-    NotFoundError:
-      description: Not Found
+    InternalError:
+      description: Internal server error
       allOf:
       - $ref: '#/components/schemas/Error'
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     invoiceParty:
       type: object
       description: Details of a party on an invoice (issuer or recipient)
@@ -610,12 +532,21 @@ components:
           example: billing@example.com
         phoneNumber:
           $ref: '#/components/schemas/phoneNumber'
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
   examples:
-    invoiceUrlResponse:
-      summary: Invoice URL Response Example
-      value:
-        fileUrl: https://cadana.com/file/124
-        expiresAt: 1710590400
     invoiceResponse:
       summary: Invoice Response Example
       value:
@@ -695,6 +626,75 @@ components:
         notes: Payment for services rendered in March 2024
         createdTimestamp: 1710504000
         lastUpdatedTimestamp: 1710590400
+    invoiceUrlResponse:
+      summary: Invoice URL Response Example
+      value:
+        fileUrl: https://cadana.com/file/124
+        expiresAt: 1710590400
+  parameters:
+    invoiceId:
+      name: invoiceId
+      in: path
+      description: The unique identifier for the invoice
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetInvoiceUrlResponse:
+      description: get invoice url response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fileUrl:
+                type: string
+                format: uri
+                description: Short-lived URL for the invoice PDF
+                example: https://cadana.com/file/124
+              expiresAt:
+                type: integer
+                format: int64
+                description: Unix timestamp when the URL expires
+                example: 1710590400
+          examples:
+            invoiceUrlResponse:
+              $ref: '#/components/examples/invoiceUrlResponse'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetInvoiceResponse:
+      description: get invoice response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/invoice'
+          examples:
+            invoiceResponse:
+              $ref: '#/components/examples/invoiceResponse'
   securitySchemes:
     Authorization:
       type: http
