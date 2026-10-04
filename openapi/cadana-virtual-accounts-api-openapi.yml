@@ -123,6 +123,125 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    CustomIdentification:
+      type: object
+      required:
+      - type
+      - number
+      properties:
+        type:
+          type: string
+          enum:
+          - ssn
+          - bvn
+          description: Type of identification
+          example: ssn
+        number:
+          type: string
+          description: The identification number
+          example: 123-45-6789
+    SimulateVirtualAccountDepositRequest:
+      description: Simulate virtual account deposit payload
+      required:
+      - amount
+      - reference
+      - description
+      type: object
+      properties:
+        amount:
+          $ref: '#/components/schemas/amount'
+        reference:
+          $ref: '#/components/schemas/uuid'
+        description:
+          type: string
+          example: Payroll 10/10
+    amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    Amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: Value in lowest denomination of the currency (e.g., cents)
+          example: 100000
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: COP
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+          example: null
+        next:
+          type:
+          - string
+          - 'null'
+          example: ca_123
+    VirtualAccount:
+      type: object
+      required:
+      - id
+      - status
+      - currency
+      - createdTimestamp
+      - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+        status:
+          type: string
+          enum:
+          - Requested
+          - Approved
+          - Rejected
+          - Deactivated
+          example: Requested
+        currency:
+          type: string
+          example: USD
+        accountInformation:
+          $ref: '#/components/schemas/AccountInformation'
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the virtual account was created
+          example: 1755693297
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the virtual account was last updated
+          example: 1755693297
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -137,6 +256,20 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     AccountInformation:
       type: object
       required:
@@ -184,143 +317,39 @@ components:
           type: string
           description: The address of the bank
           example: 123 Main St, San Francisco, CA 94100
-    Amount:
+    address:
       type: object
       required:
-      - amount
-      - currency
+      - line1
+      - city
+      - postalCode
+      - state
+      - countryCode
       properties:
-        amount:
-          type: integer
-          description: Value in lowest denomination of the currency (e.g., cents)
-          example: 100000
-        currency:
+        line1:
           type: string
-          description: ISO 4217 currency code
-          example: COP
-    CreateVirtualAccountRequest:
-      type: object
-      required:
-      - currency
-      - jobInformation
-      properties:
-        currency:
+          description: Address line 1
+          example: Lane 1
+        line2:
           type: string
-          description: ISO 4217 currency code for the virtual account
-          example: USD
-        customIdentification:
-          $ref: '#/components/schemas/CustomIdentification'
-        jobInformation:
-          $ref: '#/components/schemas/JobInformation'
-        suppressNotification:
-          type: boolean
-          description: Whether to suppress notifications for this virtual account, defaults to false
-          example: true
-    CustomIdentification:
-      type: object
-      required:
-      - type
-      - number
-      properties:
-        type:
+          description: Address line 2
+          example: Apt 1
+        city:
           type: string
-          enum:
-          - ssn
-          - bvn
-          description: Type of identification
-          example: ssn
-        number:
+          description: The city of the address
+          example: Gotham City
+        postalCode:
           type: string
-          description: The identification number
-          example: 123-45-6789
-    VirtualAccount:
-      type: object
-      required:
-      - id
-      - status
-      - currency
-      - createdTimestamp
-      - lastUpdatedTimestamp
-      properties:
-        id:
+          description: The postal code
+          example: '10001'
+        state:
           type: string
-          format: uuid
-          example: 3f70be8e-426f-4e89-b883-9c97a1c334d5
-        status:
+          description: The state for the address
+          example: NY
+        countryCode:
           type: string
-          enum:
-          - Requested
-          - Approved
-          - Rejected
-          - Deactivated
-          example: Requested
-        currency:
-          type: string
-          example: USD
-        accountInformation:
-          $ref: '#/components/schemas/AccountInformation'
-        createdTimestamp:
-          type: integer
-          description: Unix timestamp when the virtual account was created
-          example: 1755693297
-        lastUpdatedTimestamp:
-          type: integer
-          description: Unix timestamp when the virtual account was last updated
-          example: 1755693297
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-          example: null
-        next:
-          type:
-          - string
-          - 'null'
-          example: ca_123
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    amount:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    SimulateVirtualAccountDepositRequest:
-      description: Simulate virtual account deposit payload
-      required:
-      - amount
-      - reference
-      - description
-      type: object
-      properties:
-        amount:
-          $ref: '#/components/schemas/amount'
-        reference:
-          $ref: '#/components/schemas/uuid'
-        description:
-          type: string
-          example: Payroll 10/10
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
+          description: ISO 3166-1 alpha-2 country code
+          example: US
     JobInformation:
       type: object
       required:
@@ -375,53 +404,50 @@ components:
           format: date
           description: End date of the contract (optional)
           example: '2025-05-06'
-    address:
+    CreateVirtualAccountRequest:
       type: object
       required:
-      - line1
-      - city
-      - postalCode
-      - state
-      - countryCode
+      - currency
+      - jobInformation
       properties:
-        line1:
+        currency:
           type: string
-          description: Address line 1
-          example: Lane 1
-        line2:
-          type: string
-          description: Address line 2
-          example: Apt 1
-        city:
-          type: string
-          description: The city of the address
-          example: Gotham City
-        postalCode:
-          type: string
-          description: The postal code
-          example: '10001'
-        state:
-          type: string
-          description: The state for the address
-          example: NY
-        countryCode:
-          type: string
-          description: ISO 3166-1 alpha-2 country code
-          example: US
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
+          description: ISO 4217 currency code for the virtual account
+          example: USD
+        customIdentification:
+          $ref: '#/components/schemas/CustomIdentification'
+        jobInformation:
+          $ref: '#/components/schemas/JobInformation'
+        suppressNotification:
+          type: boolean
+          description: Whether to suppress notifications for this virtual account, defaults to false
+          example: true
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    virtualAccountId:
+      name: virtualAccountId
+      in: path
+      description: The unique identifier for the virtual account
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
   responses:
     GetVirtualAccountsResponse:
       description: Virtual accounts retrieved successfully
@@ -491,32 +517,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/InternalError'
-  parameters:
-    virtualAccountId:
-      name: virtualAccountId
-      in: path
-      description: The unique identifier for the virtual account
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: c06f3427-3bbe-4d70-9a54-28acda267e48
-    userId:
-      name: userId
-      in: path
-      description: The unique identifier for the user
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: c06f3427-3bbe-4d70-9a54-28acda267e48
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

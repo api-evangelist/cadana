@@ -89,20 +89,46 @@ paths:
       - Authorization: []
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
+    UpdatePersonIPSettingRequest:
+      description: Update person instant pay settings payload
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/instantPaySetting'
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+        code: resource_not_found
+        message: Requested resource could not be found.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
+    instantPaySetting:
+      type: object
+      description: Person's instant pay setting
+      properties:
+        accessPercentage:
+          type: number
+          example: 50
     uuid:
       type: string
       format: uuid
@@ -127,46 +153,20 @@ components:
           format: int64
           example: 1693782273
           description: The Unix timestamp indicating when the transaction was initiated
-    InternalError:
-      description: Internal server error
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    UpdatePersonIPSettingRequest:
-      description: Update person instant pay settings payload
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/instantPaySetting'
-    instantPaySetting:
-      type: object
-      description: Person's instant pay setting
-      properties:
-        accessPercentage:
-          type: number
-          example: 50
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -181,44 +181,6 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-  responses:
-    GetPersonIPSettingResponse:
-      description: get person instant pay setting response
-      content:
-        application/json:
-          schema:
-            description: Get person instant pay setting
-            allOf:
-            - $ref: '#/components/schemas/instantPaySetting'
-    GetPersonInstantPaysResponse:
-      description: get person instant pay transactions
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/instantPay'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
   parameters:
     personId:
       name: personId
@@ -235,6 +197,44 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+  responses:
+    GetPersonInstantPaysResponse:
+      description: get person instant pay transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/instantPay'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetPersonIPSettingResponse:
+      description: get person instant pay setting response
+      content:
+        application/json:
+          schema:
+            description: Get person instant pay setting
+            allOf:
+            - $ref: '#/components/schemas/instantPaySetting'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
   securitySchemes:
     Authorization:
       type: http

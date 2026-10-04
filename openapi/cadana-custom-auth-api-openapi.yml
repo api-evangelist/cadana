@@ -46,20 +46,6 @@ paths:
       - Authorization: []
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     ExchangeJWTRequest:
       description: Exchange an external JWT to a Cadana redirect token
       required:
@@ -77,6 +63,20 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -103,18 +103,18 @@ components:
               redirectToken:
                 type: string
                 example: eybzym7hwk...
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     InternalError:
       description: Internal error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

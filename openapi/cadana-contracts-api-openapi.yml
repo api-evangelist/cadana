@@ -265,125 +265,6 @@ paths:
       - $ref: '#/components/parameters/XMultiTenantKey'
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    templateVariable:
-      type: object
-      properties:
-        name:
-          example: firstName
-          type: string
-        label:
-          example: First Name
-          type: string
-        ref:
-          example: person.firstName
-          type: string
-        type:
-          example: string
-          type: string
-        description:
-          example: This is the employee's first name
-          type: string
-        isRequired:
-          example: true
-          type: boolean
-    signer:
-      type: object
-      properties:
-        email:
-          type: string
-          example: batman@gothammail.com
-          format: email
-        name:
-          type: string
-          example: Batman Jr
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    UploadContractRequest:
-      type: object
-      required:
-      - personId
-      - fileId
-      - contractName
-      properties:
-        personId:
-          $ref: '#/components/schemas/uuid'
-        fileId:
-          $ref: '#/components/schemas/uuid'
-        contractName:
-          type: string
-          description: Name of the contract
-          example: Employment Agreement
-    contract:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        templateId:
-          $ref: '#/components/schemas/uuid'
-        status:
-          type: string
-          example: completed
-        personId:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Edward Petersen - Standard Global Contractor Agreement
-        signatures:
-          type: array
-          items:
-            $ref: '#/components/schemas/contractSignature'
-        createdAt:
-          type: integer
-          example: 1689759850
-        customContractAttached:
-          type: boolean
-          example: false
-    contractSignature:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        emailAddress:
-          type: string
-          example: signer@example.com
-        name:
-          type: string
-          example: John Doe
-        order:
-          type: integer
-          example: 0
-        status:
-          type: string
-          example: signed
-        signedAt:
-          type: integer
-          example: 1689759850
-        lastViewedAt:
-          type: integer
-          example: 1689759850
     contractTemplate:
       type: object
       properties:
@@ -419,6 +300,21 @@ components:
         tenantKey:
           example: abc123
           type: string
+    UploadContractRequest:
+      type: object
+      required:
+      - personId
+      - fileId
+      - contractName
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+        fileId:
+          $ref: '#/components/schemas/uuid'
+        contractName:
+          type: string
+          description: Name of the contract
+          example: Employment Agreement
     CreateContractRequest:
       type: object
       required:
@@ -443,6 +339,79 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    contractSignature:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        emailAddress:
+          type: string
+          example: signer@example.com
+        name:
+          type: string
+          example: John Doe
+        order:
+          type: integer
+          example: 0
+        status:
+          type: string
+          example: signed
+        signedAt:
+          type: integer
+          example: 1689759850
+        lastViewedAt:
+          type: integer
+          example: 1689759850
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    contract:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        templateId:
+          $ref: '#/components/schemas/uuid'
+        status:
+          type: string
+          example: completed
+        personId:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Edward Petersen - Standard Global Contractor Agreement
+        signatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/contractSignature'
+        createdAt:
+          type: integer
+          example: 1689759850
+        customContractAttached:
+          type: boolean
+          example: false
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -457,6 +426,37 @@ components:
         message:
           description: A human readable message describing the error
           type: string
+    templateVariable:
+      type: object
+      properties:
+        name:
+          example: firstName
+          type: string
+        label:
+          example: First Name
+          type: string
+        ref:
+          example: person.firstName
+          type: string
+        type:
+          example: string
+          type: string
+        description:
+          example: This is the employee's first name
+          type: string
+        isRequired:
+          example: true
+          type: boolean
+    signer:
+      type: object
+      properties:
+        email:
+          type: string
+          example: batman@gothammail.com
+          format: email
+        name:
+          type: string
+          example: Batman Jr
   responses:
     GetContractsResponse:
       description: get contracts response
@@ -480,24 +480,12 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/contractTemplate'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
     BadRequestError:
       description: Bad input provided by client
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     GetContractSigningURLResponse:
       description: get contract signing url response
       content:
@@ -516,7 +504,26 @@ components:
                 - person
                 - business
                 example: business
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     contractId:
       name: contractId
       in: path
@@ -525,13 +532,6 @@ components:
       schema:
         type: string
         format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

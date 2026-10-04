@@ -164,20 +164,6 @@ paths:
       description: Dev Server
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     balance:
       type: object
       properties:
@@ -201,6 +187,13 @@ components:
           type: integer
           description: Processing balance in the lowest denomination of the currency.
           example: 0
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     node:
       type: object
       description: Node pagination
@@ -215,13 +208,20 @@ components:
           - string
           - 'null'
           example: ca_123
-    InternalError:
-      description: Internal server error
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -333,30 +333,6 @@ components:
           type: string
           description: Memo or reference (for crypto type)
           example: '123456'
-  parameters:
-    userId:
-      name: userId
-      in: path
-      description: The unique identifier for the user
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: c06f3427-3bbe-4d70-9a54-28acda267e48
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    businessId:
-      name: businessId
-      in: path
-      description: The unique identifier for the business
-      required: true
-      schema:
-        type: string
   responses:
     GetBalancesResponse:
       description: Get user account balances
@@ -389,18 +365,18 @@ components:
                 node:
                   previous: null
                   next: null
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     InternalError:
       description: Internal error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
     GetBalancesResponse_2:
       description: get wallet balances
       content:
@@ -412,6 +388,12 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/balance_2'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
     GetFundingDetailsResponse:
       description: Funding details for the account
       content:
@@ -441,12 +423,30 @@ components:
                   swiftCode: EXMPDEFF
                   bankName: Example Bank
                   country: DE
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: c06f3427-3bbe-4d70-9a54-28acda267e48
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
   securitySchemes:
     Authorization:
       type: http

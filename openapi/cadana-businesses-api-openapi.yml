@@ -151,27 +151,6 @@ paths:
       - Authorization: []
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
     AddDepartmentsRequest:
       type: object
       properties:
@@ -190,10 +169,6 @@ components:
         name:
           type: string
           example: Engineering
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     payrollSettings:
       type: object
       properties:
@@ -203,12 +178,23 @@ components:
         numApproversNeeded:
           type: integer
           example: 1
-    UpdateDepartmentRequest:
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    UpdateCustomFieldRequest:
       type: object
       properties:
         name:
           type: string
-          example: Legal
+          example: Employee ID
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     instantPaySettings:
       type: object
       properties:
@@ -224,23 +210,13 @@ components:
         contractorAccess:
           type: boolean
           example: true
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    InternalError:
-      description: Internal server error
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
       example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
+        code: resource_not_found
+        message: Requested resource could not be found.
     AddCustomFieldsRequest:
       type: object
       properties:
@@ -251,61 +227,6 @@ components:
           example:
           - T-shirt Size
           - Desk Number
-    customField:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        name:
-          type: string
-          example: Tshirt Size
-        value:
-          type: string
-          example: M
-    address:
-      type: object
-      description: Address
-      required:
-      - countryCode
-      properties:
-        line1:
-          type: string
-          example: Street 1
-        line2:
-          type: string
-          example: Apt 1
-        city:
-          type: string
-          example: Gotham
-        postalCode:
-          type: string
-          example: '10001'
-        state:
-          type: string
-          example: NY
-        countryCode:
-          type: string
-          example: US
-    UpdateCustomFieldRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Employee ID
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
     business:
       type: object
       properties:
@@ -345,21 +266,86 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/customField'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    customField:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+          example: Tshirt Size
+        value:
+          type: string
+          example: M
+    address:
+      type: object
+      description: Address
+      required:
+      - countryCode
+      properties:
+        line1:
+          type: string
+          example: Street 1
+        line2:
+          type: string
+          example: Apt 1
+        city:
+          type: string
+          example: Gotham
+        postalCode:
+          type: string
+          example: '10001'
+        state:
+          type: string
+          example: NY
+        countryCode:
+          type: string
+          example: US
+    UpdateDepartmentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Legal
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
   parameters:
-    departmentId:
-      name: departmentId
-      in: path
-      description: The unique identifier for the department
-      required: true
-      schema:
-        type: string
-    businessId:
-      name: businessId
-      in: path
-      description: The unique identifier for the business
-      required: true
-      schema:
-        type: string
     customFieldId:
       name: customFieldId
       in: path
@@ -374,7 +360,46 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    businessId:
+      name: businessId
+      in: path
+      description: The unique identifier for the business
+      required: true
+      schema:
+        type: string
+    departmentId:
+      name: departmentId
+      in: path
+      description: The unique identifier for the department
+      required: true
+      schema:
+        type: string
   responses:
+    GetBusinessResponse:
+      description: get business response
+      content:
+        application/json:
+          schema:
+            description: Get business response
+            allOf:
+            - $ref: '#/components/schemas/business'
+    CreateCustomFieldsResponse:
+      description: create custom fields response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/customField'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
     CreateDepartmentsResponse:
       description: create departments response
       content:
@@ -386,32 +411,6 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/department'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetBusinessResponse:
-      description: get business response
-      content:
-        application/json:
-          schema:
-            description: Get business response
-            allOf:
-            - $ref: '#/components/schemas/business'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     GetMeResponse:
       description: get current identity response
       content:
@@ -460,17 +459,18 @@ components:
               tenantKey: acme-us
               name: Acme Inc.
               country: US
-    CreateCustomFieldsResponse:
-      description: create custom fields response
+    NotFoundError:
+      description: Requested resource was not found
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/customField'
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   securitySchemes:
     Authorization:
       type: http

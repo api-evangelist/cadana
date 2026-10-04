@@ -64,20 +64,25 @@ paths:
       - Authorization: []
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
+    SandboxDepositRequest:
+      description: Deposit funds to a business in sandbox
+      type: object
+      required:
+      - value
+      properties:
+        description:
+          type: string
+          description: description for the deposit
+          example: Payroll 10/10
+        value:
+          $ref: '#/components/schemas/amount'
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+        code: resource_not_found
+        message: Requested resource could not be found.
     InternalError:
       description: Internal server error
       allOf:
@@ -99,25 +104,20 @@ components:
           type: string
           description: currency
           example: USD
-    NotFoundError:
-      description: Not Found
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    SandboxDepositRequest:
-      description: Deposit funds to a business in sandbox
-      type: object
-      required:
-      - value
-      properties:
-        description:
-          type: string
-          description: description for the deposit
-          example: Payroll 10/10
-        value:
-          $ref: '#/components/schemas/amount'
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -133,6 +133,13 @@ components:
           description: A human readable message describing the error
           type: string
   parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
     userId:
       name: userId
       in: path
@@ -141,20 +148,7 @@ components:
       schema:
         type: string
         format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     NotFoundError:
       description: Requested resource was not found
       content:
@@ -167,6 +161,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/InternalError'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
   securitySchemes:
     Authorization:
       type: http

@@ -120,70 +120,6 @@ paths:
       - Authorization: []
 components:
   schemas:
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    GetEntitiesResponse:
-      description: Entity summary for list responses
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
-        legalName:
-          type: string
-          example: Acme Corp Ghana
-        country:
-          type: string
-          example: GH
-        currency:
-          type: string
-          example: GHS
-        entityType:
-          type: string
-          enum:
-          - corporation
-          - c-corporation
-          - s-corporation
-          - partnership
-          - sole proprietorship
-          - limited liability company
-          - non profit
-          - other
-          example: corporation
-        status:
-          type: string
-          example: ACTIVE
-        createdTimestamp:
-          type: integer
-          description: Unix timestamp when the entity was created
-          example: 1609459200
-        lastUpdatedTimestamp:
-          type: integer
-          description: Unix timestamp when the entity was last updated
-          example: 1609459200
     GetEntityResponse:
       description: Full entity details
       type: object
@@ -279,13 +215,6 @@ components:
           type: string
           description: Date of incorporation (YYYY-MM-DD)
           example: '2019-06-01'
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     address:
       type: object
       description: Address
@@ -310,6 +239,13 @@ components:
         countryCode:
           type: string
           example: US
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     NotFoundError:
       description: Not Found
       allOf:
@@ -317,20 +253,46 @@ components:
       example:
         code: resource_not_found
         message: Requested resource could not be found.
-    Error:
+    GetEntitiesResponse:
+      description: Entity summary for list responses
       type: object
       properties:
-        code:
-          description: A machine parsable error code
+        id:
+          type: string
+          format: uuid
+          example: 37ad8c1e-0187-4e10-8c54-395e3385b4d2
+        legalName:
+          type: string
+          example: Acme Corp Ghana
+        country:
+          type: string
+          example: GH
+        currency:
+          type: string
+          example: GHS
+        entityType:
           type: string
           enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
+          - corporation
+          - c-corporation
+          - s-corporation
+          - partnership
+          - sole proprietorship
+          - limited liability company
+          - non profit
+          - other
+          example: corporation
+        status:
           type: string
+          example: ACTIVE
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was created
+          example: 1609459200
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the entity was last updated
+          example: 1609459200
     CreateEntityResponse:
       description: Create entity response
       type: object
@@ -389,6 +351,44 @@ components:
           type: string
           description: Date of incorporation (YYYY-MM-DD)
           example: '2020-01-15'
+    phoneNumber:
+      type: object
+      description: Person's phone number
+      properties:
+        countryCode:
+          type: string
+          example: '1'
+        number:
+          type: string
+          example: '2345678901'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
   parameters:
     entityId:
       name: entityId
@@ -406,6 +406,12 @@ components:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
     InternalError:
       description: Internal error
       content:
@@ -418,12 +424,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
   securitySchemes:
     Authorization:
       type: http

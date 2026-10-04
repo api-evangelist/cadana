@@ -40,7 +40,35 @@ paths:
       operationId: postV1FxQuotes
       x-operation-id-source: derived
 components:
+  responses:
+    CreateFXQuoteResponse:
+      description: create an fx quote
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/fxQuote'
+          examples:
+            fxQuote:
+              summary: Example FX Quote
+              value:
+                id: 57c74c5d-38a0-41e7-a19e-161f16dc4898
+                from: USD
+                to: PHP
+                rate: '56.1234'
+                expirationTimestamp: '2025-05-29T21:42:52Z'
   schemas:
+    CreateFXQuoteRequest:
+      type: object
+      required:
+      - from
+      - to
+      properties:
+        from:
+          type: string
+          example: USD
+        to:
+          type: string
+          example: PHP
     fxQuote:
       type: object
       required:
@@ -67,18 +95,6 @@ components:
           type: string
           format: date-time
           example: '2025-05-29T21:42:52Z'
-    CreateFXQuoteRequest:
-      type: object
-      required:
-      - from
-      - to
-      properties:
-        from:
-          type: string
-          example: USD
-        to:
-          type: string
-          example: PHP
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey
@@ -87,22 +103,6 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-  responses:
-    CreateFXQuoteResponse:
-      description: create an fx quote
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/fxQuote'
-          examples:
-            fxQuote:
-              summary: Example FX Quote
-              value:
-                id: 57c74c5d-38a0-41e7-a19e-161f16dc4898
-                from: USD
-                to: PHP
-                rate: '56.1234'
-                expirationTimestamp: '2025-05-29T21:42:52Z'
   securitySchemes:
     Authorization:
       type: http

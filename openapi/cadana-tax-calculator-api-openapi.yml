@@ -204,20 +204,6 @@ paths:
           $ref: '#/components/responses/BadRequestError'
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     CalculationDetails:
       type: object
       properties:
@@ -233,48 +219,46 @@ components:
           type: array
           items:
             type: string
-    RequiredTaxFieldsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Field key used in `additionalAttributes` on `POST /v1/tax/calculate` or in the person's `taxProfile`.
-              description:
-                type: string
-              type:
-                type: string
-                description: Data type of the field value (e.g. "string", "number", "boolean").
-              required:
-                type: boolean
-              enum:
-                type: array
-                items:
-                  type: string
-                description: Allowed values when the field accepts a fixed set of options.
-              default:
-                description: Default value applied by the engine when the field is omitted from the calculation. Present only when the field declares a default. Use it to pre-fill onboarding forms — optional fields that have a default need no user input. The type matches the field's `type` (string, number, or boolean).
-              provider:
-                type: string
-                description: Internal source that surfaces this field. May be omitted.
-    Deduction:
+    CalculateTaxesResponse:
       type: object
       required:
-      - name
-      - isStatutory
-      - amount
+      - personId
+      - grossAmount
+      - netAmount
+      - deductions
+      - employerContributions
+      properties:
+        personId:
+          type: string
+          description: ID of the person taxes were calculated for
+        grossAmount:
+          $ref: '#/components/schemas/Amount'
+        netAmount:
+          $ref: '#/components/schemas/Amount'
+        allowances:
+          type: array
+          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
+          items:
+            $ref: '#/components/schemas/Allowance'
+        deductions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        employerContributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deduction'
+        summary:
+          $ref: '#/components/schemas/CalculateTaxesSummary'
+    State:
+      type: object
       properties:
         name:
           type: string
-        isStatutory:
-          type: boolean
-          description: Whether the deduction is mandated by law (statutory) versus an optional voluntary deduction.
-        amount:
-          $ref: '#/components/schemas/Amount'
+          example: Dhaka
+        code:
+          type: string
+          example: DHA
     CalculateTaxesLineItem:
       type: object
       required:
@@ -288,20 +272,20 @@ components:
           type: number
         calculation:
           $ref: '#/components/schemas/CalculationDetails'
-    Amount:
+    Allowance:
       type: object
       required:
+      - name
+      - isTaxable
       - amount
-      - currency
       properties:
-        amount:
-          type: number
-          description: value in lowest denomination
-          example: 10000
-        currency:
+        name:
           type: string
-          description: currency
-          example: BRL
+        isTaxable:
+          type: boolean
+          description: Whether the allowance is part of taxable income.
+        amount:
+          $ref: '#/components/schemas/Amount'
     CalculateTaxesRequest:
       type: object
       required:
@@ -358,79 +342,35 @@ components:
         additionalAttributes:
           type: object
           description: Country-specific calculation inputs (e.g. `ytdSalary`, `riskCategory`). Use `GET /v1/tax/fields?country={code}` to discover what each jurisdiction accepts. Numeric fields are expressed in major currency units — e.g. India's `hraReceived`, `rentPaid`, `declared80c`, and `annualBaseSalary` are whole rupees — unlike `amount` objects, which use the lowest denomination.
-    State:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Dhaka
-        code:
-          type: string
-          example: DHA
-    CalculateTaxesResponse:
+    Amount:
       type: object
       required:
-      - personId
-      - grossAmount
-      - netAmount
-      - deductions
-      - employerContributions
+      - amount
+      - currency
       properties:
-        personId:
+        amount:
+          type: number
+          description: value in lowest denomination
+          example: 10000
+        currency:
           type: string
-          description: ID of the person taxes were calculated for
-        grossAmount:
-          $ref: '#/components/schemas/Amount'
-        netAmount:
-          $ref: '#/components/schemas/Amount'
-        allowances:
-          type: array
-          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
-          items:
-            $ref: '#/components/schemas/Allowance'
+          description: currency
+          example: BRL
+    CalculateTaxesSummary:
+      type: object
+      properties:
+        gross:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
         deductions:
           type: array
           items:
-            $ref: '#/components/schemas/Deduction'
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
+        net:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
         employerContributions:
           type: array
           items:
-            $ref: '#/components/schemas/Deduction'
-        summary:
-          $ref: '#/components/schemas/CalculateTaxesSummary'
-    EstimateTaxesResponse:
-      type: object
-      required:
-      - grossAmount
-      - netAmount
-      - deductions
-      - employerContributions
-      properties:
-        grossAmount:
-          $ref: '#/components/schemas/Amount'
-        netAmount:
-          $ref: '#/components/schemas/Amount'
-        allowances:
-          type: array
-          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
-          items:
-            $ref: '#/components/schemas/Allowance'
-        deductions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deduction'
-        employerContributions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Deduction'
-        outputCurrency:
-          type: string
-          description: Echo of the requested `outputCurrency`. Present only when the request specified a conversion.
-          example: USD
-        fxRate:
-          type: string
-          description: FX rate applied to convert from the input currency to `outputCurrency`. Present only when a conversion was performed.
-          example: '0.058'
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
     EstimateTaxesRequest:
       oneOf:
       - required:
@@ -494,35 +434,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/State'
-    Allowance:
+    EstimateTaxesResponse:
       type: object
       required:
-      - name
-      - isTaxable
-      - amount
+      - grossAmount
+      - netAmount
+      - deductions
+      - employerContributions
       properties:
-        name:
-          type: string
-        isTaxable:
-          type: boolean
-          description: Whether the allowance is part of taxable income.
-        amount:
+        grossAmount:
           $ref: '#/components/schemas/Amount'
-    CalculateTaxesSummary:
-      type: object
-      properties:
-        gross:
-          $ref: '#/components/schemas/CalculateTaxesLineItem'
+        netAmount:
+          $ref: '#/components/schemas/Amount'
+        allowances:
+          type: array
+          description: Imputed-income line items (e.g. benefits-in-kind) surfaced by the country engine. Omitted when none apply.
+          items:
+            $ref: '#/components/schemas/Allowance'
         deductions:
           type: array
           items:
-            $ref: '#/components/schemas/CalculateTaxesLineItem'
-        net:
-          $ref: '#/components/schemas/CalculateTaxesLineItem'
+            $ref: '#/components/schemas/Deduction'
         employerContributions:
           type: array
           items:
-            $ref: '#/components/schemas/CalculateTaxesLineItem'
+            $ref: '#/components/schemas/Deduction'
+        outputCurrency:
+          type: string
+          description: Echo of the requested `outputCurrency`. Present only when the request specified a conversion.
+          example: USD
+        fxRate:
+          type: string
+          description: FX rate applied to convert from the input currency to `outputCurrency`. Present only when a conversion was performed.
+          example: '0.058'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -537,6 +495,48 @@ components:
         message:
           description: A human readable message describing the error
           type: string
+    Deduction:
+      type: object
+      required:
+      - name
+      - isStatutory
+      - amount
+      properties:
+        name:
+          type: string
+        isStatutory:
+          type: boolean
+          description: Whether the deduction is mandated by law (statutory) versus an optional voluntary deduction.
+        amount:
+          $ref: '#/components/schemas/Amount'
+    RequiredTaxFieldsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Field key used in `additionalAttributes` on `POST /v1/tax/calculate` or in the person's `taxProfile`.
+              description:
+                type: string
+              type:
+                type: string
+                description: Data type of the field value (e.g. "string", "number", "boolean").
+              required:
+                type: boolean
+              enum:
+                type: array
+                items:
+                  type: string
+                description: Allowed values when the field accepts a fixed set of options.
+              default:
+                description: Default value applied by the engine when the field is omitted from the calculation. Present only when the field declares a default. Use it to pre-fill onboarding forms — optional fields that have a default need no user input. The type matches the field's `type` (string, number, or boolean).
+              provider:
+                type: string
+                description: Internal source that surfaces this field. May be omitted.
   examples:
     TaxCalculationExample:
       summary: Example Brazilian tax calculation response
@@ -643,7 +643,30 @@ components:
               formula: grossSalary * fgtsRate
               steps:
               - 'Calculate 8% FGTS: R$10000.00 * 8% = R$800.00'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    CalculateTaxesResponse:
+      description: Calculate taxes response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CalculateTaxesResponse'
+          examples:
+            brazilianTaxCalculation:
+              $ref: '#/components/examples/TaxCalculationExample'
     EstimateTaxesResponse:
       description: Estimate taxes response
       content:
@@ -738,29 +761,6 @@ components:
                   amount:
                     amount: 13609
                     currency: MXN
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    CalculateTaxesResponse:
-      description: Calculate taxes response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CalculateTaxesResponse'
-          examples:
-            brazilianTaxCalculation:
-              $ref: '#/components/examples/TaxCalculationExample'
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   securitySchemes:
     Authorization:
       type: http

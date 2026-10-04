@@ -364,48 +364,136 @@ paths:
       security:
       - Authorization: []
 components:
-  schemas:
+  responses:
+    GetBalancesResponse:
+      description: get wallet balances
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userBalance'
+    AddAdminUserResponse:
+      description: add admin user response
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Add admin user response
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    GetUserResponse:
+      description: get user response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/basicInfo'
+            - type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/uuid'
+                personId:
+                  $ref: '#/components/schemas/uuid'
+                status:
+                  $ref: '#/components/schemas/userStatus'
+    GetUsersResponse:
+      description: get users response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userEntry'
+              meta:
+                $ref: '#/components/schemas/meta'
+    GetUserTaxFormLinkResponse:
+      description: get user tax form file link response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/contractFileLink'
+    GetUserKYCResponse:
+      description: get user kyc response
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+            - $ref: '#/components/schemas/userKyc'
     BadRequestError:
       description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InviteUserResponse:
+      description: invite user response
+      content:
+        application/json:
+          schema:
             type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    basicInfo:
+            description: Invite user response
+            properties:
+              userId:
+                $ref: '#/components/schemas/uuid'
+    GetUserTaxFormsResponse:
+      description: get user tax forms response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/taxForm'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+  schemas:
+    taxForm:
       type: object
-      required:
-      - email
-      - firstName
-      - lastName
       properties:
-        firstName:
+        name:
           type: string
-          description: Person's first name
-          example: John
-        lastName:
+          description: Name of the form
+          example: W8BEN
+        formId:
           type: string
-          description: Person's last name
-          example: Doe
-        email:
-          type: string
-          description: Person's email
-        phoneNumber:
-          $ref: '#/components/schemas/phoneNumber'
-        metadata:
-          type: object
-          additionalProperties: true
-          description: Optional metadata you can store as key-value pairs
-          example:
-            customField1: value1
-            customField2: value2
+          description: ID of the form
+          example: 30c6c36b5ae0985c1d715bbf25b878a1349cc99a
+        createdAt:
+          type: number
+          description: Form creation time
+          example: 1690339130
+        isComplete:
+          type: boolean
+          description: Is the form completed
+          default: true
+        isDocumentDownloadable:
+          type: boolean
+          description: Can you download the form
+          default: true
     idDetails:
       type: object
       properties:
@@ -423,82 +511,110 @@ components:
           - National ID Card
           - Voter's Card
           - other
-    NotFoundError:
-      description: Not Found
+    userBalance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 517075a2-17db-469f-9481-eb8347cb920c
+        currency:
+          type: string
+          example: USD
+        balance:
+          type: integer
+          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
+          example: 703448
+        available:
+          type: integer
+          description: Available balance as an integer scaled by 100
+          example: 703448
+        processing:
+          type: integer
+          description: Processing balance as an integer scaled by 100
+          example: 0
+        reserves:
+          type:
+          - integer
+          - 'null'
+          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
+          example: 0
+    userStatus:
+      type: string
+      description: kyc status
+      example: active
+      enum:
+      - invitation_sent
+      - blocked
+    InternalError:
+      description: Internal server error
       allOf:
       - $ref: '#/components/schemas/Error'
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    userKyc:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    contractFileLink:
       type: object
       properties:
-        idDetails:
-          $ref: '#/components/schemas/idDetails'
-        identity:
-          $ref: '#/components/schemas/kycStatus'
-        address:
-          $ref: '#/components/schemas/kycStatus'
-        firstName:
+        fileUrl:
           type: string
-          description: Person's first name on ID
-          example: John
-        lastName:
-          type: string
-          description: Person's last name on ID
-          example: Doe
-        identityStatusReason:
-          type: string
-          description: Reason for rejecting an ID
-          example: ID is expired
-        addressStatusReason:
-          type: string
-          description: Reason for rejecting an address
-          example: Name on the address does not match the name on the ID
-    InviteUserRequest:
-      description: Invite user request payload
-      required:
-      - personId
-      type: object
-      properties:
-        personId:
-          $ref: '#/components/schemas/uuid'
-        suppressWelcomeEmail:
-          type: boolean
-          description: Whether you want to suppress the welcome email with the sign up link
-          default: false
-        returnLink:
-          type: boolean
-          description: Whether you want to get the unique sign up link in the api response
-          default: false
-    kycStatus:
+          description: Link to the file
+          example: https://cadana.com/file/123
+        expiresAt:
+          type: number
+          description: Link expiration time
+          example: 1690339130
+    uuid:
       type: string
-      description: kyc status
-      example: approved
-      enum:
-      - not started
-      - processing
-      - approved
-      - rejected
-    meta:
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    PatchKYCRequest:
       type: object
-      description: Meta about the pagination
+      description: Request to resubmit KYC identity and/or address. At least one of identity or address must be provided.
       properties:
-        limit:
-          type: number
-          example: 1
-        currentPage:
-          type: number
-          example: 1
-        skipped:
-          type: number
-          example: 1
-        pages:
-          type: number
-          example: 1
-        itemCount:
-          type: number
-          example: 1
+        identity:
+          type: object
+          description: Identity resubmission details. All fields required when provided.
+          required:
+          - firstName
+          - lastName
+          - dob
+          - nationality
+          - idDetails
+          properties:
+            firstName:
+              type: string
+              description: User's first name
+              example: John
+            lastName:
+              type: string
+              description: User's last name
+              example: Doe
+            dob:
+              type: string
+              format: date
+              description: Date of birth in YYYY-MM-DD format
+              example: '1990-01-15'
+            nationality:
+              type: string
+              description: User's nationality (2-letter country code)
+              example: US
+            idDetails:
+              $ref: '#/components/schemas/IdentityDetails'
+        address:
+          type: object
+          description: Address resubmission details. All fields required when provided.
+          required:
+          - address
+          - addressProofFileId
+          properties:
+            address:
+              $ref: '#/components/schemas/address'
+            addressProofFileId:
+              type: string
+              format: uuid
+              description: File ID for address proof document. In sandbox, can be omitted when a sentinel value is used
+              example: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
     KYCRequest:
       type: object
       required:
@@ -534,6 +650,178 @@ components:
           format: uuid
           description: File ID for address proof document
           example: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    UpdateUserSubjectRequest:
+      description: Update user external token subject payload
+      required:
+      - tokenSub
+      type: object
+      properties:
+        tokenSub:
+          type: string
+          description: Your internal token sub to attach to cadana user
+          default: '123'
+    basicInfo:
+      type: object
+      required:
+      - email
+      - firstName
+      - lastName
+      properties:
+        firstName:
+          type: string
+          description: Person's first name
+          example: John
+        lastName:
+          type: string
+          description: Person's last name
+          example: Doe
+        email:
+          type: string
+          description: Person's email
+        phoneNumber:
+          $ref: '#/components/schemas/phoneNumber'
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Optional metadata you can store as key-value pairs
+          example:
+            customField1: value1
+            customField2: value2
+    InviteUserRequest:
+      description: Invite user request payload
+      required:
+      - personId
+      type: object
+      properties:
+        personId:
+          $ref: '#/components/schemas/uuid'
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email with the sign up link
+          default: false
+        returnLink:
+          type: boolean
+          description: Whether you want to get the unique sign up link in the api response
+          default: false
+    meta:
+      type: object
+      description: Meta about the pagination
+      properties:
+        limit:
+          type: number
+          example: 1
+        currentPage:
+          type: number
+          example: 1
+        skipped:
+          type: number
+          example: 1
+        pages:
+          type: number
+          example: 1
+        itemCount:
+          type: number
+          example: 1
+    userKyc:
+      type: object
+      properties:
+        idDetails:
+          $ref: '#/components/schemas/idDetails'
+        identity:
+          $ref: '#/components/schemas/kycStatus'
+        address:
+          $ref: '#/components/schemas/kycStatus'
+        firstName:
+          type: string
+          description: Person's first name on ID
+          example: John
+        lastName:
+          type: string
+          description: Person's last name on ID
+          example: Doe
+        identityStatusReason:
+          type: string
+          description: Reason for rejecting an ID
+          example: ID is expired
+        addressStatusReason:
+          type: string
+          description: Reason for rejecting an address
+          example: Name on the address does not match the name on the ID
+    AddAdminUserRequest:
+      description: Add admin user request payload
+      required:
+      - email
+      - firstName
+      - lastName
+      type: object
+      properties:
+        roleId:
+          $ref: '#/components/schemas/uuid'
+        email:
+          type: string
+          format: email
+          example: admin@example.com
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Smith
+        suppressWelcomeEmail:
+          type: boolean
+          description: Whether you want to suppress the welcome email with the sign up link
+          default: false
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    userEntry:
+      allOf:
+      - $ref: '#/components/schemas/basicInfo'
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        personId:
+          $ref: '#/components/schemas/uuid'
+        roleId:
+          $ref: '#/components/schemas/uuid'
+        status:
+          type: string
+          example: active
+          enum:
+          - active
+          - invitation_sent
     IdentityDetails:
       type: object
       required:
@@ -588,162 +876,6 @@ components:
         selfieFileId:
           $ref: '#/components/schemas/uuid'
           description: File ID of the selfie with the identification document. In sandbox, can be omitted when a sentinel value is used
-    UpdateUserSubjectRequest:
-      description: Update user external token subject payload
-      required:
-      - tokenSub
-      type: object
-      properties:
-        tokenSub:
-          type: string
-          description: Your internal token sub to attach to cadana user
-          default: '123'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    contractFileLink:
-      type: object
-      properties:
-        fileUrl:
-          type: string
-          description: Link to the file
-          example: https://cadana.com/file/123
-        expiresAt:
-          type: number
-          description: Link expiration time
-          example: 1690339130
-    userEntry:
-      allOf:
-      - $ref: '#/components/schemas/basicInfo'
-      properties:
-        id:
-          $ref: '#/components/schemas/uuid'
-        personId:
-          $ref: '#/components/schemas/uuid'
-        roleId:
-          $ref: '#/components/schemas/uuid'
-        status:
-          type: string
-          example: active
-          enum:
-          - active
-          - invitation_sent
-    taxForm:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the form
-          example: W8BEN
-        formId:
-          type: string
-          description: ID of the form
-          example: 30c6c36b5ae0985c1d715bbf25b878a1349cc99a
-        createdAt:
-          type: number
-          description: Form creation time
-          example: 1690339130
-        isComplete:
-          type: boolean
-          description: Is the form completed
-          default: true
-        isDocumentDownloadable:
-          type: boolean
-          description: Can you download the form
-          default: true
-    phoneNumber:
-      type: object
-      description: Person's phone number
-      properties:
-        countryCode:
-          type: string
-          example: '1'
-        number:
-          type: string
-          example: '2345678901'
-    PatchKYCRequest:
-      type: object
-      description: Request to resubmit KYC identity and/or address. At least one of identity or address must be provided.
-      properties:
-        identity:
-          type: object
-          description: Identity resubmission details. All fields required when provided.
-          required:
-          - firstName
-          - lastName
-          - dob
-          - nationality
-          - idDetails
-          properties:
-            firstName:
-              type: string
-              description: User's first name
-              example: John
-            lastName:
-              type: string
-              description: User's last name
-              example: Doe
-            dob:
-              type: string
-              format: date
-              description: Date of birth in YYYY-MM-DD format
-              example: '1990-01-15'
-            nationality:
-              type: string
-              description: User's nationality (2-letter country code)
-              example: US
-            idDetails:
-              $ref: '#/components/schemas/IdentityDetails'
-        address:
-          type: object
-          description: Address resubmission details. All fields required when provided.
-          required:
-          - address
-          - addressProofFileId
-          properties:
-            address:
-              $ref: '#/components/schemas/address'
-            addressProofFileId:
-              type: string
-              format: uuid
-              description: File ID for address proof document. In sandbox, can be omitted when a sentinel value is used
-              example: 4a6b103f-ef24-4969-b51f-5d87ff0a9f97
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    userBalance:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: 517075a2-17db-469f-9481-eb8347cb920c
-        currency:
-          type: string
-          example: USD
-        balance:
-          type: integer
-          description: Total balance as an integer scaled by 100 (e.g. `703448` represents `7034.48`)
-          example: 703448
-        available:
-          type: integer
-          description: Available balance as an integer scaled by 100
-          example: 703448
-        processing:
-          type: integer
-          description: Processing balance as an integer scaled by 100
-          example: 0
-        reserves:
-          type:
-          - integer
-          - 'null'
-          description: Reserved funds as an integer scaled by 100 (included when `include=reserves`)
-          example: 0
     address:
       type: object
       description: Address
@@ -768,165 +900,26 @@ components:
         countryCode:
           type: string
           example: US
-    userStatus:
+    kycStatus:
       type: string
       description: kyc status
-      example: active
+      example: approved
       enum:
-      - invitation_sent
-      - blocked
-    Error:
+      - not started
+      - processing
+      - approved
+      - rejected
+    phoneNumber:
       type: object
+      description: Person's phone number
       properties:
-        code:
-          description: A machine parsable error code
+        countryCode:
           type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
+          example: '1'
+        number:
           type: string
-    AddAdminUserRequest:
-      description: Add admin user request payload
-      required:
-      - email
-      - firstName
-      - lastName
-      type: object
-      properties:
-        roleId:
-          $ref: '#/components/schemas/uuid'
-        email:
-          type: string
-          format: email
-          example: admin@example.com
-        firstName:
-          type: string
-          example: Jane
-        lastName:
-          type: string
-          example: Smith
-        suppressWelcomeEmail:
-          type: boolean
-          description: Whether you want to suppress the welcome email with the sign up link
-          default: false
-  responses:
-    GetBalancesResponse:
-      description: get wallet balances
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/userBalance'
-    GetUserTaxFormsResponse:
-      description: get user tax forms response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/taxForm'
-    GetUsersResponse:
-      description: get users response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/userEntry'
-              meta:
-                $ref: '#/components/schemas/meta'
-    AddAdminUserResponse:
-      description: add admin user response
-      content:
-        application/json:
-          schema:
-            type: object
-            description: Add admin user response
-            properties:
-              id:
-                $ref: '#/components/schemas/uuid'
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    GetUserResponse:
-      description: get user response
-      content:
-        application/json:
-          schema:
-            type: object
-            allOf:
-            - $ref: '#/components/schemas/basicInfo'
-            - type: object
-              properties:
-                id:
-                  $ref: '#/components/schemas/uuid'
-                personId:
-                  $ref: '#/components/schemas/uuid'
-                status:
-                  $ref: '#/components/schemas/userStatus'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    InviteUserResponse:
-      description: invite user response
-      content:
-        application/json:
-          schema:
-            type: object
-            description: Invite user response
-            properties:
-              userId:
-                $ref: '#/components/schemas/uuid'
-    GetUserKYCResponse:
-      description: get user kyc response
-      content:
-        application/json:
-          schema:
-            type: object
-            allOf:
-            - $ref: '#/components/schemas/userKyc'
-    GetUserTaxFormLinkResponse:
-      description: get user tax form file link response
-      content:
-        application/json:
-          schema:
-            type: object
-            allOf:
-            - $ref: '#/components/schemas/contractFileLink'
+          example: '2345678901'
   parameters:
-    formId:
-      name: formId
-      in: path
-      description: The unique identifier for the form
-      required: true
-      schema:
-        type: string
     userId:
       name: userId
       in: path
@@ -942,6 +935,13 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    formId:
+      name: formId
+      in: path
+      description: The unique identifier for the form
+      required: true
+      schema:
+        type: string
   securitySchemes:
     Authorization:
       type: http

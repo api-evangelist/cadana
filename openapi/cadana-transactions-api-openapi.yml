@@ -204,6 +204,123 @@ paths:
           $ref: '#/components/responses/InternalError'
 components:
   schemas:
+    Transaction:
+      type: object
+      required:
+      - id
+      - type
+      - amount
+      - sourceAmount
+      - fxRate
+      - status
+      - reference
+      - createdTimestamp
+      - lastUpdatedTimestamp
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+        type:
+          type: string
+          description: The transaction type, e.g. payout, payroll, deposit, transfer
+          example: payout
+        beneficiaryId:
+          type: string
+          format: uuid
+          example: c871b333-e129-409c-aabd-7cfb55a967cc
+        quoteId:
+          type: string
+          format: uuid
+          example: d35d2bd6-188b-4e82-9a16-71442dad7375
+        reference:
+          type: string
+          format: uuid
+          description: The client reference for the transaction
+          example: c06f3427-3bbe-4d70-9a54-28acda267e48
+        amount:
+          $ref: '#/components/schemas/Amount'
+        sourceAmount:
+          $ref: '#/components/schemas/Amount'
+        feeAmount:
+          $ref: '#/components/schemas/Amount'
+        fxRate:
+          type: string
+          example: '56.1234'
+        status:
+          type: string
+          enum:
+          - initiated
+          - success
+          - processing
+          - failed
+          example: success
+        createdTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was created
+          example: 1748478276
+        lastUpdatedTimestamp:
+          type: integer
+          description: Unix timestamp when the transaction was last updated
+          example: 1748478276
+        document:
+          type: object
+          description: Present only when a document is requested via the `document` query parameter
+          properties:
+            type:
+              type: string
+              description: The document type
+              example: FIRC
+            presignedURL:
+              type: string
+              description: Presigned URL to download the document; valid until expiresAt
+              example: https://bucket.s3.amazonaws.com/firc/d0137ede-7df1-4a54-8206-b3ab7b03876f.pdf
+            expiresAt:
+              type: integer
+              description: Unix timestamp when the presigned URL expires
+              example: 1748481876
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    Amount:
+      type: object
+      required:
+      - value
+      - currency
+      properties:
+        value:
+          type: string
+          description: The value of the amount
+          example: '10.00'
+        currency:
+          type: string
+          description: The currency of the asset
+          example: USD
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    node:
+      type: object
+      description: Node pagination
+      properties:
+        previous:
+          type:
+          - string
+          - 'null'
+          example: null
+        next:
+          type:
+          - string
+          - 'null'
+          example: ca_123
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -218,13 +335,20 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     CreateTransactionRequest:
       type: object
       required:
@@ -270,34 +394,6 @@ components:
         - sourceCurrency
       - required:
         - sourceAmount
-    Amount:
-      type: object
-      required:
-      - value
-      - currency
-      properties:
-        value:
-          type: string
-          description: The value of the amount
-          example: '10.00'
-        currency:
-          type: string
-          description: The currency of the asset
-          example: USD
-    node:
-      type: object
-      description: Node pagination
-      properties:
-        previous:
-          type:
-          - string
-          - 'null'
-          example: null
-        next:
-          type:
-          - string
-          - 'null'
-          example: ca_123
     FeeTableEntry:
       type: object
       description: A single corridor entry in the payout catalog
@@ -376,13 +472,6 @@ components:
               type: boolean
               description: When `true`, weekends are excluded from `minDays` and `maxDays`.
               example: true
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     FeeEstimate:
       type: object
       description: Per-transaction quote for a specific corridor + payment method. Only returned when `paymentMethod` and `destinationCurrency` are supplied.
@@ -468,95 +557,6 @@ components:
               type: string
               description: Currency the limits are denominated in — matches `destinationCurrency`.
               example: AUD
-    Transaction:
-      type: object
-      required:
-      - id
-      - type
-      - amount
-      - sourceAmount
-      - fxRate
-      - status
-      - reference
-      - createdTimestamp
-      - lastUpdatedTimestamp
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d0137ede-7df1-4a54-8206-b3ab7b03876f
-        type:
-          type: string
-          description: The transaction type, e.g. payout, payroll, deposit, transfer
-          example: payout
-        beneficiaryId:
-          type: string
-          format: uuid
-          example: c871b333-e129-409c-aabd-7cfb55a967cc
-        quoteId:
-          type: string
-          format: uuid
-          example: d35d2bd6-188b-4e82-9a16-71442dad7375
-        reference:
-          type: string
-          format: uuid
-          description: The client reference for the transaction
-          example: c06f3427-3bbe-4d70-9a54-28acda267e48
-        amount:
-          $ref: '#/components/schemas/Amount'
-        sourceAmount:
-          $ref: '#/components/schemas/Amount'
-        feeAmount:
-          $ref: '#/components/schemas/Amount'
-        fxRate:
-          type: string
-          example: '56.1234'
-        status:
-          type: string
-          enum:
-          - initiated
-          - success
-          - processing
-          - failed
-          example: success
-        createdTimestamp:
-          type: integer
-          description: Unix timestamp when the transaction was created
-          example: 1748478276
-        lastUpdatedTimestamp:
-          type: integer
-          description: Unix timestamp when the transaction was last updated
-          example: 1748478276
-        document:
-          type: object
-          description: Present only when a document is requested via the `document` query parameter
-          properties:
-            type:
-              type: string
-              description: The document type
-              example: FIRC
-            presignedURL:
-              type: string
-              description: Presigned URL to download the document; valid until expiresAt
-              example: https://bucket.s3.amazonaws.com/firc/d0137ede-7df1-4a54-8206-b3ab7b03876f.pdf
-            expiresAt:
-              type: integer
-              description: Unix timestamp when the presigned URL expires
-              example: 1748481876
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
   parameters:
     transactionId:
       name: transactionId
@@ -584,61 +584,6 @@ components:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   responses:
-    GetTransactionsResponse:
-      description: List of transactions
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
-              node:
-                $ref: '#/components/schemas/node'
-          examples:
-            transactions:
-              summary: List of transactions
-              value:
-                data:
-                - id: d0137ede-7df1-4a54-8206-b3ab7b03876f
-                  type: payout
-                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
-                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
-                  amount:
-                    value: '500.00'
-                    currency: PHP
-                  sourceAmount:
-                    value: '9.00'
-                    currency: USD
-                  feeAmount:
-                    value: '0.10'
-                    currency: USD
-                  fxRate: '56.1234'
-                  reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
-                  status: success
-                  createdTimestamp: 1748478276
-                  lastUpdatedTimestamp: 1748478276
-                node:
-                  previous: null
-                  next: null
-    CreateTransactionResponse:
-      description: Transaction created response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
-          examples:
-            transaction:
-              summary: Example transaction creation response
-              value:
-                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
     GetFeesResponse:
       description: Payout catalog and (optional) corridor estimate
       content:
@@ -730,24 +675,12 @@ components:
                       min: '2'
                       max: '20000'
                       currency: AUD
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
     BadRequestError:
       description: Bad input provided by client
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     GetTransactionResponse:
       description: Get transaction response
       content:
@@ -776,6 +709,73 @@ components:
                 status: success
                 createdTimestamp: 1748478276
                 lastUpdatedTimestamp: 1748478276
+    CreateTransactionResponse:
+      description: Transaction created response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: d0137ede-7df1-4a54-8206-b3ab7b03876f
+          examples:
+            transaction:
+              summary: Example transaction creation response
+              value:
+                id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetTransactionsResponse:
+      description: List of transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+              node:
+                $ref: '#/components/schemas/node'
+          examples:
+            transactions:
+              summary: List of transactions
+              value:
+                data:
+                - id: d0137ede-7df1-4a54-8206-b3ab7b03876f
+                  type: payout
+                  beneficiaryId: c871b333-e129-409c-aabd-7cfb55a967cc
+                  quoteId: d35d2bd6-188b-4e82-9a16-71442dad7375
+                  amount:
+                    value: '500.00'
+                    currency: PHP
+                  sourceAmount:
+                    value: '9.00'
+                    currency: USD
+                  feeAmount:
+                    value: '0.10'
+                    currency: USD
+                  fxRate: '56.1234'
+                  reference: 3f70be8e-426f-4e89-b883-9c97a1c334d5
+                  status: success
+                  createdTimestamp: 1748478276
+                  lastUpdatedTimestamp: 1748478276
+                node:
+                  previous: null
+                  next: null
   securitySchemes:
     Authorization:
       type: http

@@ -83,20 +83,13 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    BadRequestError:
-      description: Bad input provided by client
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
+        code: resource_not_found
+        message: Requested resource could not be found.
     InternalError:
       description: Internal server error
       allOf:
@@ -104,38 +97,6 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
-    UploadUrlRequest:
-      type: object
-      required:
-      - purpose
-      - contentType
-      properties:
-        purpose:
-          type: string
-          description: Logical reason for the upload
-          enum:
-          - kyc-id-front
-          - kyc-id-back
-          - kyc-selfie
-          - kyc-id-selfie
-          - kyb-incorporation-document
-          - kyb-tax-certificate
-          - kyb-address-proof
-          - kyc-address-proof
-          - reimbursements-proof
-          - business-onboarding-document
-          - contract
-          - milestone-document
-          - statutory-document
-          example: kyc-id-front
-        contentType:
-          type: string
-          description: MIME type that must be used in the PUT request
-          example: image/jpeg
-        fileName:
-          type: string
-          description: The original name of the file being uploaded (optional). When provided, it is saved and returned when the file is retrieved later, so it can be shown instead of a generated name.
-          example: passport-front.jpeg
     FileDetails:
       type: object
       required:
@@ -184,13 +145,52 @@ components:
           type: string
           description: Tenant key associated with the file
           example: cad65668351
-    NotFoundError:
-      description: Not Found
+    UploadUrlRequest:
+      type: object
+      required:
+      - purpose
+      - contentType
+      properties:
+        purpose:
+          type: string
+          description: Logical reason for the upload
+          enum:
+          - kyc-id-front
+          - kyc-id-back
+          - kyc-selfie
+          - kyc-id-selfie
+          - kyb-incorporation-document
+          - kyb-tax-certificate
+          - kyb-address-proof
+          - kyc-address-proof
+          - reimbursements-proof
+          - business-onboarding-document
+          - contract
+          - milestone-document
+          - statutory-document
+          example: kyc-id-front
+        contentType:
+          type: string
+          description: MIME type that must be used in the PUT request
+          example: image/jpeg
+        fileName:
+          type: string
+          description: The original name of the file being uploaded (optional). When provided, it is saved and returned when the file is retrieved later, so it can be shown instead of a generated name.
+          example: passport-front.jpeg
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -222,18 +222,18 @@ components:
                 expiresIn: 899
                 createdAt: 1748478276
                 tenantKey: abc123
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
     NotFoundError:
       description: Requested resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
     UploadUrlResponse:
       description: Pre-signed PUT URL and file identifier
       content:
@@ -264,12 +264,12 @@ components:
                 fileId: 517075a2-17db-469f-9481-eb8347cb920c
                 putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
                 expiresIn: 900
-    InternalError:
-      description: Internal error
+    BadRequestError:
+      description: Bad input provided by client
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalError'
+            $ref: '#/components/schemas/BadRequestError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey
