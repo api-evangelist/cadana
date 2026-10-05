@@ -1,0 +1,38 @@
+slug: cadana
+provider: Cadana
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Payrolls
+  spec_file: cadana-payrolls-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.88
+  evidence: POST /v1/payrolls createPayroll Create; POST /v1/payrolls/{payrollId}/approve approvePayroll
+    Approve; GET .../payslip-links Get Payslip Links; schemas payPeriod, deduction, allowance
+  reason: Operations create, save, approve payroll runs and expose payslips, with pay-period, allowance
+    and deduction schemas — payroll administration, i.e. HR Operations Management within Human Capital
+    Management. Vendor is payroll infrastructure, so the capability realised is HCM regardless of buyer.
+- tag: Persons
+  spec_file: cadana-persons-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.8
+  evidence: PUT /v1/persons/{personId}/jobInfo Update job information; PUT .../taxProfile Update tax profile;
+    POST /v1/persons/{personId}/offboard Schedule offboarding
+  reason: CRUD over worker records including basic/personal info, job info, tax profile, payment info
+    and offboarding scheduling — employee record keeping and HR service delivery for a payroll platform.
+    Offboarding touches lifecycle but the bulk of the surface is employee master records, so HR Operations
+    is the best fit.
