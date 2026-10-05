@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.cadanapay.com/openapi/embedded-consumer-wallets.yaml",
+ "requested_url": "https://docs.cadanapay.com/openapi/embedded-consumer-wallets.yaml",
+ "status": 200,
+ "content_type": "text/yaml",
+ "bytes": 46999,
+ "sha256": "b3045acf59af3a5435b23bd59df729bac058ddcb080f37f62ed5837f1ae559f7",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

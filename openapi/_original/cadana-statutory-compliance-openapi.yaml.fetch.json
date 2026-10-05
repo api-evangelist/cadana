@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.cadanapay.com/openapi/statutory-compliance.yaml",
+ "requested_url": "https://docs.cadanapay.com/openapi/statutory-compliance.yaml",
+ "status": 200,
+ "content_type": "text/yaml",
+ "bytes": 91986,
+ "sha256": "a9a628e304d6099e59501b4e146f253178652c309e1a27f4bbaa99d022396923",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.958), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
