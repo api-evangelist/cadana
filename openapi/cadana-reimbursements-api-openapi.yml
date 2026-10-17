@@ -344,13 +344,20 @@ components:
             type: string
           example:
           - f1e2d3c4-5678-9012-cdef-345678901234
-    NotFoundError:
-      description: Not Found
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     InternalError:
       description: Internal server error
       allOf:
@@ -358,6 +365,20 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
     CreateReimbursementRequest:
       description: Create reimbursement request payload. Identify the worker with exactly one of `userId` or `personId`.
       type: object
@@ -394,34 +415,13 @@ components:
           description: The individual line items that make up the reimbursement.
           items:
             $ref: '#/components/schemas/ReimbursementEntryRequest'
-    BadRequestError:
-      description: Bad input provided by client
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    Error:
-      type: object
-      properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
+        code: resource_not_found
+        message: Requested resource could not be found.
   parameters:
     reimbursementId:
       name: reimbursementId
@@ -445,18 +445,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     BadRequestError:
       description: Bad input provided by client
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   securitySchemes:
     Authorization:
       type: http

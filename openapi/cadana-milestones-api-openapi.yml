@@ -147,6 +147,27 @@ paths:
       - Authorization: []
 components:
   schemas:
+    UpdateMilestoneRequest:
+      type: object
+      required:
+      - title
+      - amount
+      properties:
+        title:
+          type: string
+          example: Design phase
+        description:
+          type: string
+        amount:
+          $ref: '#/components/schemas/amount'
+        dueDate:
+          type: string
+          example: '2026-09-30'
+        documentIds:
+          type: array
+          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); replace the milestone's documents
+          items:
+            $ref: '#/components/schemas/uuid'
     Milestone:
       type: object
       properties:
@@ -196,13 +217,24 @@ components:
         updatedTimestamp:
           type: integer
           format: int64
-    NotFoundError:
-      description: Not Found
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
+    BadRequestError:
+      description: Bad input provided by client
       allOf:
       - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
       example:
-        code: resource_not_found
-        message: Requested resource could not be found.
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     InternalError:
       description: Internal server error
       allOf:
@@ -210,41 +242,20 @@ components:
       example:
         code: internal_error
         message: An unexpected error occurred. Please try again later.
-    UpdateMilestoneRequest:
+    Error:
       type: object
-      required:
-      - title
-      - amount
       properties:
-        title:
+        code:
+          description: A machine parsable error code
           type: string
-          example: Design phase
-        description:
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
           type: string
-        amount:
-          $ref: '#/components/schemas/amount'
-        dueDate:
-          type: string
-          example: '2026-09-30'
-        documentIds:
-          type: array
-          description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); replace the milestone's documents
-          items:
-            $ref: '#/components/schemas/uuid'
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
     AddMilestoneRequest:
       type: object
       required:
@@ -269,38 +280,63 @@ components:
           description: File ids from POST /v1/files/upload-url (purpose `milestone-document`); resolved to stored documents
           items:
             $ref: '#/components/schemas/uuid'
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
-    BadRequestError:
-      description: Bad input provided by client
+    NotFoundError:
+      description: Not Found
       allOf:
       - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
       example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    Error:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    amount:
       type: object
+      required:
+      - amount
+      - currency
       properties:
-        code:
-          description: A machine parsable error code
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
           type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
+          description: currency
+          example: USD
+  responses:
+    CreateMilestoneResponse:
+      description: milestone created (or completed) response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/uuid'
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
+    GetMilestonesResponse:
+      description: list of a contractor's milestones
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Milestone'
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   parameters:
     milestoneId:
       name: milestoneId
@@ -325,42 +361,6 @@ components:
       schema:
         type: string
         format: uuid
-  responses:
-    NotFoundError:
-      description: Requested resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    CreateMilestoneResponse:
-      description: milestone created (or completed) response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                $ref: '#/components/schemas/uuid'
-    GetMilestonesResponse:
-      description: list of a contractor's milestones
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Milestone'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
   securitySchemes:
     Authorization:
       type: http

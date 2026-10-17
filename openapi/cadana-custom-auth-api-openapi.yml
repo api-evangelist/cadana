@@ -46,23 +46,6 @@ paths:
       - Authorization: []
 components:
   schemas:
-    ExchangeJWTRequest:
-      description: Exchange an external JWT to a Cadana redirect token
-      required:
-      - jwt
-      type: object
-      properties:
-        jwt:
-          type: string
-          description: Your internal token to be exchanged
-          default: xxx.yyy.zzz
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -77,6 +60,23 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    ExchangeJWTRequest:
+      description: Exchange an external JWT to a Cadana redirect token
+      required:
+      - jwt
+      type: object
+      properties:
+        jwt:
+          type: string
+          description: Your internal token to be exchanged
+          default: xxx.yyy.zzz
     Error:
       type: object
       properties:
@@ -92,6 +92,18 @@ components:
           description: A human readable message describing the error
           type: string
   responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
     ExchangeJWTResponse:
       description: exchange JWT response
       content:
@@ -103,18 +115,6 @@ components:
               redirectToken:
                 type: string
                 example: eybzym7hwk...
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

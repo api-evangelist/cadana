@@ -204,33 +204,14 @@ paths:
           $ref: '#/components/responses/BadRequestError'
 components:
   schemas:
-    CalculationDetails:
-      type: object
-      properties:
-        description:
-          type: string
-        inputValues:
-          type: object
-          additionalProperties:
-            type: number
-        formula:
-          type: string
-        steps:
-          type: array
-          items:
-            type: string
-    CalculateTaxesResponse:
+    EstimateTaxesResponse:
       type: object
       required:
-      - personId
       - grossAmount
       - netAmount
       - deductions
       - employerContributions
       properties:
-        personId:
-          type: string
-          description: ID of the person taxes were calculated for
         grossAmount:
           $ref: '#/components/schemas/Amount'
         netAmount:
@@ -248,8 +229,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Deduction'
-        summary:
-          $ref: '#/components/schemas/CalculateTaxesSummary'
+        outputCurrency:
+          type: string
+          description: Echo of the requested `outputCurrency`. Present only when the request specified a conversion.
+          example: USD
+        fxRate:
+          type: string
+          description: FX rate applied to convert from the input currency to `outputCurrency`. Present only when a conversion was performed.
+          example: '0.058'
     State:
       type: object
       properties:
@@ -272,6 +259,56 @@ components:
           type: number
         calculation:
           $ref: '#/components/schemas/CalculationDetails'
+    EstimateTaxesRequest:
+      oneOf:
+      - required:
+        - countryCode
+        - type
+        - salary
+        type: object
+        properties:
+          countryCode:
+            type: string
+            description: Country code for tax estimation
+          regionCode:
+            type: string
+            description: Optional region/state code
+          type:
+            type: string
+            enum:
+            - gross-to-net
+            - net-to-gross
+            description: Type of estimation
+          salary:
+            $ref: '#/components/schemas/Amount'
+          outputCurrency:
+            type: string
+            description: ISO 4217 currency to convert response amounts into. When different from the salary currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
+            example: USD
+      - required:
+        - countryCode
+        - type
+        - net
+        type: object
+        properties:
+          countryCode:
+            type: string
+            description: Country code for tax estimation
+          regionCode:
+            type: string
+            description: Optional region/state code
+          type:
+            type: string
+            enum:
+            - gross-to-net
+            - net-to-gross
+            description: Type of estimation
+          net:
+            $ref: '#/components/schemas/Amount'
+          outputCurrency:
+            type: string
+            description: ISO 4217 currency to convert response amounts into. When different from the net currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
+            example: USD
     Allowance:
       type: object
       required:
@@ -286,6 +323,21 @@ components:
           description: Whether the allowance is part of taxable income.
         amount:
           $ref: '#/components/schemas/Amount'
+    CalculationDetails:
+      type: object
+      properties:
+        description:
+          type: string
+        inputValues:
+          type: object
+          additionalProperties:
+            type: number
+        formula:
+          type: string
+        steps:
+          type: array
+          items:
+            type: string
     CalculateTaxesRequest:
       type: object
       required:
@@ -342,6 +394,34 @@ components:
         additionalAttributes:
           type: object
           description: Country-specific calculation inputs (e.g. `ytdSalary`, `riskCategory`). Use `GET /v1/tax/fields?country={code}` to discover what each jurisdiction accepts. Numeric fields are expressed in major currency units — e.g. India's `hraReceived`, `rentPaid`, `declared80c`, and `annualBaseSalary` are whole rupees — unlike `amount` objects, which use the lowest denomination.
+    Deduction:
+      type: object
+      required:
+      - name
+      - isStatutory
+      - amount
+      properties:
+        name:
+          type: string
+        isStatutory:
+          type: boolean
+          description: Whether the deduction is mandated by law (statutory) versus an optional voluntary deduction.
+        amount:
+          $ref: '#/components/schemas/Amount'
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
     Amount:
       type: object
       required:
@@ -356,71 +436,6 @@ components:
           type: string
           description: currency
           example: BRL
-    CalculateTaxesSummary:
-      type: object
-      properties:
-        gross:
-          $ref: '#/components/schemas/CalculateTaxesLineItem'
-        deductions:
-          type: array
-          items:
-            $ref: '#/components/schemas/CalculateTaxesLineItem'
-        net:
-          $ref: '#/components/schemas/CalculateTaxesLineItem'
-        employerContributions:
-          type: array
-          items:
-            $ref: '#/components/schemas/CalculateTaxesLineItem'
-    EstimateTaxesRequest:
-      oneOf:
-      - required:
-        - countryCode
-        - type
-        - salary
-        type: object
-        properties:
-          countryCode:
-            type: string
-            description: Country code for tax estimation
-          regionCode:
-            type: string
-            description: Optional region/state code
-          type:
-            type: string
-            enum:
-            - gross-to-net
-            - net-to-gross
-            description: Type of estimation
-          salary:
-            $ref: '#/components/schemas/Amount'
-          outputCurrency:
-            type: string
-            description: ISO 4217 currency to convert response amounts into. When different from the salary currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
-            example: USD
-      - required:
-        - countryCode
-        - type
-        - net
-        type: object
-        properties:
-          countryCode:
-            type: string
-            description: Country code for tax estimation
-          regionCode:
-            type: string
-            description: Optional region/state code
-          type:
-            type: string
-            enum:
-            - gross-to-net
-            - net-to-gross
-            description: Type of estimation
-          net:
-            $ref: '#/components/schemas/Amount'
-          outputCurrency:
-            type: string
-            description: ISO 4217 currency to convert response amounts into. When different from the net currency, all amounts are converted at the prevailing FX rate and `fxRate` is populated on the response.
-            example: USD
     Country:
       type: object
       properties:
@@ -434,14 +449,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/State'
-    EstimateTaxesResponse:
+    Error:
+      type: object
+      properties:
+        code:
+          description: A machine parsable error code
+          type: string
+          enum:
+          - invalid_request_body
+          - resource_not_found
+          - forbidden
+          - internal_error
+        message:
+          description: A human readable message describing the error
+          type: string
+    CalculateTaxesResponse:
       type: object
       required:
+      - personId
       - grossAmount
       - netAmount
       - deductions
       - employerContributions
       properties:
+        personId:
+          type: string
+          description: ID of the person taxes were calculated for
         grossAmount:
           $ref: '#/components/schemas/Amount'
         netAmount:
@@ -459,56 +492,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Deduction'
-        outputCurrency:
-          type: string
-          description: Echo of the requested `outputCurrency`. Present only when the request specified a conversion.
-          example: USD
-        fxRate:
-          type: string
-          description: FX rate applied to convert from the input currency to `outputCurrency`. Present only when a conversion was performed.
-          example: '0.058'
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
-    Error:
+        summary:
+          $ref: '#/components/schemas/CalculateTaxesSummary'
+    CalculateTaxesSummary:
       type: object
       properties:
-        code:
-          description: A machine parsable error code
-          type: string
-          enum:
-          - invalid_request_body
-          - resource_not_found
-          - forbidden
-          - internal_error
-        message:
-          description: A human readable message describing the error
-          type: string
-    Deduction:
-      type: object
-      required:
-      - name
-      - isStatutory
-      - amount
-      properties:
-        name:
-          type: string
-        isStatutory:
-          type: boolean
-          description: Whether the deduction is mandated by law (statutory) versus an optional voluntary deduction.
-        amount:
-          $ref: '#/components/schemas/Amount'
+        gross:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
+        deductions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
+        net:
+          $ref: '#/components/schemas/CalculateTaxesLineItem'
+        employerContributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalculateTaxesLineItem'
     RequiredTaxFieldsResponse:
       type: object
       properties:
@@ -537,6 +537,116 @@ components:
               provider:
                 type: string
                 description: Internal source that surfaces this field. May be omitted.
+  responses:
+    BadRequestError:
+      description: Bad input provided by client
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    EstimateTaxesResponse:
+      description: Estimate taxes response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EstimateTaxesResponse'
+          examples:
+            grossToNet:
+              summary: Gross to Net estimation response (Philippines)
+              value:
+                grossAmount:
+                  amount: 5000000
+                  currency: PHP
+                netAmount:
+                  amount: 4223167
+                  currency: PHP
+                deductions:
+                - name: Social Security
+                  isStatutory: true
+                  amount:
+                    amount: 175000
+                    currency: PHP
+                - name: National Health Insurance (PhilHealth)
+                  isStatutory: true
+                  amount:
+                    amount: 125000
+                    currency: PHP
+                - name: Home Development Mutual Fund (PAG-IBIG)
+                  isStatutory: true
+                  amount:
+                    amount: 20000
+                    currency: PHP
+                - name: PAYE (Income Tax)
+                  isStatutory: true
+                  amount:
+                    amount: 456833
+                    currency: PHP
+                employerContributions:
+                - name: Social Security
+                  isStatutory: true
+                  amount:
+                    amount: 350000
+                    currency: PHP
+                - name: National Health Insurance (PhilHealth)
+                  isStatutory: true
+                  amount:
+                    amount: 125000
+                    currency: PHP
+                - name: Home Development Mutual Fund (PAG-IBIG)
+                  isStatutory: true
+                  amount:
+                    amount: 20000
+                    currency: PHP
+                - name: Employees' Compensation (EC)
+                  isStatutory: true
+                  amount:
+                    amount: 3000
+                    currency: PHP
+            netToGross:
+              summary: Net to Gross estimation response (Mexico)
+              value:
+                grossAmount:
+                  amount: 2386014
+                  currency: MXN
+                netAmount:
+                  amount: 2000000
+                  currency: MXN
+                deductions:
+                - name: Sickness and Maternity Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 21383
+                    currency: MXN
+                - name: Disability and Life Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 15647
+                    currency: MXN
+                - name: Severance at Advanced Age and Old Age
+                  isStatutory: true
+                  amount:
+                    amount: 28166
+                    currency: MXN
+                - name: Income Tax (ISR)
+                  isStatutory: true
+                  amount:
+                    amount: 320818
+                    currency: MXN
+                employerContributions:
+                - name: Work Risk Insurance
+                  isStatutory: true
+                  amount:
+                    amount: 13609
+                    currency: MXN
+    CalculateTaxesResponse:
+      description: Calculate taxes response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CalculateTaxesResponse'
+          examples:
+            brazilianTaxCalculation:
+              $ref: '#/components/examples/TaxCalculationExample'
   examples:
     TaxCalculationExample:
       summary: Example Brazilian tax calculation response
@@ -651,116 +761,6 @@ components:
       schema:
         type: string
       description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-  responses:
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
-    CalculateTaxesResponse:
-      description: Calculate taxes response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CalculateTaxesResponse'
-          examples:
-            brazilianTaxCalculation:
-              $ref: '#/components/examples/TaxCalculationExample'
-    EstimateTaxesResponse:
-      description: Estimate taxes response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/EstimateTaxesResponse'
-          examples:
-            grossToNet:
-              summary: Gross to Net estimation response (Philippines)
-              value:
-                grossAmount:
-                  amount: 5000000
-                  currency: PHP
-                netAmount:
-                  amount: 4223167
-                  currency: PHP
-                deductions:
-                - name: Social Security
-                  isStatutory: true
-                  amount:
-                    amount: 175000
-                    currency: PHP
-                - name: National Health Insurance (PhilHealth)
-                  isStatutory: true
-                  amount:
-                    amount: 125000
-                    currency: PHP
-                - name: Home Development Mutual Fund (PAG-IBIG)
-                  isStatutory: true
-                  amount:
-                    amount: 20000
-                    currency: PHP
-                - name: PAYE (Income Tax)
-                  isStatutory: true
-                  amount:
-                    amount: 456833
-                    currency: PHP
-                employerContributions:
-                - name: Social Security
-                  isStatutory: true
-                  amount:
-                    amount: 350000
-                    currency: PHP
-                - name: National Health Insurance (PhilHealth)
-                  isStatutory: true
-                  amount:
-                    amount: 125000
-                    currency: PHP
-                - name: Home Development Mutual Fund (PAG-IBIG)
-                  isStatutory: true
-                  amount:
-                    amount: 20000
-                    currency: PHP
-                - name: Employees' Compensation (EC)
-                  isStatutory: true
-                  amount:
-                    amount: 3000
-                    currency: PHP
-            netToGross:
-              summary: Net to Gross estimation response (Mexico)
-              value:
-                grossAmount:
-                  amount: 2386014
-                  currency: MXN
-                netAmount:
-                  amount: 2000000
-                  currency: MXN
-                deductions:
-                - name: Sickness and Maternity Insurance
-                  isStatutory: true
-                  amount:
-                    amount: 21383
-                    currency: MXN
-                - name: Disability and Life Insurance
-                  isStatutory: true
-                  amount:
-                    amount: 15647
-                    currency: MXN
-                - name: Severance at Advanced Age and Old Age
-                  isStatutory: true
-                  amount:
-                    amount: 28166
-                    currency: MXN
-                - name: Income Tax (ISR)
-                  isStatutory: true
-                  amount:
-                    amount: 320818
-                    currency: MXN
-                employerContributions:
-                - name: Work Risk Insurance
-                  isStatutory: true
-                  amount:
-                    amount: 13609
-                    currency: MXN
   securitySchemes:
     Authorization:
       type: http

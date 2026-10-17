@@ -173,33 +173,53 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    CountryCode:
+      name: country_code
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^[A-Z]{2}$
+      description: ISO 3166-1 alpha-2 country code
+      example: MX
+    PersonId:
+      name: person_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Person identifier
+      example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
+    BusinessIdPath:
+      name: business_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Business identifier
+      example: 4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   schemas:
-    DocumentFieldValue:
-      type: object
-      description: 'Value of a `document`-typed statutory field in GET responses.
-
-        The download URL is presigned and expires after ~15 minutes — fetch a
-
-        fresh one when needed rather than storing it.
-
-        '
-      properties:
-        fileId:
-          type: string
-          format: uuid
-          description: The file ID submitted for this field
-          example: f1e2d3c4-b5a6-4789-9abc-def012345678
-        url:
-          type: string
-          description: Short-lived presigned download URL for the document
-          example: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
-        fileUploaded:
-          type: boolean
-          description: Whether the file content exists in storage
-          example: true
-      required:
-      - fileId
-      - url
     PutStatutoryFieldsRequest:
       type: object
       required:
@@ -240,6 +260,29 @@ components:
             steuerID: '97148835200'
             personengruppenschluessel: '101'
             idCard: f1e2d3c4-b5a6-4789-9abc-def012345678
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: invalid_request
+            message:
+              type: string
+              example: countryCode is required
+            details:
+              type:
+              - array
+              - 'null'
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
     StatutoryFieldsResponse:
       type: object
       description: 'Merged view of statutory filing data for an entity. Combines fields
@@ -284,75 +327,32 @@ components:
               fileId: f1e2d3c4-b5a6-4789-9abc-def012345678
               url: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
               fileUploaded: true
-    Error:
+    DocumentFieldValue:
       type: object
+      description: 'Value of a `document`-typed statutory field in GET responses.
+
+        The download URL is presigned and expires after ~15 minutes — fetch a
+
+        fresh one when needed rather than storing it.
+
+        '
       properties:
-        error:
-          type: object
-          properties:
-            code:
-              type: string
-              example: invalid_request
-            message:
-              type: string
-              example: countryCode is required
-            details:
-              type:
-              - array
-              - 'null'
-              items:
-                type: object
-                properties:
-                  field:
-                    type: string
-                  message:
-                    type: string
-  responses:
-    BadRequest:
-      description: Invalid request parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    PersonId:
-      name: person_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Person identifier
-      example: 81933bed-97ba-4477-81a7-b8c5ab507b6f
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    BusinessIdPath:
-      name: business_id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Business identifier
-      example: 4f2c9a10-6d3e-4b8f-9c21-57e0aa14d2c8
-    CountryCode:
-      name: country_code
-      in: path
-      required: true
-      schema:
-        type: string
-        pattern: ^[A-Z]{2}$
-      description: ISO 3166-1 alpha-2 country code
-      example: MX
+        fileId:
+          type: string
+          format: uuid
+          description: The file ID submitted for this field
+          example: f1e2d3c4-b5a6-4789-9abc-def012345678
+        url:
+          type: string
+          description: Short-lived presigned download URL for the document
+          example: https://s3.eu-west-1.amazonaws.com/files/presigned-get-url
+        fileUploaded:
+          type: boolean
+          description: Whether the file content exists in storage
+          example: true
+      required:
+      - fileId
+      - url
   securitySchemes:
     Authorization:
       type: http

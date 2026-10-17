@@ -83,20 +83,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
     FileDetails:
       type: object
       required:
@@ -145,6 +131,27 @@ components:
           type: string
           description: Tenant key associated with the file
           example: cad65668351
+    BadRequestError:
+      description: Bad input provided by client
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          params:
+            description: A map for meta data around the error that occurred
+            type: object
+      example:
+        code: invalid_request_body
+        message: The request body provided is not valid
+        params:
+          field: Value is invalid.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     UploadUrlRequest:
       type: object
       required:
@@ -177,20 +184,6 @@ components:
           type: string
           description: The original name of the file being uploaded (optional). When provided, it is saved and returned when the file is retrieved later, so it can be shown instead of a generated name.
           example: passport-front.jpeg
-    BadRequestError:
-      description: Bad input provided by client
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      - type: object
-        properties:
-          params:
-            description: A map for meta data around the error that occurred
-            type: object
-      example:
-        code: invalid_request_body
-        message: The request body provided is not valid
-        params:
-          field: Value is invalid.
     Error:
       type: object
       properties:
@@ -205,7 +198,20 @@ components:
         message:
           description: A human readable message describing the error
           type: string
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
   responses:
+    NotFoundError:
+      description: Requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFoundError'
     GetFileDetailsResponse:
       description: Get file details and download URL
       content:
@@ -222,12 +228,12 @@ components:
                 expiresIn: 899
                 createdAt: 1748478276
                 tenantKey: abc123
-    NotFoundError:
-      description: Requested resource was not found
+    BadRequestError:
+      description: Bad input provided by client
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotFoundError'
+            $ref: '#/components/schemas/BadRequestError'
     InternalError:
       description: Internal error
       content:
@@ -264,12 +270,6 @@ components:
                 fileId: 517075a2-17db-469f-9481-eb8347cb920c
                 putUrl: https://cadana-kyc.s3.amazonaws.com/tmp/file_9c52fa2e ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=…
                 expiresIn: 900
-    BadRequestError:
-      description: Bad input provided by client
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BadRequestError'
   parameters:
     XMultiTenantKey:
       name: X-MultiTenantKey

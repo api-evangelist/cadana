@@ -94,45 +94,6 @@ components:
       type: object
       allOf:
       - $ref: '#/components/schemas/instantPaySetting'
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
-    instantPaySetting:
-      type: object
-      description: Person's instant pay setting
-      properties:
-        accessPercentage:
-          type: number
-          example: 50
-    uuid:
-      type: string
-      format: uuid
-      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     instantPay:
       type: object
       properties:
@@ -153,6 +114,10 @@ components:
           format: int64
           example: 1693782273
           description: The Unix timestamp indicating when the transaction was initiated
+    uuid:
+      type: string
+      format: uuid
+      example: 8ef9a712-cdae-4110-b1ea-9ba95abbee6e
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -167,6 +132,13 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
     Error:
       type: object
       properties:
@@ -181,40 +153,35 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-  parameters:
-    personId:
-      name: personId
-      in: path
-      description: The unique identifier for the person
-      required: true
-      schema:
-        type: string
-        format: uuid
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    instantPaySetting:
+      type: object
+      description: Person's instant pay setting
+      properties:
+        accessPercentage:
+          type: number
+          example: 50
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
   responses:
-    GetPersonInstantPaysResponse:
-      description: get person instant pay transactions
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/instantPay'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     GetPersonIPSettingResponse:
       description: get person instant pay setting response
       content:
@@ -235,6 +202,39 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
+    GetPersonInstantPaysResponse:
+      description: get person instant pay transactions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/instantPay'
+  parameters:
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
+    personId:
+      name: personId
+      in: path
+      description: The unique identifier for the person
+      required: true
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     Authorization:
       type: http

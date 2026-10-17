@@ -63,47 +63,23 @@ paths:
       security:
       - Authorization: []
 components:
+  parameters:
+    userId:
+      name: userId
+      in: path
+      description: The unique identifier for the user
+      required: true
+      schema:
+        type: string
+        format: uuid
+    XMultiTenantKey:
+      name: X-MultiTenantKey
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
   schemas:
-    SandboxDepositRequest:
-      description: Deposit funds to a business in sandbox
-      type: object
-      required:
-      - value
-      properties:
-        description:
-          type: string
-          description: description for the deposit
-          example: Payroll 10/10
-        value:
-          $ref: '#/components/schemas/amount'
-    NotFoundError:
-      description: Not Found
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: resource_not_found
-        message: Requested resource could not be found.
-    InternalError:
-      description: Internal server error
-      allOf:
-      - $ref: '#/components/schemas/Error'
-      example:
-        code: internal_error
-        message: An unexpected error occurred. Please try again later.
-    amount:
-      type: object
-      required:
-      - amount
-      - currency
-      properties:
-        amount:
-          type: integer
-          description: value in lowest denomination
-          example: 10000
-        currency:
-          type: string
-          description: currency
-          example: USD
     BadRequestError:
       description: Bad input provided by client
       allOf:
@@ -118,6 +94,25 @@ components:
         message: The request body provided is not valid
         params:
           field: Value is invalid.
+    InternalError:
+      description: Internal server error
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: internal_error
+        message: An unexpected error occurred. Please try again later.
+    SandboxDepositRequest:
+      description: Deposit funds to a business in sandbox
+      type: object
+      required:
+      - value
+      properties:
+        description:
+          type: string
+          description: description for the deposit
+          example: Payroll 10/10
+        value:
+          $ref: '#/components/schemas/amount'
     Error:
       type: object
       properties:
@@ -132,22 +127,27 @@ components:
         message:
           description: A human readable message describing the error
           type: string
-  parameters:
-    XMultiTenantKey:
-      name: X-MultiTenantKey
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Required when using a Platform API token. The tenant key identifying which business to operate on.
-    userId:
-      name: userId
-      in: path
-      description: The unique identifier for the user
-      required: true
-      schema:
-        type: string
-        format: uuid
+    NotFoundError:
+      description: Not Found
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      example:
+        code: resource_not_found
+        message: Requested resource could not be found.
+    amount:
+      type: object
+      required:
+      - amount
+      - currency
+      properties:
+        amount:
+          type: integer
+          description: value in lowest denomination
+          example: 10000
+        currency:
+          type: string
+          description: currency
+          example: USD
   responses:
     NotFoundError:
       description: Requested resource was not found
@@ -155,18 +155,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFoundError'
-    InternalError:
-      description: Internal error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/InternalError'
     BadRequestError:
       description: Bad input provided by client
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestError'
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalError'
   securitySchemes:
     Authorization:
       type: http
