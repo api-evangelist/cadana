@@ -262,6 +262,8 @@ apis:
   humanURL: https://docs.cadanapay.com/workforce/overview
   baseURL: https://api.cadanapay.com
   tags:
+  - Foreign Exchange
+  tags_raw:
   - FX
   properties:
   - type: OpenAPI
