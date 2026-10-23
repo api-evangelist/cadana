@@ -526,3 +526,9 @@ x-readme:
   explorer-enabled: true
   proxy-enabled: true
   samples-enabled: true
+x-provenance:
+  method: harvested
+  publisher: Cadana
+  source: https://docs.cadanapay.com/openapi/embedded-payments.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)

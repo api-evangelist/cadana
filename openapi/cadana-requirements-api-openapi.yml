@@ -213,3 +213,9 @@ components:
       type: http
       scheme: bearer
       bearerFormat: API_SECRET_KEY
+x-provenance:
+  method: harvested
+  publisher: Cadana
+  source: https://docs.cadanapay.com/openapi/statutory-compliance.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
